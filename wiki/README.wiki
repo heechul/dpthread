@@ -15,7 +15,7 @@ Dpthread is currently only tested on Intel Core2 processors. We use inst_retired
 
 Dpthread use libpfm4 library to access performance counters. You can download it from http://perfmon2.sourceforge.net. 
 
-Once you install the libpfm4, type 'make' on the top directory. If the build succeed, you will see lib/libdpthread.a in lib/ directory. 
+Once you install the libpfm4, type 'make' on the top directory of dpthread. If the build succeed, you will see lib/libdpthread.a in lib/ directory. 
 
 {{{
 $ make 
@@ -32,5 +32,9 @@ Then, you can check whether it works correctly by doing the following.
 {{{
 $ make check 
 ...
+ITERATION 9
+>> compare log8.p0 vs log9.p0
+>> compare log8.p1 vs log9.p1
+ -> OK
 PASS 
 }}}
