@@ -9,9 +9,28 @@ The key idea of dpthread is the same as Kendo (ASPLOS09): determine the global o
 
 Also, dpthread provides more complete set of deterministic alternatives of pthread synchronization APIs (mutex, condition variable, and barriers.)
 
-= Details =
+= Installation =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+Dpthread is currently only tested on Intel Core2 processors. We use inst_retired:stores event of Core2 processors and it is the only deterministic event on Core2 processor as far as we know. Supporting for other processors is straight forward if the processor have a deterministic counter. 
+
+Dpthread use libpfm4 library to access performance counters. You can download it from http://perfmon2.sourceforge.net. 
+
+Once you install the libpfm4, type 'make' on the top directory. If the build succeed, you will see lib/libdpthread.a in lib/ directory. 
+
+{{{
+$ make 
+Compiling for 'i686' target
+make[1]: Entering directory `/home/heechul/Projects/dpthread/src'
+sh -c ./detect_cpus.sh 
+...
+cp -a libdpthread.a ../lib
+make[1]: Leaving directory `/home/heechul/Projects/dpthread/src'
+}}}
+
+Then, you can check whether it works correctly by doing the following. 
+
+{{{
+$ make check 
+...
+PASS 
+}}}
