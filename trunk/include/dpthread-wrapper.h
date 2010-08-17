@@ -1,6 +1,11 @@
-/** 
- * wrapper interface for compatability. 
- * this provide wrapper for standard pthread and c-library to deterministic alternative. 
+/**
+ * Deterministic threading runtime 
+ *
+ * Author: Heechul Yun <heechul@illinois.edu> 
+ *
+ * This file is distributed under the University of Illinois Open Source
+ * License. See LICENSE.TXT for details.
+ *
  */ 
 
 #ifndef DPTHREAD_WRAPPER_H
