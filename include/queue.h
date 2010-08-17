@@ -1,3 +1,12 @@
+/**
+ * Simple queue library 
+ *
+ * Author: Heechul Yun <heechul@illinois.edu> 
+ *
+ * This file is distributed under the University of Illinois Open Source
+ * License. See LICENSE.TXT for details.
+ *
+ */ 
 #ifndef QUEUE_H
 #define QUEUE_H
 

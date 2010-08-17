@@ -36,8 +36,6 @@
 #include <dlfcn.h>
 #include <atomic.h>
 
-#include <utility.h>
-
 #include "config.h"
 
 /* thread local shared (TLS) data */ 
