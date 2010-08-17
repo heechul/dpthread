@@ -1,0 +1,73 @@
+         U alarm@@GLIBC_2.0
+         U atoi@@GLIBC_2.0
+         U calloc@@GLIBC_2.0
+         U close@@GLIBC_2.0
+         U connect@@GLIBC_2.0
+         U __ctype_b_loc@@GLIBC_2.3
+         U dup@@GLIBC_2.0
+         U __errno_location@@GLIBC_2.0
+         U exit@@GLIBC_2.0
+         U fclose@@GLIBC_2.1
+         U fdopen@@GLIBC_2.1
+         U fflush@@GLIBC_2.0
+         U fgets@@GLIBC_2.0
+         U fopen@@GLIBC_2.1
+         U fprintf@@GLIBC_2.0
+         U fputc@@GLIBC_2.0
+         U fread@@GLIBC_2.0
+         U free@@GLIBC_2.0
+         U fwrite@@GLIBC_2.0
+         U getcwd@@GLIBC_2.0
+         U gethostbyname@@GLIBC_2.0
+         U getopt@@GLIBC_2.0
+         U getpwuid@@GLIBC_2.0
+         U getuid@@GLIBC_2.0
+         U __h_errno_location@@GLIBC_2.0
+         U hstrerror@@GLIBC_2.0
+         U htons@@GLIBC_2.0
+         U inet_addr@@GLIBC_2.0
+         U inet_ntoa@@GLIBC_2.0
+         U __isoc99_scanf@@GLIBC_2.7
+         U __libc_start_main@@GLIBC_2.0
+         U lseek@@GLIBC_2.0
+         U malloc@@GLIBC_2.0
+         U memcpy@@GLIBC_2.0
+         U memset@@GLIBC_2.0
+         U open@@GLIBC_2.0
+         U printf@@GLIBC_2.0
+         U pthread_cancel@@GLIBC_2.0
+         U pthread_create@@GLIBC_2.1
+         U pthread_exit@@GLIBC_2.0
+         U pthread_join@@GLIBC_2.0
+         U pthread_mutex_lock@@GLIBC_2.0
+         U pthread_mutex_unlock@@GLIBC_2.0
+         U pthread_self@@GLIBC_2.0
+         U pthread_setcanceltype@@GLIBC_2.0
+         U pthread_sigmask@@GLIBC_2.0
+         U pthread_testcancel@@GLIBC_2.0
+         U putchar@@GLIBC_2.0	# detio_putchar 
+         U recv@@GLIBC_2.0	# detio_recv 	
+         U select@@GLIBC_2.0  	# detio_select 
+         U send@@GLIBC_2.0	# detio_send 
+         U sigaddset@@GLIBC_2.0
+         U sigfillset@@GLIBC_2.0
+         U sigwait@@GLIBC_2.0	# detio_sigwait 
+         U snprintf@@GLIBC_2.0	# detio_snprintf 
+         U socket@@GLIBC_2.0
+         U sprintf@@GLIBC_2.0
+         U sscanf@@GLIBC_2.0
+         U __stack_chk_fail@@GLIBC_2.4
+         U strcmp@@GLIBC_2.0
+         U strdup@@GLIBC_2.0
+         U strerror@@GLIBC_2.0
+         U strncat@@GLIBC_2.0
+         U strncmp@@GLIBC_2.0
+         U strncpy@@GLIBC_2.0
+         U strstr@@GLIBC_2.0
+         U strtok@@GLIBC_2.0
+         U strtok_r@@GLIBC_2.0
+         U time@@GLIBC_2.0
+         U unlink@@GLIBC_2.0
+         U vfprintf@@GLIBC_2.0
+         U write@@GLIBC_2.0
+         U __xstat@@GLIBC_2.0

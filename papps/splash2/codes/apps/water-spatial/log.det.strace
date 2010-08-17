@@ -1,0 +1,959 @@
+execve("./WATER-SPATIAL", ["./WATER-SPATIAL"], [/* 42 vars */]) = 0
+brk(0)                                  = 0x8057000
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+mmap2(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7fe0000
+access("/etc/ld.so.preload", R_OK)      = -1 ENOENT (No such file or directory)
+open("/etc/ld.so.cache", O_RDONLY)      = 3
+fstat64(3, {st_mode=S_IFREG|0644, st_size=96004, ...}) = 0
+mmap2(NULL, 96004, PROT_READ, MAP_PRIVATE, 3, 0) = 0xb7fc8000
+close(3)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+open("/lib/tls/i686/cmov/libm.so.6", O_RDONLY) = 3
+read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0`4\0\0004\0\0\0"..., 512) = 512
+fstat64(3, {st_mode=S_IFREG|0644, st_size=149392, ...}) = 0
+mmap2(NULL, 151680, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0xb7fa2000
+mmap2(0xb7fc6000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x23) = 0xb7fc6000
+close(3)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+open("/usr/local/lib/libpfm.so.4", O_RDONLY) = 3
+read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0@\341\0\0004\0\0\0"..., 512) = 512
+fstat64(3, {st_mode=S_IFREG|0755, st_size=1405076, ...}) = 0
+mmap2(NULL, 1295156, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0xb7e65000
+mmap2(0xb7e8f000, 1122304, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x2a) = 0xb7e8f000
+mmap2(0xb7fa1000, 820, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0xb7fa1000
+close(3)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+open("/lib/tls/i686/cmov/libpthread.so.0", O_RDONLY) = 3
+read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0PI\0\0004\0\0\0"..., 512) = 512
+fstat64(3, {st_mode=S_IFREG|0755, st_size=116920, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7e64000
+mmap2(NULL, 98792, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0xb7e4b000
+mmap2(0xb7e60000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x14) = 0xb7e60000
+mmap2(0xb7e62000, 4584, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0xb7e62000
+close(3)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+open("/lib/tls/i686/cmov/libc.so.6", O_RDONLY) = 3
+read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0\260l\1\0004\0\0\0"..., 512) = 512
+fstat64(3, {st_mode=S_IFREG|0755, st_size=1319364, ...}) = 0
+mmap2(NULL, 1329512, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0xb7d06000
+mprotect(0xb7e44000, 4096, PROT_NONE)   = 0
+mmap2(0xb7e45000, 12288, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x13e) = 0xb7e45000
+mmap2(0xb7e48000, 10600, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0xb7e48000
+close(3)                                = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7d05000
+set_thread_area({entry_number:-1 -> 6, base_addr:0xb7d05720, limit:1048575, seg_32bit:1, contents:0, read_exec_only:0, limit_in_pages:1, seg_not_present:0, useable:1}) = 0
+mprotect(0xb7e45000, 8192, PROT_READ)   = 0
+mprotect(0xb7e60000, 4096, PROT_READ)   = 0
+mprotect(0xb7e8f000, 1114112, PROT_READ) = 0
+mprotect(0xb7fc6000, 4096, PROT_READ)   = 0
+mprotect(0x8053000, 4096, PROT_READ)    = 0
+mprotect(0xb7ffe000, 4096, PROT_READ)   = 0
+munmap(0xb7fc8000, 96004)               = 0
+set_tid_address(0xb7d05788)             = 19080
+set_robust_list(0xb7d05790, 0xc)        = 0
+futex(0xbffff820, FUTEX_WAKE_PRIVATE, 1) = 0
+futex(0xbffff820, 0x189 /* FUTEX_??? */, 1, NULL, bffff830) = -1 EAGAIN (Resource temporarily unavailable)
+rt_sigaction(SIGRTMIN, {0xb7e4f340, [], SA_SIGINFO}, NULL, 8) = 0
+rt_sigaction(SIGRT_1, {0xb7e4f820, [], SA_RESTART|SA_SIGINFO}, NULL, 8) = 0
+rt_sigprocmask(SIG_UNBLOCK, [RTMIN RT_1], NULL, 8) = 0
+getrlimit(RLIMIT_STACK, {rlim_cur=8192*1024, rlim_max=RLIM_INFINITY}) = 0
+uname({sys="Linux", node="heechul-desktop", ...}) = 0
+fstat64(0, {st_mode=S_IFREG|0644, st_size=57, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7fdf000
+read(0, "  1.5e-16   512  3   6\n -1      "..., 4096) = 57
+fstat64(1, {st_mode=S_IFREG|0644, st_size=4444, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7fde000
+write(1, "Using 2 procs on 3 steps of 512 "..., 540Using 2 procs on 3 steps of 512 mols
+Other parameters:
+	TSTEP = 1.50e-16
+	NORDER = 6
+	NSAVE = -1
+	NRST = 3000
+	NPRINT = 3
+	NFMC = 0
+	CUTOFF = 6.212752
+
+64 boxes with 2 processors
+
+
+TEMPERATURE                =   298.00 K
+DENSITY                    =  0.99800 G/C.C.
+NUMBER OF MOLECULES        =      512
+NUMBER OF PROCESSORS       =        2
+TIME STEP                  = 1.50e-01 SEC
+ORDER USED TO SOLVE F=MA   =        6 
+NO. OF TIME STEPS          =        3 
+FREQUENCY OF DATA SAVING   =       -1 
+FREQUENCY TO WRITE RST FILE=     3000 
+) = 540
+brk(0)                                  = 0x8057000
+brk(0x8079000)                          = 0x8079000
+write(1, "xprocs = 1\typrocs = 1\tzprocs = 2"..., 33xprocs = 1	yprocs = 1	zprocs = 2
+) = 33
+write(1, "x_inc = 4\t y_inc = 4\t z_inc = 2\n"..., 67x_inc = 4	 y_inc = 4	 z_inc = 2
+x_left = 0	 y_left = 0	 z_left = 0
+) = 67
+write(1, "SPHERICAL CUTOFF RADIUS    =   6"..., 47SPHERICAL CUTOFF RADIUS    =   6.2128 ANGSTROM
+) = 47
+open("random.in", O_RDONLY)             = 3
+write(1, "\nNS = 7.9999999999999893\nBOXL = "..., 167
+NS = 7.9999999999999893
+BOXL =  24.851010
+CUTOFF =   6.212752
+BOX_LENGTH =   6.212752
+BOX_PER_SIDE = 4
+XS =   3.106376
+ZERO = 1.55319
+WCOS = 0.585882
+WSIN = 0.756950
+) = 167
+write(1, "***** NEW RUN STARTING FROM REGU"..., 50***** NEW RUN STARTING FROM REGULAR LATTICE *****
+) = 50
+fstat64(3, {st_mode=S_IFREG|0644, st_size=143077, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7fdd000
+read(3, "  0.141882295971771490e+00    \n "..., 4096) = 4096
+brk(0x809a000)                          = 0x809a000
+read(3, "8053540e+00   0.4926209837468177"..., 4096) = 4096
+read(3, "810013856763790e+01\n  0.54792894"..., 4096) = 4096
+brk(0x80bb000)                          = 0x80bb000
+read(3, "   0.331105359551632450e+01   0."..., 4096) = 4096
+read(3, "5750e+00\n -0.290150828938829040e"..., 4096) = 4096
+brk(0x80dc000)                          = 0x80dc000
+read(3, "330952292730e+00   0.76609970507"..., 4096) = 4096
+read(3, "0.724733588226767480e+00  -0.907"..., 4096) = 4096
+brk(0x80fd000)                          = 0x80fd000
+read(3, "0e+00  -0.739001605582546350e+00"..., 4096) = 4096
+read(3, "075537080e+00   0.71294472275279"..., 4096) = 4096
+brk(0x811e000)                          = 0x811e000
+read(3, "41152792124760600e+01\n  0.393439"..., 4096) = 4096
+read(3, "01  -0.272368756241293930e+01  -"..., 4096) = 4096
+brk(0x813f000)                          = 0x813f000
+read(3, "579220e+00\n -0.27448043313651462"..., 4096) = 4096
+read(3, "87816446369730e+00   0.484044424"..., 4096) = 4096
+brk(0x8160000)                          = 0x8160000
+read(3, " -0.263984371427596620e-01  -0.4"..., 4096) = 4096
+read(3, "360e+00   0.846428936047928790e+"..., 4096) = 4096
+brk(0x8181000)                          = 0x8181000
+read(3, "84484370630e+00  -0.361091894113"..., 4096) = 4096
+read(3, ".768043904470202320e+00\n -0.1179"..., 4096) = 4096
+brk(0x81a2000)                          = 0x81a2000
+read(3, "e+01  -0.100919133862012700e+01 "..., 4096) = 4096
+read(3, "95302650e+00\n -0.237948044739670"..., 4096) = 4096
+brk(0x81c3000)                          = 0x81c3000
+read(3, "3484381297298340e+00  -0.8485244"..., 4096) = 4096
+read(3, "0\n  0.163804460578454270e+00   0"..., 4096) = 4096
+brk(0x81e4000)                          = 0x81e4000
+read(3, "68840e+01   0.392856915920149600"..., 4096) = 4096
+brk(0x8205000)                          = 0x8205000
+read(3, "3212867132980e+01  -0.2439434645"..., 4096) = 4096
+read(3, "-0.106161455203921400e+00\n -0.62"..., 4096) = 4096
+brk(0x8226000)                          = 0x8226000
+read(3, "90e+00   0.674450861830364350e-0"..., 4096) = 4096
+read(3, "4993096480e+00\n -0.4362191443241"..., 4096) = 4096
+brk(0x8247000)                          = 0x8247000
+read(3, "643743963865216820e+00  -0.96677"..., 4096) = 4096
+read(3, "+00\n  0.362645767325393970e-01  "..., 4096) = 4096
+brk(0x8268000)                          = 0x8268000
+read(3, "0155390e+01  -0.1617145309286806"..., 4096) = 4096
+read(3, "599299560527260e+01   0.92189130"..., 4096) = 4096
+brk(0x8289000)                          = 0x8289000
+read(3, "   0.252840252180422160e+00\n -0."..., 4096) = 4096
+close(3)                                = 0
+munmap(0xb7fdd000, 4096)                = 0
+gettimeofday({1269570619, 251140}, NULL) = 0
+open("/proc/cpuinfo", O_RDONLY)         = 3
+fstat64(3, {st_mode=S_IFREG|0444, st_size=0, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7fdd000
+read(3, "processor\t: 0\nvendor_id\t: Genuin"..., 1024) = 1024
+close(3)                                = 0
+munmap(0xb7fdd000, 4096)                = 0
+open("/proc/cpuinfo", O_RDONLY)         = 3
+fstat64(3, {st_mode=S_IFREG|0444, st_size=0, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7fdd000
+read(3, "processor\t: 0\nvendor_id\t: Genuin"..., 1024) = 1024
+close(3)                                = 0
+munmap(0xb7fdd000, 4096)                = 0
+open("/proc/cpuinfo", O_RDONLY)         = 3
+fstat64(3, {st_mode=S_IFREG|0444, st_size=0, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7fdd000
+read(3, "processor\t: 0\nvendor_id\t: Genuin"..., 1024) = 1024
+close(3)                                = 0
+munmap(0xb7fdd000, 4096)                = 0
+open("/proc/cpuinfo", O_RDONLY)         = 3
+fstat64(3, {st_mode=S_IFREG|0444, st_size=0, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7fdd000
+read(3, "processor\t: 0\nvendor_id\t: Genuin"..., 1024) = 1024
+close(3)                                = 0
+munmap(0xb7fdd000, 4096)                = 0
+open("/proc/cpuinfo", O_RDONLY)         = 3
+fstat64(3, {st_mode=S_IFREG|0444, st_size=0, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7fdd000
+read(3, "processor\t: 0\nvendor_id\t: Genuin"..., 1024) = 1024
+close(3)                                = 0
+munmap(0xb7fdd000, 4096)                = 0
+open("/proc/cpuinfo", O_RDONLY)         = 3
+fstat64(3, {st_mode=S_IFREG|0444, st_size=0, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7fdd000
+read(3, "processor\t: 0\nvendor_id\t: Genuin"..., 1024) = 1024
+close(3)                                = 0
+munmap(0xb7fdd000, 4096)                = 0
+open("/proc/cpuinfo", O_RDONLY)         = 3
+fstat64(3, {st_mode=S_IFREG|0444, st_size=0, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7fdd000
+read(3, "processor\t: 0\nvendor_id\t: Genuin"..., 1024) = 1024
+close(3)                                = 0
+munmap(0xb7fdd000, 4096)                = 0
+open("/proc/cpuinfo", O_RDONLY)         = 3
+fstat64(3, {st_mode=S_IFREG|0444, st_size=0, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7fdd000
+read(3, "processor\t: 0\nvendor_id\t: Genuin"..., 1024) = 1024
+close(3)                                = 0
+munmap(0xb7fdd000, 4096)                = 0
+open("/proc/cpuinfo", O_RDONLY)         = 3
+fstat64(3, {st_mode=S_IFREG|0444, st_size=0, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7fdd000
+read(3, "processor\t: 0\nvendor_id\t: Genuin"..., 1024) = 1024
+close(3)                                = 0
+munmap(0xb7fdd000, 4096)                = 0
+open("/proc/cpuinfo", O_RDONLY)         = 3
+fstat64(3, {st_mode=S_IFREG|0444, st_size=0, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7fdd000
+read(3, "processor\t: 0\nvendor_id\t: Genuin"..., 1024) = 1024
+close(3)                                = 0
+munmap(0xb7fdd000, 4096)                = 0
+open("/proc/cpuinfo", O_RDONLY)         = 3
+fstat64(3, {st_mode=S_IFREG|0444, st_size=0, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7fdd000
+read(3, "processor\t: 0\nvendor_id\t: Genuin"..., 1024) = 1024
+close(3)                                = 0
+munmap(0xb7fdd000, 4096)                = 0
+open("/proc/cpuinfo", O_RDONLY)         = 3
+fstat64(3, {st_mode=S_IFREG|0444, st_size=0, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7fdd000
+read(3, "processor\t: 0\nvendor_id\t: Genuin"..., 1024) = 1024
+close(3)                                = 0
+munmap(0xb7fdd000, 4096)                = 0
+open("/proc/cpuinfo", O_RDONLY)         = 3
+fstat64(3, {st_mode=S_IFREG|0444, st_size=0, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7fdd000
+read(3, "processor\t: 0\nvendor_id\t: Genuin"..., 1024) = 1024
+close(3)                                = 0
+munmap(0xb7fdd000, 4096)                = 0
+open("/proc/cpuinfo", O_RDONLY)         = 3
+fstat64(3, {st_mode=S_IFREG|0444, st_size=0, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7fdd000
+read(3, "processor\t: 0\nvendor_id\t: Genuin"..., 1024) = 1024
+close(3)                                = 0
+munmap(0xb7fdd000, 4096)                = 0
+open("/proc/cpuinfo", O_RDONLY)         = 3
+fstat64(3, {st_mode=S_IFREG|0444, st_size=0, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7fdd000
+read(3, "processor\t: 0\nvendor_id\t: Genuin"..., 1024) = 1024
+close(3)                                = 0
+munmap(0xb7fdd000, 4096)                = 0
+open("/proc/cpuinfo", O_RDONLY)         = 3
+fstat64(3, {st_mode=S_IFREG|0444, st_size=0, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7fdd000
+read(3, "processor\t: 0\nvendor_id\t: Genuin"..., 1024) = 1024
+close(3)                                = 0
+munmap(0xb7fdd000, 4096)                = 0
+open("/proc/cpuinfo", O_RDONLY)         = 3
+fstat64(3, {st_mode=S_IFREG|0444, st_size=0, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7fdd000
+read(3, "processor\t: 0\nvendor_id\t: Genuin"..., 1024) = 1024
+close(3)                                = 0
+munmap(0xb7fdd000, 4096)                = 0
+open("/proc/cpuinfo", O_RDONLY)         = 3
+fstat64(3, {st_mode=S_IFREG|0444, st_size=0, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7fdd000
+read(3, "processor\t: 0\nvendor_id\t: Genuin"..., 1024) = 1024
+close(3)                                = 0
+munmap(0xb7fdd000, 4096)                = 0
+open("/proc/cpuinfo", O_RDONLY)         = 3
+fstat64(3, {st_mode=S_IFREG|0444, st_size=0, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7fdd000
+read(3, "processor\t: 0\nvendor_id\t: Genuin"..., 1024) = 1024
+close(3)                                = 0
+munmap(0xb7fdd000, 4096)                = 0
+open("/proc/cpuinfo", O_RDONLY)         = 3
+fstat64(3, {st_mode=S_IFREG|0444, st_size=0, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7fdd000
+read(3, "processor\t: 0\nvendor_id\t: Genuin"..., 1024) = 1024
+close(3)                                = 0
+munmap(0xb7fdd000, 4096)                = 0
+open("/proc/cpuinfo", O_RDONLY)         = 3
+fstat64(3, {st_mode=S_IFREG|0444, st_size=0, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7fdd000
+read(3, "processor\t: 0\nvendor_id\t: Genuin"..., 1024) = 1024
+close(3)                                = 0
+munmap(0xb7fdd000, 4096)                = 0
+open("/proc/cpuinfo", O_RDONLY)         = 3
+fstat64(3, {st_mode=S_IFREG|0444, st_size=0, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7fdd000
+read(3, "processor\t: 0\nvendor_id\t: Genuin"..., 1024) = 1024
+close(3)                                = 0
+munmap(0xb7fdd000, 4096)                = 0
+open("/proc/cpuinfo", O_RDONLY)         = 3
+fstat64(3, {st_mode=S_IFREG|0444, st_size=0, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7fdd000
+read(3, "processor\t: 0\nvendor_id\t: Genuin"..., 1024) = 1024
+close(3)                                = 0
+munmap(0xb7fdd000, 4096)                = 0
+open("/proc/cpuinfo", O_RDONLY)         = 3
+fstat64(3, {st_mode=S_IFREG|0444, st_size=0, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7fdd000
+read(3, "processor\t: 0\nvendor_id\t: Genuin"..., 1024) = 1024
+close(3)                                = 0
+munmap(0xb7fdd000, 4096)                = 0
+open("/proc/cpuinfo", O_RDONLY)         = 3
+fstat64(3, {st_mode=S_IFREG|0444, st_size=0, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7fdd000
+read(3, "processor\t: 0\nvendor_id\t: Genuin"..., 1024) = 1024
+close(3)                                = 0
+munmap(0xb7fdd000, 4096)                = 0
+open("/proc/cpuinfo", O_RDONLY)         = 3
+fstat64(3, {st_mode=S_IFREG|0444, st_size=0, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7fdd000
+read(3, "processor\t: 0\nvendor_id\t: Genuin"..., 1024) = 1024
+close(3)                                = 0
+munmap(0xb7fdd000, 4096)                = 0
+open("/proc/cpuinfo", O_RDONLY)         = 3
+fstat64(3, {st_mode=S_IFREG|0444, st_size=0, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7fdd000
+read(3, "processor\t: 0\nvendor_id\t: Genuin"..., 1024) = 1024
+close(3)                                = 0
+munmap(0xb7fdd000, 4096)                = 0
+open("/proc/cpuinfo", O_RDONLY)         = 3
+fstat64(3, {st_mode=S_IFREG|0444, st_size=0, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7fdd000
+read(3, "processor\t: 0\nvendor_id\t: Genuin"..., 1024) = 1024
+close(3)                                = 0
+munmap(0xb7fdd000, 4096)                = 0
+open("/proc/cpuinfo", O_RDONLY)         = 3
+fstat64(3, {st_mode=S_IFREG|0444, st_size=0, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7fdd000
+read(3, "processor\t: 0\nvendor_id\t: Genuin"..., 1024) = 1024
+close(3)                                = 0
+munmap(0xb7fdd000, 4096)                = 0
+open("/proc/cpuinfo", O_RDONLY)         = 3
+fstat64(3, {st_mode=S_IFREG|0444, st_size=0, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7fdd000
+read(3, "processor\t: 0\nvendor_id\t: Genuin"..., 1024) = 1024
+close(3)                                = 0
+munmap(0xb7fdd000, 4096)                = 0
+access("/proc/sys/kernel/perf_event_paranoid", F_OK) = 0
+open("/proc/mounts", O_RDONLY)          = 3
+fstat64(3, {st_mode=S_IFREG|0444, st_size=0, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7fdd000
+read(3, "rootfs / rootfs rw 0 0\nnone /sys"..., 1024) = 1024
+close(3)                                = 0
+munmap(0xb7fdd000, 4096)                = 0
+open("/sys/kernel/debug/tracing/events", O_RDONLY|O_NONBLOCK|O_LARGEFILE|O_DIRECTORY|O_CLOEXEC) = 3
+fcntl64(3, F_GETFD)                     = 0x1 (flags FD_CLOEXEC)
+getdents(3, /* 18 entries */, 32768)    = 344
+open("/sys/kernel/debug/tracing/events/skb", O_RDONLY|O_NONBLOCK|O_LARGEFILE|O_DIRECTORY|O_CLOEXEC) = 4
+getdents(4, /* 6 entries */, 32768)     = 132
+open("/sys/kernel/debug/tracing/events/skb/kfree_skb/id", O_RDONLY) = 5
+read(5, "137\n", 32)                    = 4
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/skb/skb_copy_datagram_iovec/id", O_RDONLY) = 5
+read(5, "136\n", 32)                    = 4
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/skb/enable/id", O_RDONLY) = -1 ENOTDIR (Not a directory)
+open("/sys/kernel/debug/tracing/events/skb/filter/id", O_RDONLY) = -1 ENOTDIR (Not a directory)
+getdents(4, /* 0 entries */, 32768)     = 0
+close(4)                                = 0
+open("/sys/kernel/debug/tracing/events/block", O_RDONLY|O_NONBLOCK|O_LARGEFILE|O_DIRECTORY|O_CLOEXEC) = 4
+getdents(4, /* 22 entries */, 32768)    = 580
+open("/sys/kernel/debug/tracing/events/block/block_rq_abort/id", O_RDONLY) = 5
+read(5, "135\n", 32)                    = 4
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/block/block_rq_insert/id", O_RDONLY) = 5
+read(5, "134\n", 32)                    = 4
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/block/block_rq_issue/id", O_RDONLY) = 5
+read(5, "133\n", 32)                    = 4
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/block/block_rq_requeue/id", O_RDONLY) = 5
+read(5, "132\n", 32)                    = 4
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/block/block_rq_complete/id", O_RDONLY) = 5
+read(5, "131\n", 32)                    = 4
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/block/block_bio_bounce/id", O_RDONLY) = 5
+read(5, "130\n", 32)                    = 4
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/block/block_bio_complete/id", O_RDONLY) = 5
+read(5, "129\n", 32)                    = 4
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/block/block_bio_backmerge/id", O_RDONLY) = 5
+read(5, "128\n", 32)                    = 4
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/block/block_bio_frontmerge/id", O_RDONLY) = 5
+read(5, "127\n", 32)                    = 4
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/block/block_bio_queue/id", O_RDONLY) = 5
+read(5, "126\n", 32)                    = 4
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/block/block_getrq/id", O_RDONLY) = 5
+read(5, "125\n", 32)                    = 4
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/block/block_sleeprq/id", O_RDONLY) = 5
+read(5, "124\n", 32)                    = 4
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/block/block_plug/id", O_RDONLY) = 5
+read(5, "123\n", 32)                    = 4
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/block/block_unplug_timer/id", O_RDONLY) = 5
+read(5, "122\n", 32)                    = 4
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/block/block_unplug_io/id", O_RDONLY) = 5
+read(5, "121\n", 32)                    = 4
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/block/block_split/id", O_RDONLY) = 5
+read(5, "120\n", 32)                    = 4
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/block/block_remap/id", O_RDONLY) = 5
+read(5, "119\n", 32)                    = 4
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/block/block_rq_remap/id", O_RDONLY) = 5
+read(5, "118\n", 32)                    = 4
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/block/enable/id", O_RDONLY) = -1 ENOTDIR (Not a directory)
+open("/sys/kernel/debug/tracing/events/block/filter/id", O_RDONLY) = -1 ENOTDIR (Not a directory)
+getdents(4, /* 0 entries */, 32768)     = 0
+close(4)                                = 0
+open("/sys/kernel/debug/tracing/events/jbd2", O_RDONLY|O_NONBLOCK|O_LARGEFILE|O_DIRECTORY|O_CLOEXEC) = 4
+getdents(4, /* 13 entries */, 32768)    = 356
+open("/sys/kernel/debug/tracing/events/jbd2/jbd2_checkpoint/id", O_RDONLY) = 5
+read(5, "117\n", 32)                    = 4
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/jbd2/jbd2_start_commit/id", O_RDONLY) = 5
+read(5, "116\n", 32)                    = 4
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/jbd2/jbd2_commit_locking/id", O_RDONLY) = 5
+read(5, "115\n", 32)                    = 4
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/jbd2/jbd2_commit_flushing/id", O_RDONLY) = 5
+read(5, "114\n", 32)                    = 4
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/jbd2/jbd2_commit_logging/id", O_RDONLY) = 5
+read(5, "113\n", 32)                    = 4
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/jbd2/jbd2_end_commit/id", O_RDONLY) = 5
+read(5, "112\n", 32)                    = 4
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/jbd2/jbd2_submit_inode_data/id", O_RDONLY) = 5
+read(5, "111\n", 32)                    = 4
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/jbd2/jbd2_run_stats/id", O_RDONLY) = 5
+read(5, "110\n", 32)                    = 4
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/jbd2/jbd2_checkpoint_stats/id", O_RDONLY) = 5
+read(5, "109\n", 32)                    = 4
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/jbd2/enable/id", O_RDONLY) = -1 ENOTDIR (Not a directory)
+open("/sys/kernel/debug/tracing/events/jbd2/filter/id", O_RDONLY) = -1 ENOTDIR (Not a directory)
+getdents(4, /* 0 entries */, 32768)     = 0
+close(4)                                = 0
+open("/sys/kernel/debug/tracing/events/ext4", O_RDONLY|O_NONBLOCK|O_LARGEFILE|O_DIRECTORY|O_CLOEXEC) = 4
+getdents(4, /* 34 entries */, 32768)    = 1060
+open("/sys/kernel/debug/tracing/events/ext4/ext4_free_inode/id", O_RDONLY) = 5
+read(5, "108\n", 32)                    = 4
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/ext4/ext4_request_inode/id", O_RDONLY) = 5
+read(5, "107\n", 32)                    = 4
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/ext4/ext4_allocate_inode/id", O_RDONLY) = 5
+read(5, "106\n", 32)                    = 4
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/ext4/ext4_write_begin/id", O_RDONLY) = 5
+read(5, "105\n", 32)                    = 4
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/ext4/ext4_ordered_write_end/id", O_RDONLY) = 5
+read(5, "104\n", 32)                    = 4
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/ext4/ext4_writeback_write_end/id", O_RDONLY) = 5
+read(5, "103\n", 32)                    = 4
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/ext4/ext4_journalled_write_end/id", O_RDONLY) = 5
+read(5, "102\n", 32)                    = 4
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/ext4/ext4_writepage/id", O_RDONLY) = 5
+read(5, "101\n", 32)                    = 4
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/ext4/ext4_da_writepages/id", O_RDONLY) = 5
+read(5, "100\n", 32)                    = 4
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/ext4/ext4_da_write_pages/id", O_RDONLY) = 5
+read(5, "99\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/ext4/ext4_da_writepages_result/id", O_RDONLY) = 5
+read(5, "98\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/ext4/ext4_da_write_begin/id", O_RDONLY) = 5
+read(5, "97\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/ext4/ext4_da_write_end/id", O_RDONLY) = 5
+read(5, "96\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/ext4/ext4_discard_blocks/id", O_RDONLY) = 5
+read(5, "95\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/ext4/ext4_mb_new_inode_pa/id", O_RDONLY) = 5
+read(5, "94\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/ext4/ext4_mb_new_group_pa/id", O_RDONLY) = 5
+read(5, "93\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/ext4/ext4_mb_release_inode_pa/id", O_RDONLY) = 5
+read(5, "92\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/ext4/ext4_mb_release_group_pa/id", O_RDONLY) = 5
+read(5, "91\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/ext4/ext4_discard_preallocations/id", O_RDONLY) = 5
+read(5, "90\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/ext4/ext4_mb_discard_preallocations/id", O_RDONLY) = 5
+read(5, "89\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/ext4/ext4_request_blocks/id", O_RDONLY) = 5
+read(5, "88\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/ext4/ext4_allocate_blocks/id", O_RDONLY) = 5
+read(5, "87\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/ext4/ext4_free_blocks/id", O_RDONLY) = 5
+read(5, "86\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/ext4/ext4_sync_file/id", O_RDONLY) = 5
+read(5, "85\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/ext4/ext4_sync_fs/id", O_RDONLY) = 5
+read(5, "84\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/ext4/ext4_alloc_da_blocks/id", O_RDONLY) = 5
+read(5, "83\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/ext4/ext4_mballoc_alloc/id", O_RDONLY) = 5
+read(5, "82\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/ext4/ext4_mballoc_prealloc/id", O_RDONLY) = 5
+read(5, "81\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/ext4/ext4_mballoc_discard/id", O_RDONLY) = 5
+read(5, "80\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/ext4/ext4_mballoc_free/id", O_RDONLY) = 5
+read(5, "79\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/ext4/enable/id", O_RDONLY) = -1 ENOTDIR (Not a directory)
+open("/sys/kernel/debug/tracing/events/ext4/filter/id", O_RDONLY) = -1 ENOTDIR (Not a directory)
+getdents(4, /* 0 entries */, 32768)     = 0
+close(4)                                = 0
+open("/sys/kernel/debug/tracing/events/kmem", O_RDONLY|O_NONBLOCK|O_LARGEFILE|O_DIRECTORY|O_CLOEXEC) = 4
+getdents(4, /* 16 entries */, 32768)    = 424
+open("/sys/kernel/debug/tracing/events/kmem/kmalloc/id", O_RDONLY) = 5
+read(5, "78\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/kmem/kmem_cache_alloc/id", O_RDONLY) = 5
+read(5, "77\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/kmem/kmalloc_node/id", O_RDONLY) = 5
+read(5, "76\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/kmem/kmem_cache_alloc_node/id", O_RDONLY) = 5
+read(5, "75\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/kmem/kfree/id", O_RDONLY) = 5
+read(5, "74\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/kmem/kmem_cache_free/id", O_RDONLY) = 5
+read(5, "73\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/kmem/mm_page_free_direct/id", O_RDONLY) = 5
+read(5, "72\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/kmem/mm_pagevec_free/id", O_RDONLY) = 5
+read(5, "71\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/kmem/mm_page_alloc/id", O_RDONLY) = 5
+read(5, "70\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/kmem/mm_page_alloc_zone_locked/id", O_RDONLY) = 5
+read(5, "69\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/kmem/mm_page_pcpu_drain/id", O_RDONLY) = 5
+read(5, "68\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/kmem/mm_page_alloc_extfrag/id", O_RDONLY) = 5
+read(5, "67\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/kmem/enable/id", O_RDONLY) = -1 ENOTDIR (Not a directory)
+open("/sys/kernel/debug/tracing/events/kmem/filter/id", O_RDONLY) = -1 ENOTDIR (Not a directory)
+getdents(4, /* 0 entries */, 32768)     = 0
+close(4)                                = 0
+open("/sys/kernel/debug/tracing/events/power", O_RDONLY|O_NONBLOCK|O_LARGEFILE|O_DIRECTORY|O_CLOEXEC) = 4
+getdents(4, /* 7 entries */, 32768)     = 148
+open("/sys/kernel/debug/tracing/events/power/power_start/id", O_RDONLY) = 5
+read(5, "66\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/power/power_end/id", O_RDONLY) = 5
+read(5, "65\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/power/power_frequency/id", O_RDONLY) = 5
+read(5, "64\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/power/enable/id", O_RDONLY) = -1 ENOTDIR (Not a directory)
+open("/sys/kernel/debug/tracing/events/power/filter/id", O_RDONLY) = -1 ENOTDIR (Not a directory)
+getdents(4, /* 0 entries */, 32768)     = 0
+close(4)                                = 0
+open("/sys/kernel/debug/tracing/events/ftrace", O_RDONLY|O_NONBLOCK|O_LARGEFILE|O_DIRECTORY|O_CLOEXEC) = 4
+getdents(4, /* 22 entries */, 32768)    = 492
+open("/sys/kernel/debug/tracing/events/ftrace/kmem_free/id", O_RDONLY) = -1 ENOENT (No such file or directory)
+open("/sys/kernel/debug/tracing/events/ftrace/kmem_alloc/id", O_RDONLY) = -1 ENOENT (No such file or directory)
+open("/sys/kernel/debug/tracing/events/ftrace/hw_branch/id", O_RDONLY) = -1 ENOENT (No such file or directory)
+open("/sys/kernel/debug/tracing/events/ftrace/branch/id", O_RDONLY) = -1 ENOENT (No such file or directory)
+open("/sys/kernel/debug/tracing/events/ftrace/boot_ret/id", O_RDONLY) = -1 ENOENT (No such file or directory)
+open("/sys/kernel/debug/tracing/events/ftrace/boot_call/id", O_RDONLY) = -1 ENOENT (No such file or directory)
+open("/sys/kernel/debug/tracing/events/ftrace/mmiotrace_map/id", O_RDONLY) = -1 ENOENT (No such file or directory)
+open("/sys/kernel/debug/tracing/events/ftrace/mmiotrace_rw/id", O_RDONLY) = -1 ENOENT (No such file or directory)
+open("/sys/kernel/debug/tracing/events/ftrace/print/id", O_RDONLY) = -1 ENOENT (No such file or directory)
+open("/sys/kernel/debug/tracing/events/ftrace/bprint/id", O_RDONLY) = -1 ENOENT (No such file or directory)
+open("/sys/kernel/debug/tracing/events/ftrace/user_stack/id", O_RDONLY) = -1 ENOENT (No such file or directory)
+open("/sys/kernel/debug/tracing/events/ftrace/kernel_stack/id", O_RDONLY) = -1 ENOENT (No such file or directory)
+open("/sys/kernel/debug/tracing/events/ftrace/special/id", O_RDONLY) = -1 ENOENT (No such file or directory)
+open("/sys/kernel/debug/tracing/events/ftrace/wakeup/id", O_RDONLY) = -1 ENOENT (No such file or directory)
+open("/sys/kernel/debug/tracing/events/ftrace/context_switch/id", O_RDONLY) = -1 ENOENT (No such file or directory)
+open("/sys/kernel/debug/tracing/events/ftrace/funcgraph_exit/id", O_RDONLY) = -1 ENOENT (No such file or directory)
+open("/sys/kernel/debug/tracing/events/ftrace/funcgraph_entry/id", O_RDONLY) = -1 ENOENT (No such file or directory)
+open("/sys/kernel/debug/tracing/events/ftrace/function/id", O_RDONLY) = -1 ENOENT (No such file or directory)
+open("/sys/kernel/debug/tracing/events/ftrace/enable/id", O_RDONLY) = -1 ENOTDIR (Not a directory)
+open("/sys/kernel/debug/tracing/events/ftrace/filter/id", O_RDONLY) = -1 ENOTDIR (Not a directory)
+getdents(4, /* 0 entries */, 32768)     = 0
+close(4)                                = 0
+open("/sys/kernel/debug/tracing/events/module", O_RDONLY|O_NONBLOCK|O_LARGEFILE|O_DIRECTORY|O_CLOEXEC) = 4
+getdents(4, /* 9 entries */, 32768)     = 196
+open("/sys/kernel/debug/tracing/events/module/module_load/id", O_RDONLY) = 5
+read(5, "63\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/module/module_free/id", O_RDONLY) = 5
+read(5, "62\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/module/module_get/id", O_RDONLY) = 5
+read(5, "61\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/module/module_put/id", O_RDONLY) = 5
+read(5, "60\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/module/module_request/id", O_RDONLY) = 5
+read(5, "59\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/module/enable/id", O_RDONLY) = -1 ENOTDIR (Not a directory)
+open("/sys/kernel/debug/tracing/events/module/filter/id", O_RDONLY) = -1 ENOTDIR (Not a directory)
+getdents(4, /* 0 entries */, 32768)     = 0
+close(4)                                = 0
+open("/sys/kernel/debug/tracing/events/workqueue", O_RDONLY|O_NONBLOCK|O_LARGEFILE|O_DIRECTORY|O_CLOEXEC) = 4
+getdents(4, /* 8 entries */, 32768)     = 204
+open("/sys/kernel/debug/tracing/events/workqueue/workqueue_insertion/id", O_RDONLY) = 5
+read(5, "58\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/workqueue/workqueue_execution/id", O_RDONLY) = 5
+read(5, "57\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/workqueue/workqueue_creation/id", O_RDONLY) = 5
+read(5, "56\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/workqueue/workqueue_destruction/id", O_RDONLY) = 5
+read(5, "55\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/workqueue/enable/id", O_RDONLY) = -1 ENOTDIR (Not a directory)
+open("/sys/kernel/debug/tracing/events/workqueue/filter/id", O_RDONLY) = -1 ENOTDIR (Not a directory)
+getdents(4, /* 0 entries */, 32768)     = 0
+close(4)                                = 0
+open("/sys/kernel/debug/tracing/events/timer", O_RDONLY|O_NONBLOCK|O_LARGEFILE|O_DIRECTORY|O_CLOEXEC) = 4
+getdents(4, /* 16 entries */, 32768)    = 404
+open("/sys/kernel/debug/tracing/events/timer/timer_init/id", O_RDONLY) = 5
+read(5, "54\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/timer/timer_start/id", O_RDONLY) = 5
+read(5, "53\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/timer/timer_expire_entry/id", O_RDONLY) = 5
+read(5, "52\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/timer/timer_expire_exit/id", O_RDONLY) = 5
+read(5, "51\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/timer/timer_cancel/id", O_RDONLY) = 5
+read(5, "50\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/timer/hrtimer_init/id", O_RDONLY) = 5
+read(5, "49\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/timer/hrtimer_start/id", O_RDONLY) = 5
+read(5, "48\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/timer/hrtimer_expire_entry/id", O_RDONLY) = 5
+read(5, "47\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/timer/hrtimer_expire_exit/id", O_RDONLY) = 5
+read(5, "46\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/timer/hrtimer_cancel/id", O_RDONLY) = 5
+read(5, "45\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/timer/itimer_state/id", O_RDONLY) = 5
+read(5, "44\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/timer/itimer_expire/id", O_RDONLY) = 5
+read(5, "43\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/timer/enable/id", O_RDONLY) = -1 ENOTDIR (Not a directory)
+open("/sys/kernel/debug/tracing/events/timer/filter/id", O_RDONLY) = -1 ENOTDIR (Not a directory)
+getdents(4, /* 0 entries */, 32768)     = 0
+close(4)                                = 0
+open("/sys/kernel/debug/tracing/events/irq", O_RDONLY|O_NONBLOCK|O_LARGEFILE|O_DIRECTORY|O_CLOEXEC) = 4
+getdents(4, /* 8 entries */, 32768)     = 184
+open("/sys/kernel/debug/tracing/events/irq/irq_handler_entry/id", O_RDONLY) = 5
+read(5, "42\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/irq/irq_handler_exit/id", O_RDONLY) = 5
+read(5, "41\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/irq/softirq_entry/id", O_RDONLY) = 5
+read(5, "40\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/irq/softirq_exit/id", O_RDONLY) = 5
+read(5, "39\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/irq/enable/id", O_RDONLY) = -1 ENOTDIR (Not a directory)
+open("/sys/kernel/debug/tracing/events/irq/filter/id", O_RDONLY) = -1 ENOTDIR (Not a directory)
+getdents(4, /* 0 entries */, 32768)     = 0
+close(4)                                = 0
+open("/sys/kernel/debug/tracing/events/sched", O_RDONLY|O_NONBLOCK|O_LARGEFILE|O_DIRECTORY|O_CLOEXEC) = 4
+getdents(4, /* 20 entries */, 32768)    = 556
+open("/sys/kernel/debug/tracing/events/sched/sched_kthread_stop/id", O_RDONLY) = 5
+read(5, "38\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/sched/sched_kthread_stop_ret/id", O_RDONLY) = 5
+read(5, "37\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/sched/sched_wait_task/id", O_RDONLY) = 5
+read(5, "36\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/sched/sched_wakeup/id", O_RDONLY) = 5
+read(5, "35\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/sched/sched_wakeup_new/id", O_RDONLY) = 5
+read(5, "34\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/sched/sched_switch/id", O_RDONLY) = 5
+read(5, "33\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/sched/sched_migrate_task/id", O_RDONLY) = 5
+read(5, "32\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/sched/sched_process_free/id", O_RDONLY) = 5
+read(5, "31\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/sched/sched_process_exit/id", O_RDONLY) = 5
+read(5, "30\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/sched/sched_process_wait/id", O_RDONLY) = 5
+read(5, "29\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/sched/sched_process_fork/id", O_RDONLY) = 5
+read(5, "28\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/sched/sched_signal_send/id", O_RDONLY) = 5
+read(5, "27\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/sched/sched_stat_wait/id", O_RDONLY) = 5
+read(5, "26\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/sched/sched_stat_runtime/id", O_RDONLY) = 5
+read(5, "25\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/sched/sched_stat_sleep/id", O_RDONLY) = 5
+read(5, "24\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/sched/sched_stat_iowait/id", O_RDONLY) = 5
+read(5, "23\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/sched/enable/id", O_RDONLY) = -1 ENOTDIR (Not a directory)
+open("/sys/kernel/debug/tracing/events/sched/filter/id", O_RDONLY) = -1 ENOTDIR (Not a directory)
+getdents(4, /* 0 entries */, 32768)     = 0
+close(4)                                = 0
+open("/sys/kernel/debug/tracing/events/syscalls", O_RDONLY|O_NONBLOCK|O_LARGEFILE|O_DIRECTORY|O_CLOEXEC) = 4
+getdents(4, /* 6 entries */, 32768)     = 116
+open("/sys/kernel/debug/tracing/events/syscalls/sys_enter/id", O_RDONLY) = 5
+read(5, "22\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/syscalls/sys_exit/id", O_RDONLY) = 5
+read(5, "21\n", 32)                     = 3
+close(5)                                = 0
+open("/sys/kernel/debug/tracing/events/syscalls/enable/id", O_RDONLY) = -1 ENOTDIR (Not a directory)
+open("/sys/kernel/debug/tracing/events/syscalls/filter/id", O_RDONLY) = -1 ENOTDIR (Not a directory)
+getdents(4, /* 0 entries */, 32768)     = 0
+close(4)                                = 0
+open("/sys/kernel/debug/tracing/events/enable", O_RDONLY|O_NONBLOCK|O_LARGEFILE|O_DIRECTORY|O_CLOEXEC) = -1 ENOTDIR (Not a directory)
+open("/sys/kernel/debug/tracing/events/header_event", O_RDONLY|O_NONBLOCK|O_LARGEFILE|O_DIRECTORY|O_CLOEXEC) = -1 ENOTDIR (Not a directory)
+open("/sys/kernel/debug/tracing/events/header_page", O_RDONLY|O_NONBLOCK|O_LARGEFILE|O_DIRECTORY|O_CLOEXEC) = -1 ENOTDIR (Not a directory)
+getdents(3, /* 0 entries */, 32768)     = 0
+close(3)                                = 0
+write(2, "[ 0]", 4[ 0])                     = 4
+write(2, "det_init: debug_level=1 \n", 25det_init: debug_level=1 
+) = 25
+write(2, "[ 0]", 4[ 0])                     = 4
+write(2, "create thread 1 from parent\n", 28create thread 1 from parent
+) = 28
+mmap2(NULL, 8392704, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0xb7504000
+mprotect(0xb7504000, 4096, PROT_NONE)   = 0
+clone(child_stack=0xb7d04434, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0xb7d04bd8, {entry_number:6, base_addr:0xb7d04b70, limit:1048575, seg_32bit:1, contents:0, read_exec_only:0, limit_in_pages:1, seg_not_present:0, useable:1}, child_tidptr=0xb7d04bd8) = 19081
+write(2, "[ 0]", 4[ 0])                     = 4
+write(2, "create thread 2 from parent\n", 28create thread 2 from parent
+) = 28
+mmap2(NULL, 8392704, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0xb6d03000
+mprotect(0xb6d03000, 4096, PROT_NONE)   = 0
+clone(child_stack=0xb7503434, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0xb7503bd8, {entry_number:6, base_addr:0xb7503b70, limit:1048575, seg_32bit:1, contents:0, read_exec_only:0, limit_in_pages:1, seg_not_present:0, useable:1}, child_tidptr=0xb7503bd8) = 19082
+futex(0xb7d04bd8, FUTEX_WAIT, 19081, NULL[ 1]acq at 23
+[ 1]rel at 42
+[ 2]acq at 43
+[ 2]rel at 62
+[ 2]acq at 25730
+[ 2]rel at 25748
+[ 2]barrier at 25764
+[ 1]acq at 26357
+[ 1]rel at 26375
+[ 1]barrier at 26391
+[ 2]acq at 108202373
+[ 2]rel at 108202392
+[ 2]barrier at 108202408
+[ 1]acq at 108203000
+[ 1]rel at 108203019
+[ 1]barrier at 108203035
+[ 1]barrier at 208205354
+[ 2]barrier at 208204727
+[ 2]barrier at 308204754
+[ 1]barrier at 308205374
+[ 2]acq at 408254266
+[ 2]rel at 408254284
+[ 2]barrier at 408254300
+[ 1]acq at 408254886
+[ 1]rel at 408254904
+[ 1]barrier at 408254920
+[ 2]acq at 516430807
+[ 2]rel at 516430826
+[ 2]barrier at 516430842
+[ 1]acq at 516431445
+[ 1]rel at 516431464
+[ 1]barrier at 516431480
+[ 2]acq at 616455787
+[ 2]rel at 616455806
+[ 2]acq at 616455829
+[ 2]rel at 616455848
+[ 2]acq at 616455871
+[ 2]rel at 616455890
+[ 2]barrier at 616455907
+[ 1]acq at 616456425
+[ 1]rel at 616456444
+[ 1]acq at 616456467
+[ 1]rel at 616456486
+[ 1]acq at 616456509
+[ 1]rel at 616456528
+[ 1]barrier at 616456545
+[ 1]barrier at 716456564
+[ 2]barrier at 716455926
+[ 1]barrier at 816456580
+[ 2]barrier at 816455984
+[ 2]acq at 916505496
+[ 2]rel at 916505514
+[ 2]barrier at 916505530
+[ 1]acq at 916506092
+[ 1]rel at 916506110
+[ 1]barrier at 916506126
+[ 2]acq at 1024633847
+[ 2]rel at 1024633866
+[ 2]barrier at 1024633882
+[ 1]acq at 1024638846
+[ 1]rel at 1024638865
+[ 1]barrier at 1024638881
+[ 2]acq at 1124658845
+[ 2]rel at 1124658864
+[ 2]acq at 1124658887
+[ 2]rel at 1124658906
+[ 2]acq at 1124658929
+[ 2]rel at 1124658948
+[ 2]barrier at 1124658965
+[ 1]acq at 1124663826
+[ 1]rel at 1124663845
+[ 1]acq at 1124663868
+[ 1]rel at 1124663887
+[ 1]acq at 1124663910
+[ 1]rel at 1124663929
+[ 1]barrier at 1124663946
+[ 1]barrier at 1224663965
+[ 2]barrier at 1224659001
+[ 1]barrier at 1324663981
+[ 2]barrier at 1324659077
+[ 2]acq at 1424708589
+[ 2]rel at 1424708607
+[ 2]barrier at 1424708623
+[ 1]acq at 1424713493
+[ 1]rel at 1424713511
+[ 1]barrier at 1424713527
+[ 2]acq at 1532850290
+[ 2]rel at 1532850309
+[ 2]barrier at 1532850325
+[ 1]acq at 1532854563
+[ 1]rel at 1532854582
+[ 1]barrier at 1532854598
+[ 2]acq at 1632875288
+[ 2]rel at 1632875307
+[ 2]acq at 1632875330
+[ 2]rel at 1632875349
+[ 2]acq at 1632875372
+[ 2]rel at 1632875391
+[ 2]barrier at 1632875408
+[ 1]acq at 1632879543
+[ 1]rel at 1632879562
+[ 1]acq at 1632879585
+[ 1]rel at 1632879604
+[ 1]acq at 1632879627
+[ 1]rel at 1632879646
+[ 1]barrier at 1632879663
+[ 1]barrier at 1732886604
+[ 2]barrier at 1732882383
+[ 2]acq at 1838615856
+[ 2]rel at 1838615877
+[ 2]barrier at 1838615893
+[ 1]acq at 1838623480
+[ 1]rel at 1838623501
+[ 1]barrier at 1838623517
+[ 1]barrier at 1938623534
+[ 2]acq at 1938615937
+         3     4711.30613   1586.02005      9.16081     -1.85845 
+         6304.629    1430180.83630        414.12462
+[ 2]rel at 1938621549
+[ 2]barrier at 1938621565
+[ 1]Thread 1 is finished in 104630(2038623546): nd_count=0, hw_read=25140, cache_read=156
+[ 1]Thread 1 : barrier_count = 20, lock_count = 19
+[ 1]Thread 1 : wait_turn: min(0),max(119),tot(495),cnt(20),avg(24)
+[ 2]Thread 2 is finished in 104599(2038621596): nd_count=0, hw_read=12335, cache_read=11334
+[ 2]Thread 2 : barrier_count = 20, lock_count = 20
+[ 2]Thread 2 : wait_turn: min(0),max(3219),tot(15036),cnt(38),avg(395)
+) = 0
+gettimeofday({1269570619, 379061}, NULL) = 0
+write(1, "COMPUTESTART (after initializati"..., 398COMPUTESTART (after initialization) = 0
+COMPUTEEND = 127921
+COMPUTETIME (after initialization) = 127921
+Measured Time (2nd timestep onward) = 1222165619
+Intramolecular time only (2nd timestep onward) = 600144714
+Intermolecular time only (2nd timestep onward) = 422015090
+Other time (2nd timestep onward) = 200005815
+
+Exited Happily with XTT = 6304.63 (note: XTT value is garbage if NPRINT > NSTEP)
+) = 398
+exit_group(0)                           = ?

@@ -1,0 +1,227 @@
+execve("./WATER-SPATIAL", ["./WATER-SPATIAL"], [/* 42 vars */]) = 0
+brk(0)                                  = 0x8053000
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+mmap2(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7fe0000
+access("/etc/ld.so.preload", R_OK)      = -1 ENOENT (No such file or directory)
+open("/etc/ld.so.cache", O_RDONLY)      = 3
+fstat64(3, {st_mode=S_IFREG|0644, st_size=96004, ...}) = 0
+mmap2(NULL, 96004, PROT_READ, MAP_PRIVATE, 3, 0) = 0xb7fc8000
+close(3)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+open("/lib/tls/i686/cmov/libm.so.6", O_RDONLY) = 3
+read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0`4\0\0004\0\0\0"..., 512) = 512
+fstat64(3, {st_mode=S_IFREG|0644, st_size=149392, ...}) = 0
+mmap2(NULL, 151680, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0xb7fa2000
+mmap2(0xb7fc6000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x23) = 0xb7fc6000
+close(3)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+open("/usr/local/lib/libpfm.so.4", O_RDONLY) = 3
+read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0@\341\0\0004\0\0\0"..., 512) = 512
+fstat64(3, {st_mode=S_IFREG|0755, st_size=1405076, ...}) = 0
+mmap2(NULL, 1295156, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0xb7e65000
+mmap2(0xb7e8f000, 1122304, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x2a) = 0xb7e8f000
+mmap2(0xb7fa1000, 820, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0xb7fa1000
+close(3)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+open("/lib/tls/i686/cmov/libpthread.so.0", O_RDONLY) = 3
+read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0PI\0\0004\0\0\0"..., 512) = 512
+fstat64(3, {st_mode=S_IFREG|0755, st_size=116920, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7e64000
+mmap2(NULL, 98792, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0xb7e4b000
+mmap2(0xb7e60000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x14) = 0xb7e60000
+mmap2(0xb7e62000, 4584, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0xb7e62000
+close(3)                                = 0
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+open("/lib/tls/i686/cmov/libc.so.6", O_RDONLY) = 3
+read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0\260l\1\0004\0\0\0"..., 512) = 512
+fstat64(3, {st_mode=S_IFREG|0755, st_size=1319364, ...}) = 0
+mmap2(NULL, 1329512, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0xb7d06000
+mprotect(0xb7e44000, 4096, PROT_NONE)   = 0
+mmap2(0xb7e45000, 12288, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x13e) = 0xb7e45000
+mmap2(0xb7e48000, 10600, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0xb7e48000
+close(3)                                = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7d05000
+set_thread_area({entry_number:-1 -> 6, base_addr:0xb7d056c0, limit:1048575, seg_32bit:1, contents:0, read_exec_only:0, limit_in_pages:1, seg_not_present:0, useable:1}) = 0
+mprotect(0xb7e45000, 8192, PROT_READ)   = 0
+mprotect(0xb7e60000, 4096, PROT_READ)   = 0
+mprotect(0xb7e8f000, 1114112, PROT_READ) = 0
+mprotect(0xb7fc6000, 4096, PROT_READ)   = 0
+mprotect(0x8051000, 4096, PROT_READ)    = 0
+mprotect(0xb7ffe000, 4096, PROT_READ)   = 0
+munmap(0xb7fc8000, 96004)               = 0
+set_tid_address(0xb7d05728)             = 18984
+set_robust_list(0xb7d05730, 0xc)        = 0
+futex(0xbffff820, FUTEX_WAKE_PRIVATE, 1) = 0
+futex(0xbffff820, 0x189 /* FUTEX_??? */, 1, NULL, bffff830) = -1 EAGAIN (Resource temporarily unavailable)
+rt_sigaction(SIGRTMIN, {0xb7e4f340, [], SA_SIGINFO}, NULL, 8) = 0
+rt_sigaction(SIGRT_1, {0xb7e4f820, [], SA_RESTART|SA_SIGINFO}, NULL, 8) = 0
+rt_sigprocmask(SIG_UNBLOCK, [RTMIN RT_1], NULL, 8) = 0
+getrlimit(RLIMIT_STACK, {rlim_cur=8192*1024, rlim_max=RLIM_INFINITY}) = 0
+uname({sys="Linux", node="heechul-desktop", ...}) = 0
+fstat64(0, {st_mode=S_IFREG|0644, st_size=57, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7fdf000
+read(0, "  1.5e-16   512  3   6\n -1      "..., 4096) = 57
+fstat64(1, {st_mode=S_IFREG|0644, st_size=4444, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7fde000
+write(1, "Using 2 procs on 3 steps of 512 "..., 540Using 2 procs on 3 steps of 512 mols
+Other parameters:
+	TSTEP = 1.50e-16
+	NORDER = 6
+	NSAVE = -1
+	NRST = 3000
+	NPRINT = 3
+	NFMC = 0
+	CUTOFF = 6.212752
+
+64 boxes with 2 processors
+
+
+TEMPERATURE                =   298.00 K
+DENSITY                    =  0.99800 G/C.C.
+NUMBER OF MOLECULES        =      512
+NUMBER OF PROCESSORS       =        2
+TIME STEP                  = 1.50e-01 SEC
+ORDER USED TO SOLVE F=MA   =        6 
+NO. OF TIME STEPS          =        3 
+FREQUENCY OF DATA SAVING   =       -1 
+FREQUENCY TO WRITE RST FILE=     3000 
+) = 540
+brk(0)                                  = 0x8053000
+brk(0x8075000)                          = 0x8075000
+write(1, "xprocs = 1\typrocs = 1\tzprocs = 2"..., 33xprocs = 1	yprocs = 1	zprocs = 2
+) = 33
+write(1, "x_inc = 4\t y_inc = 4\t z_inc = 2\n"..., 67x_inc = 4	 y_inc = 4	 z_inc = 2
+x_left = 0	 y_left = 0	 z_left = 0
+) = 67
+write(1, "SPHERICAL CUTOFF RADIUS    =   6"..., 47SPHERICAL CUTOFF RADIUS    =   6.2128 ANGSTROM
+) = 47
+open("random.in", O_RDONLY)             = 3
+write(1, "\nNS = 7.9999999999999893\nBOXL = "..., 167
+NS = 7.9999999999999893
+BOXL =  24.851010
+CUTOFF =   6.212752
+BOX_LENGTH =   6.212752
+BOX_PER_SIDE = 4
+XS =   3.106376
+ZERO = 1.55319
+WCOS = 0.585882
+WSIN = 0.756950
+) = 167
+write(1, "***** NEW RUN STARTING FROM REGU"..., 50***** NEW RUN STARTING FROM REGULAR LATTICE *****
+) = 50
+fstat64(3, {st_mode=S_IFREG|0644, st_size=143077, ...}) = 0
+mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7fdd000
+read(3, "  0.141882295971771490e+00    \n "..., 4096) = 4096
+brk(0x8096000)                          = 0x8096000
+read(3, "8053540e+00   0.4926209837468177"..., 4096) = 4096
+read(3, "810013856763790e+01\n  0.54792894"..., 4096) = 4096
+brk(0x80b7000)                          = 0x80b7000
+read(3, "   0.331105359551632450e+01   0."..., 4096) = 4096
+read(3, "5750e+00\n -0.290150828938829040e"..., 4096) = 4096
+brk(0x80d8000)                          = 0x80d8000
+read(3, "330952292730e+00   0.76609970507"..., 4096) = 4096
+read(3, "0.724733588226767480e+00  -0.907"..., 4096) = 4096
+brk(0x80f9000)                          = 0x80f9000
+read(3, "0e+00  -0.739001605582546350e+00"..., 4096) = 4096
+read(3, "075537080e+00   0.71294472275279"..., 4096) = 4096
+brk(0x811a000)                          = 0x811a000
+read(3, "41152792124760600e+01\n  0.393439"..., 4096) = 4096
+read(3, "01  -0.272368756241293930e+01  -"..., 4096) = 4096
+brk(0x813b000)                          = 0x813b000
+read(3, "579220e+00\n -0.27448043313651462"..., 4096) = 4096
+read(3, "87816446369730e+00   0.484044424"..., 4096) = 4096
+brk(0x815c000)                          = 0x815c000
+read(3, " -0.263984371427596620e-01  -0.4"..., 4096) = 4096
+read(3, "360e+00   0.846428936047928790e+"..., 4096) = 4096
+brk(0x817d000)                          = 0x817d000
+read(3, "84484370630e+00  -0.361091894113"..., 4096) = 4096
+read(3, ".768043904470202320e+00\n -0.1179"..., 4096) = 4096
+brk(0x819e000)                          = 0x819e000
+read(3, "e+01  -0.100919133862012700e+01 "..., 4096) = 4096
+read(3, "95302650e+00\n -0.237948044739670"..., 4096) = 4096
+brk(0x81bf000)                          = 0x81bf000
+read(3, "3484381297298340e+00  -0.8485244"..., 4096) = 4096
+read(3, "0\n  0.163804460578454270e+00   0"..., 4096) = 4096
+brk(0x81e0000)                          = 0x81e0000
+read(3, "68840e+01   0.392856915920149600"..., 4096) = 4096
+brk(0x8201000)                          = 0x8201000
+read(3, "3212867132980e+01  -0.2439434645"..., 4096) = 4096
+read(3, "-0.106161455203921400e+00\n -0.62"..., 4096) = 4096
+brk(0x8222000)                          = 0x8222000
+read(3, "90e+00   0.674450861830364350e-0"..., 4096) = 4096
+read(3, "4993096480e+00\n -0.4362191443241"..., 4096) = 4096
+brk(0x8243000)                          = 0x8243000
+read(3, "643743963865216820e+00  -0.96677"..., 4096) = 4096
+read(3, "+00\n  0.362645767325393970e-01  "..., 4096) = 4096
+brk(0x8264000)                          = 0x8264000
+read(3, "0155390e+01  -0.1617145309286806"..., 4096) = 4096
+read(3, "599299560527260e+01   0.92189130"..., 4096) = 4096
+brk(0x8285000)                          = 0x8285000
+read(3, "   0.252840252180422160e+00\n -0."..., 4096) = 4096
+close(3)                                = 0
+munmap(0xb7fdd000, 4096)                = 0
+gettimeofday({1269570571, 999836}, NULL) = 0
+mmap2(NULL, 8392704, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0xb7504000
+mprotect(0xb7504000, 4096, PROT_NONE)   = 0
+clone(child_stack=0xb7d04494, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0xb7d04bd8, {entry_number:6, base_addr:0xb7d04b70, limit:1048575, seg_32bit:1, contents:0, read_exec_only:0, limit_in_pages:1, seg_not_present:0, useable:1}, child_tidptr=0xb7d04bd8) = 18985
+mmap2(NULL, 2097152, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_NORESERVE, -1, 0) = 0xb7304000
+munmap(0xb7304000, 1032192)             = 0
+munmap(0xb7500000, 16384)               = 0
+mprotect(0xb7400000, 139264, PROT_READ|PROT_WRITE) = 0
+futex(0x806d090, FUTEX_WAKE_PRIVATE, 2147483647) = 1
+futex(0x806d0a4, FUTEX_WAKE_PRIVATE, 2147483647) = 1
+futex(0x806d090, FUTEX_WAKE_PRIVATE, 2147483647) = 1
+futex(0x806d094, FUTEX_WAKE_PRIVATE, 1) = 1
+futex(0x806d090, FUTEX_WAKE_PRIVATE, 2147483647) = 1
+futex(0x806d090, FUTEX_WAKE_PRIVATE, 2147483647) = 1
+futex(0x806d0a4, FUTEX_WAKE_PRIVATE, 2147483647) = 1
+futex(0x806d090, FUTEX_WAKE_PRIVATE, 2147483647) = 1
+futex(0x806d094, FUTEX_WAKE_PRIVATE, 1) = 1
+futex(0x806d090, FUTEX_WAKE_PRIVATE, 2147483647) = 1
+futex(0x806d094, FUTEX_WAKE_PRIVATE, 1) = 1
+gettimeofday({1269570572, 39624}, NULL) = 0
+gettimeofday({1269570572, 39649}, NULL) = 0
+futex(0x806d090, FUTEX_WAKE_PRIVATE, 2147483647) = 1
+futex(0x806d090, FUTEX_WAKE_PRIVATE, 2147483647) = 1
+gettimeofday({1269570572, 40109}, NULL) = 0
+gettimeofday({1269570572, 40134}, NULL) = 0
+futex(0x806d0a4, FUTEX_WAKE_PRIVATE, 2147483647) = 1
+gettimeofday({1269570572, 57364}, NULL) = 0
+futex(0x806d090, FUTEX_WAKE_PRIVATE, 2147483647) = 1
+futex(0x806d094, FUTEX_WAKE_PRIVATE, 1) = 1
+gettimeofday({1269570572, 57516}, NULL) = 0
+futex(0x806d090, FUTEX_WAKE_PRIVATE, 2147483647) = 1
+futex(0x806d094, FUTEX_WAKE_PRIVATE, 1) = 1
+gettimeofday({1269570572, 57596}, NULL) = 0
+gettimeofday({1269570572, 57621}, NULL) = 0
+gettimeofday({1269570572, 57645}, NULL) = 0
+futex(0x806d090, FUTEX_WAKE_PRIVATE, 2147483647) = 1
+futex(0x806d090, FUTEX_WAKE_PRIVATE, 2147483647) = 1
+gettimeofday({1269570572, 57978}, NULL) = 0
+gettimeofday({1269570572, 58003}, NULL) = 0
+futex(0x806d0a4, FUTEX_WAKE_PRIVATE, 2147483647) = 1
+gettimeofday({1269570572, 75437}, NULL) = 0
+futex(0x806d090, FUTEX_WAKE_PRIVATE, 2147483647) = 1
+gettimeofday({1269570572, 75561}, NULL) = 0
+gettimeofday({1269570572, 75593}, NULL) = 0
+futex(0x806d0b8, FUTEX_WAKE_PRIVATE, 2147483647) = 1
+futex(0x806d090, FUTEX_WAKE_PRIVATE, 2147483647) = 1
+futex(0x806d094, FUTEX_WAKE_PRIVATE, 1) = 1
+gettimeofday({1269570572, 90988}, NULL) = 0
+write(1, "         3     4711.30613   1586"..., 118         3     4711.30613   1586.02005      9.16081     -1.85845 
+         6304.629    1430180.83630        414.12462
+) = 118
+futex(0x806d090, FUTEX_WAKE_PRIVATE, 2147483647) = 1
+gettimeofday({1269570572, 91090}, NULL) = 0
+gettimeofday({1269570572, 91126}, NULL) = 0
+write(1, "COMPUTESTART (after initializati"..., 390COMPUTESTART (after initialization) = 4009106012
+COMPUTEEND = 4009197302
+COMPUTETIME (after initialization) = 91290
+Measured Time (2nd timestep onward) = 51441
+Intramolecular time only (2nd timestep onward) = 1069
+Intermolecular time only (2nd timestep onward) = 50059
+Other time (2nd timestep onward) = 313
+
+Exited Happily with XTT = 6304.63 (note: XTT value is garbage if NPRINT > NSTEP)
+) = 390
+exit_group(0)                           = ?
