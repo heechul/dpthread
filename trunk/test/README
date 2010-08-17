@@ -1,0 +1,3 @@
+locktest - for lock performance comparison with/without deterministic execution 
+
+deadlock - nested lock. need "USE_NESTED_LOCK 1" to be able to run without deadlock. 

@@ -1,0 +1,1 @@
+/home/heechul/Papers/cs523/dpthread/test/verify.sh
