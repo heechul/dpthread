@@ -1,50 +1,17 @@
-/* 
- * microbench 
- *  SCHED_RR, stack_prefault
- * 
- * load,#lock     non-det    det  
- * ------------------------------
- * fib(0) ,200k : 0.030     1.144
- * fib(5) ,200k : 0.060     1.185
- * fib(10),200k : 0.225     1.279
- * fib(12),200k : 0.516     1.581
- * fib(14),200k : 1.275     2.351 
- * fib(15),100k : 1.078     1.593
- * fib(16),100k : 1.900     2.229
- * fib(17),100k : 2.689     3.354
- * fib(18),100k : 4.442     5.050
- * fib(19),100k : 7.261     7.884
- * fib(20),100k :11.763    11.964 
- * fib(25), 10k : 13.160   12.899
- */    
-
 #include <stdio.h>
 #include <sys/mman.h>
 #include <string.h>
 #include <stdlib.h>
 #include <err.h>
-
-#include <dpthread.h>
 #include <unistd.h>
+#include <pthread.h>
 
-#define MY_PRIORITY (49) 
-#define MAX_SAFE_STACK (8*1024)
-#define MAX_ITER 1000
-#define MAX_THR  16
+// defines 
+#define DBG(x) x 
 
-static det_mutex_t mutexsum;  // hcyun
-static det_mutex_t mutex2;  // hcyun
-static int iteration  = MAX_ITER; 
-static int max_thr = 1;
-static int det = 0; 
-volatile int sum = 0; 
-
-void stack_prefault(void) 
-{
-        unsigned char dummy[MAX_SAFE_STACK];
-        memset(&dummy, 0, MAX_SAFE_STACK);
-        return;
-}
+// glocal variables 
+static pthread_mutex_t l1, l2; 
+static int val1, val2; 
 
 unsigned long 
 fib(unsigned long n)
@@ -57,88 +24,119 @@ fib(unsigned long n)
 }
 
 void *
-my_worker(void *v)
+worker1(void *v)
 {
-	int i; 
+	int input = (int)v; 
 
-	// for ( i = 0; i < 1000000; i++) { 
-	for ( i = 0; i < iteration; i++) { 
-		int val; 
-		fib(15); 
-		det_lock(&mutexsum); 
-		val = sum ++; 
-		det_lock(&mutex2); 
-		det_unlock(&mutex2); 
-		det_unlock(&mutexsum); 
-		// fprintf(stderr, "[%d]sum=%d\n", gettid(), val); 
-	}
+	if ( input < 0 ) 
+		fib(0); 
+	else 
+		fib(20); 
+
+	DBG(fprintf(stderr, "[%d] acquire  l1\n", getpid())); 
+	pthread_mutex_lock(&l1);
+	DBG(fprintf(stderr, "[%d] acquired l1\n", getpid())); 
+	val1 = 1; 
+	
+	DBG(fprintf(stderr, "[%d] acquire  l2\n", getpid())); 
+	pthread_mutex_lock(&l2); 
+	DBG(fprintf(stderr, "[%d] acquired l2\n", getpid())); 
+	val2 = 1; 
+
+	DBG(fprintf(stderr, "[%d] release  l2\n", getpid())); 
+	pthread_mutex_unlock(&l2); 
+	DBG(fprintf(stderr, "[%d] released l2\n", getpid())); 
+	
+	DBG(fprintf(stderr, "[%d] release  l1\n", getpid())); 
+	pthread_mutex_unlock(&l2); 
+	DBG(fprintf(stderr, "[%d] released l1\n", getpid())); 
+
+	return NULL; 
+}
+
+void *
+worker2(void *v)
+{
+	int input = (int)v; 
+
+	if ( input < 0 ) 
+		fib(0); 
+	else 
+		fib(20); 
+
+	DBG(fprintf(stderr, "[%d] acquire  l2\n", getpid())); 
+	pthread_mutex_lock(&l2);
+	DBG(fprintf(stderr, "[%d] acquired l2\n", getpid())); 
+	val2 = 2; 
+
+	DBG(fprintf(stderr, "[%d] acquire  l1\n", getpid())); 
+	pthread_mutex_lock(&l1); 
+	DBG(fprintf(stderr, "[%d] acquired l1\n", getpid())); 
+	val1 = 2; 
+	
+	DBG(fprintf(stderr, "[%d] release  l1\n", getpid())); 
+	pthread_mutex_unlock(&l1); 
+	DBG(fprintf(stderr, "[%d] released l1\n", getpid())); 
+	
+	DBG(fprintf(stderr, "[%d] release  l2\n", getpid())); 
+	pthread_mutex_unlock(&l2); 
+	DBG(fprintf(stderr, "[%d] released l2\n", getpid())); 
+
 	return NULL; 
 }
 
 static void
 usage(void)
 {
-	printf("deadlock [-n threads] [-i iteration] [-h]\n"
-	       "-n thread: number of threads to create (default: 1)\n"
-	       "-i : iteration \n"); 
+	printf("deadlock -x <x> -y <y>\n"
+	       "-x : input for thread 1\n" 
+	       "-y : input for thread 2\n"); 
 }
 
 int main(int argc, char *argv[])
 {
-        struct sched_param param;
-	pthread_t allthr[MAX_THR];
+	pthread_t allthr[10];
 	int i, ret; 
+	int x, y; 
 
-	while((i=getopt(argc, argv, "n:i:hd")) != EOF) {
+	// initialize 
+	val1 = val2 = 0; 
+	x = y = 0; 
+
+	// parameters 
+	while((i=getopt(argc, argv, "x:y:h")) != EOF) {
 		switch(i) {
 		case 'h':
 			usage();
 			return 0;
-		case 'n':
-			max_thr = atoi(optarg);
-			if (max_thr >= MAX_THR)
-				errx(1, "no more than %d threads", MAX_THR);
-			break;
-		case 'i': 
-			iteration = atoi(optarg); 
+		case 'x':
+			x = strtol(optarg, NULL, 0); 
+			break; 
+		case 'y': 
+			y = strtol(optarg, NULL, 0); 
 			break; 
 		default:
 			errx(1, "invalid option");
 		}
 	}
 
-        param.sched_priority = MY_PRIORITY;
-        if(sched_setscheduler(0, SCHED_RR, &param) == -1) {
-                perror("sched_setscheduler failed");
-                // exit(-1);
-        }
+	// lock initialize 
+	pthread_mutex_init(&l1, NULL);
+	pthread_mutex_init(&l2, NULL);
 
-        if(mlockall(MCL_CURRENT|MCL_FUTURE) == -1) {
-                perror("mlockall failed");
-                // exit(-2);
-        }
+	// thread create 
+	ret = pthread_create(&allthr[0], NULL, worker1, (void *)(unsigned long)x);
+	if (ret) err(1, "pthread_create failed");
+	ret = pthread_create(&allthr[1], NULL, worker2, (void *)(unsigned long)y);
+	if (ret) err(1, "pthread_create failed");
 
-        /* Pre-fault our stack */
-        stack_prefault();
+	// wait for workers to finish. 
+	pthread_join(allthr[0], NULL);
+	pthread_join(allthr[1], NULL);
 
-	pthread_mutex_init(&mutexsum.mutex, NULL);
-	pthread_mutex_init(&mutex2.mutex, NULL);
-
-	det_init(argc, argv);
-
-	for(i=0; i < max_thr; i++) {
-		ret = det_create(allthr+i, NULL, my_worker, (void *)(unsigned long)i);
-		if (ret)
-			err(1, "pthread_create failed");
-	}
-
-	det_enable(); // enable deterministic execution 
-	
-	for (i = 0; i < max_thr; i++) {
-		pthread_join(allthr[i], NULL);
-	}
-
-	printf("sum : %d\n", sum); 
+	// print the who's got the lock. 
+	printf("val1 : %d\n", val1); 
+	printf("val2 : %d\n", val2); 
 
 	return 0; 
 }
