@@ -30,9 +30,6 @@
 #define MY_PRIORITY (49) 
 #define MAX_SAFE_STACK (8*1024)
 #define MAX_ITER 100000
-#ifndef MAX_THR
-#define MAX_THR  16
-#endif 
 
 #include <dpthread-wrapper.h>
 
@@ -100,8 +97,6 @@ my_compa(void *v)
 void *
 my_compb(void *v)
 {
-	int i; 
-
 	int compTime = (int)v; 
 
 #if USE_DPTHREAD
@@ -123,7 +118,7 @@ my_compb(void *v)
 #if USE_DPTHREAD
 //	det_enable(); 
 #endif 
-
+	return NULL; 
 }
 
 static void
@@ -140,7 +135,7 @@ int main(int argc, char *argv[])
 {
         struct sched_param param;
 	pthread_t allthr[MAX_THR];
-	int i, ret; 
+	int i; 
 
 
 	while((i=getopt(argc, argv, "a:b:n:i:h")) != EOF) {
@@ -191,7 +186,7 @@ int main(int argc, char *argv[])
 		pthread_create(allthr+i, NULL, my_compb, (void *)comp_B);
 	}
 
-	my_compa(comp_A); 
+	my_compa((void *)comp_A); 
 	
 	for (i = 0; i < max_thr - 1; i++) {
 		pthread_join(allthr[i], NULL);

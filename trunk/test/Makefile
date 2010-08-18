@@ -12,16 +12,17 @@ endif
 
 CFLAGS += -I. -D_GNU_SOURCE -I$(DPTHREADDIR)/include 
 LIBS += -lm -ldpthread -lpthread -lpfm -ldl #-lbz2
+LDFLAGS += $(LIBS) 
 
 # LDFLAGS += -L../../crest-mt/mini-libc
 # LIBS += -lminiClibc 
 
-TARGET=locktest locktest-benign deadlock iotest iotest2 iotest3 fib iotest4 ubench cond_wait simple test-evtcnt
+TARGETS=locktest deadlock cond_wait 
 
-$(TARGET):  %:%.o # $(DPTHREADLIB) 
+all: $(TARGETS)
+
+$(TARGETS):  %:%.o # $(DPTHREADLIB) 
 	$(CC) $(CFLAGS) -o $@ $(LDFLAGS) $^ $(LIBS) 
 
-all: $(TARGET)
-
 clean:
-	$(RM) -f *.o $(TARGET) *~ log*.p* a.out
+	$(RM) -f *.o $(TARGETS) *~ log*.p* a.out

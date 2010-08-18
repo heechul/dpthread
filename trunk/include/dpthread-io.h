@@ -19,6 +19,7 @@
 
 // unistd.h 
 unsigned int  detio_sleep(unsigned int seconds);
+int detio_usleep(unsigned int usecs); 
 // int detio_usleep(useconds_t usec);
 long detio_sysconf(int name);
 int detio_getopt(int argc, char * const argv[], const char *optstring);
