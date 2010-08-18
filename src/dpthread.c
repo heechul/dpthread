@@ -102,7 +102,7 @@ static struct worker_args wa[MAX_THR];
 static struct dpthread_dep_ops ops; 
 
 static int64_t __thread my_det_clock; // clock is paused at this 
-static int __thread my_det_enabled;   // enabled/disabled 
+static int __thread my_det_enabled = 0;   // enabled/disabled 
 
 
 /* TLS for statistics */ 
@@ -156,7 +156,7 @@ static void DBG(int level, char *format, ...)
 	}
 }
 
-pid_t gettid(void)
+static pid_t gettid(void)
 {
 	return (pid_t)syscall(__NR_gettid);
 }
@@ -165,7 +165,7 @@ pid_t gettid(void)
 // dpthread internal function 
 //////////////////////////////////////////////////////////////////////////////////
 
-unsigned int get_usecs()
+static unsigned int get_usecs()
 {
 #if USE_TIMING 
 	static struct timeval  base;

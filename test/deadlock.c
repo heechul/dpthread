@@ -5,6 +5,10 @@
 #include <err.h>
 #include <unistd.h>
 #include <pthread.h>
+#include <unistd.h>
+#include <sys/syscall.h>   /* For SYS_xxx definitions */
+
+#include <dpthread-wrapper.h>
 
 // defines 
 #define DBG(x) x 
@@ -12,6 +16,11 @@
 // glocal variables 
 static pthread_mutex_t l1, l2; 
 static int val1, val2; 
+
+pid_t gettid(void)
+{
+	return (pid_t)syscall(__NR_gettid);
+}
 
 unsigned long 
 fib(unsigned long n)
@@ -28,28 +37,25 @@ worker1(void *v)
 {
 	int input = (int)v; 
 
-	if ( input < 0 ) 
-		fib(0); 
-	else 
-		fib(20); 
+	fib(input); 
 
-	DBG(fprintf(stderr, "[%d] acquire  l1\n", getpid())); 
+	DBG(fprintf(stderr, "[%d] acquire  l1\n", gettid())); 
 	pthread_mutex_lock(&l1);
-	DBG(fprintf(stderr, "[%d] acquired l1\n", getpid())); 
+	DBG(fprintf(stderr, "[%d] acquired l1\n", gettid())); 
 	val1 = 1; 
 	
-	DBG(fprintf(stderr, "[%d] acquire  l2\n", getpid())); 
+	DBG(fprintf(stderr, "[%d] acquire  l2\n", gettid())); 
 	pthread_mutex_lock(&l2); 
-	DBG(fprintf(stderr, "[%d] acquired l2\n", getpid())); 
+	DBG(fprintf(stderr, "[%d] acquired l2\n", gettid())); 
 	val2 = 1; 
 
-	DBG(fprintf(stderr, "[%d] release  l2\n", getpid())); 
+	DBG(fprintf(stderr, "[%d] release  l2\n", gettid())); 
 	pthread_mutex_unlock(&l2); 
-	DBG(fprintf(stderr, "[%d] released l2\n", getpid())); 
+	DBG(fprintf(stderr, "[%d] released l2\n", gettid())); 
 	
-	DBG(fprintf(stderr, "[%d] release  l1\n", getpid())); 
-	pthread_mutex_unlock(&l2); 
-	DBG(fprintf(stderr, "[%d] released l1\n", getpid())); 
+	DBG(fprintf(stderr, "[%d] release  l1\n", gettid())); 
+	pthread_mutex_unlock(&l1); 
+	DBG(fprintf(stderr, "[%d] released l1\n", gettid())); 
 
 	return NULL; 
 }
@@ -59,28 +65,25 @@ worker2(void *v)
 {
 	int input = (int)v; 
 
-	if ( input < 0 ) 
-		fib(0); 
-	else 
-		fib(20); 
+	fib(input); 
 
-	DBG(fprintf(stderr, "[%d] acquire  l2\n", getpid())); 
+	DBG(fprintf(stderr, "[%d] acquire  l2\n", gettid())); 
 	pthread_mutex_lock(&l2);
-	DBG(fprintf(stderr, "[%d] acquired l2\n", getpid())); 
+	DBG(fprintf(stderr, "[%d] acquired l2\n", gettid())); 
 	val2 = 2; 
 
-	DBG(fprintf(stderr, "[%d] acquire  l1\n", getpid())); 
+	DBG(fprintf(stderr, "[%d] acquire  l1\n", gettid())); 
 	pthread_mutex_lock(&l1); 
-	DBG(fprintf(stderr, "[%d] acquired l1\n", getpid())); 
+	DBG(fprintf(stderr, "[%d] acquired l1\n", gettid())); 
 	val1 = 2; 
 	
-	DBG(fprintf(stderr, "[%d] release  l1\n", getpid())); 
+	DBG(fprintf(stderr, "[%d] release  l1\n", gettid())); 
 	pthread_mutex_unlock(&l1); 
-	DBG(fprintf(stderr, "[%d] released l1\n", getpid())); 
+	DBG(fprintf(stderr, "[%d] released l1\n", gettid())); 
 	
-	DBG(fprintf(stderr, "[%d] release  l2\n", getpid())); 
+	DBG(fprintf(stderr, "[%d] release  l2\n", gettid())); 
 	pthread_mutex_unlock(&l2); 
-	DBG(fprintf(stderr, "[%d] released l2\n", getpid())); 
+	DBG(fprintf(stderr, "[%d] released l2\n", gettid())); 
 
 	return NULL; 
 }

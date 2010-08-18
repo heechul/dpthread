@@ -16,8 +16,9 @@
 #include <queue.h>
 
 #define USE_DPTHREAD 1 
-
 #define MAX_THR  128
+
+#define unlikely(x)     __builtin_expect((x),0)
 
 typedef struct {
 	int id;
@@ -94,8 +95,6 @@ void det_set_debug(int level);
 int  det_dbg(const char *format, ...);
 void det_print_stat();
 
-// misc 
-unsigned int get_usecs(); 
 
 #ifdef __cplusplus
 }
