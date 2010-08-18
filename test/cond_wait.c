@@ -56,16 +56,17 @@ The output of this example is as follows:
 #if USE_PTHREAD 
 pthread_mutex_t         dataMutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t          dataPresentCondition = PTHREAD_COND_INITIALIZER;
-pid_t gettid(void)
-{
-	return (pid_t)syscall(__NR_gettid);
-}
 #else /* !USE_PTHREAD */ 
 pthread_mutex_t         dataMutex;
 pthread_cond_t          dataPresentCondition;
 
 extern int det_dbg(const char *format, ...); 
 #endif /* USE_PTHREAD */ 
+
+pid_t gettid(void)
+{
+	return (pid_t)syscall(__NR_gettid);
+}
 
 int                     dataPresent=0;
 int                     sharedData=0;
