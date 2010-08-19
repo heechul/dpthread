@@ -38,3 +38,33 @@ ITERATION 9
  -> OK
 PASS 
 }}}
+
+
+= Run =
+
+Let's look at a simple example to illustrate the benefits of using dpthread. 
+In deadlock.c, two threads acquire locks (l1, l2) in reverse order. Therefore, it will be deadlock depending on timing -- nondeterministic.
+
+But if you run it with dpthread, the behavior is deterministic with respect to input. For example, the following will always execute as shown in the following. 
+ 
+{{{
+$ cd test/
+$ make deadlock 
+$ DPTHREAD_DEBUG=-1 ./deadlock -x 0 -y 0
+[1] acquired l1
+[1] acquired l2
+[1] release  l2
+[1] release  l1
+[2] acquired l2
+[2] acquired l1
+[2] release  l1
+[2] release  l2
+val1 : 2
+val2 : 2
+}}}
+
+If you disable deterministic execution, you can just comment out the following line in the source code and run make deadlock. 
+
+{{{
+// #include <dpthread-wrapper.h>
+}}}
