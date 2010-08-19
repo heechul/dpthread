@@ -1,3 +1,8 @@
 locktest - for lock performance comparison with/without deterministic execution 
 
-deadlock - nested lock. need "USE_NESTED_LOCK 1" to be able to run without deadlock. 
+deadlock - thread1 and thread2 try to acquire locks in reverse order. 
+	   In standard pthread environment, this mean deadlock is possible depending on timing.
+	   However, in dpthread the behavior is determined by the input; in other words, if it worked without 
+	   a deadlock for a input, it will be the same all the time for that input. 
+	    
+
