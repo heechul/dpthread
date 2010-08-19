@@ -62,7 +62,7 @@ val1 : 2
 val2 : 2
 }}}
 
-If you disable deterministic execution, you can just comment out the following line in the source code and run make deadlock. 
+If you want to disable deterministic execution, you can just comment out the following line in the source code and run make deadlock. 
 
 {{{
 // #include <dpthread-wrapper.h>
