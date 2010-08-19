@@ -10,7 +10,7 @@ Also, dpthread provides more complete set of deterministic alternatives of pthre
 
 = Installation =
 
-Dpthread is currently only tested on Intel Core2 processors. We use inst_retired:stores event of Core2 processors and it is the only deterministic event on Core2 processor as far as we know. Supporting for other processors is straight forward if the processor have a deterministic counter. 
+Dpthread is currently only tested on Intel Core2 processors. We use inst_retired:stores event of Core2 processors and it is the only deterministic event on Core2 processor as far as we know. Supporting other processors is straight forward if the processor have a deterministic counter. 
 
 Dpthread use libpfm4 library to access performance counters. You can download it from http://perfmon2.sourceforge.net. 
 
