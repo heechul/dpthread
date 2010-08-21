@@ -8,7 +8,6 @@
  *
  */ 
 
-// #define _GNU_SOURCE
 #include <sys/time.h>
 #include <sys/types.h>
 #include <limits.h>
@@ -38,22 +37,18 @@
 
 #include "config.h"
 
-/* thread local shared (TLS) data */ 
-static int __thread myid = 0;
-
-/* definition */ 
-#define USE_NESTED_LOCK 1 
-#define USE_TIMING 0
+////////////////////////////////////////////////////////////////////////////////
+// definition 
+////////////////////////////////////////////////////////////////////////////////
+#define USE_NESTED_LOCK  1  // 
+#define USE_PERF_COUNTER 1  // 0 - read_count() always return 0. 
+#define USE_TIMING       0  // measure timing 
 #define USE_FAKE_DISABLE 0  // not using ioc_enable/disable, but read_count
-#define USE_PERF_COUNTER 1  // read_count() always return 0. 
+#define USE_INST_COUNT   0  // use 'inst_retired-intr-pagefault' - not working 
 
-#define USE_INST_COUNT 0    // not working 
 #define PROFILE_KERNEL_EVENTS 0 
 
 static const int64_t MAX_LOGICAL_CLOCK=20000000000000LL;
-
-#define PERIOD_SHIFT 20 // 2^20 = 1mil 
-#define GET_PERIOD(clock) (((clock)>>PERIOD_SHIFT) << PERIOD_SHIFT)
 
 #define SET_CLOCK(id, clock) {\
 	__sync_synchronize(); \
@@ -61,61 +56,73 @@ static const int64_t MAX_LOGICAL_CLOCK=20000000000000LL;
 	__sync_synchronize(); }
 #define GET_CLOCK(id) (wa[id].sw_clock + wa[id].hw_clock)
 
-/* global shared data */ 
-static volatile int64_t max_logical_time; // update at every get_logical_time() 
-static volatile int64_t last_sync_logical_time; // update at every sync ops. 
+////////////////////////////////////////////////////////////////////////////////
+// global shared data 
+////////////////////////////////////////////////////////////////////////////////
+static int __thread myid = 0;
 
 static int num_processors = 0; // set in det_init() 
-static int buffer_pages = 1;
 static int debug_level = 0; 
 static char *debug_log_file = NULL; 
 
-static volatile uint32_t max_thr = 0;  // # of created thread. include master (used as id)
-static volatile uint32_t num_thr = 0;  // # of active threads. 
 struct worker_args {
+	// worker function and arg 
 	void *(*func)(void*);
 	void *arg; 
-	int  id; 
 
-	pthread_t tid;
+	// id 
+	int  id; 
+	pthread_t tid; 
+
+	// performance counter handles 
 	perf_event_desc_t *fds;
 
-	// actively shared by other processors. single-writer multiple-reader
-	pthread_mutex_t clock_lock;
-
+	// clock (=performance counter)
+	volatile int64_t hw_clock; // hw clock reading 
+	volatile int64_t sw_clock; // logical clock incremented by runtime (not by hw)
 	volatile int hw_clock_enabled; // performance counter enabled 
-	volatile int64_t hw_clock;    // hw clock reading 
-	volatile int64_t sw_clock;    // logical clock incremented by runtime (not by hw)
 
-	FILE *log_file; 
-
+	// thread control at fork/join 
 	det_mutex_t thread_lock; 
 	det_cond_t  thread_cond; 
 
+	// thread status 
 	volatile int finished; 
 	volatile int started; 
 
+	// misc 
 	int64_t last_exit_logical_time; 
+
+	// debug 
+	FILE *log_file; 
 	int nondet_count; // non-deterministic event count 
 };
-static struct worker_args wa[MAX_THR];
-static struct dpthread_dep_ops ops; 
 
+// shared data structure for workers 
+static struct worker_args wa[MAX_THR]; 
+static volatile uint32_t max_thr = 0; // created thread. 
+static volatile uint32_t num_thr = 0; // active threads. 
+
+static volatile int64_t last_sync_logical_time; // update at every sync ops. 
 static int64_t __thread my_det_clock; // clock is paused at this 
+
 static int __thread my_det_enabled = 0;   // enabled/disabled 
 
+static struct dpthread_dep_ops ops;  // pthread api function pointers 
 
-/* TLS for statistics */ 
+// TLS for statistics 
 static int __thread hw_read;
 static int __thread cache_read; 
 static int __thread barrier_count; 
 static int __thread lock_count; 
 
+// sync counts 
 pthread_mutex_t count_mutex = PTHREAD_MUTEX_INITIALIZER; 
 static volatile unsigned int g_lock_count = 0; 
 static volatile unsigned int g_barr_count = 0; 
 static volatile unsigned int g_cond_count = 0; 
 
+// performance
 struct perf_mon {
 	uint64_t min, max, tot, cnt; /* in CPU cycles. */ 
 }; 
@@ -228,9 +235,6 @@ static int64_t get_logical_clock(int id)
  
 	ret = hw_clock + wa[id].sw_clock; 
 
-	// maintain min/max clock. 
-	if ( ret > max_logical_time ) max_logical_time = ret; 
-
 	return ret; 
 }
 
@@ -265,7 +269,6 @@ static int disable_performance_counter()
 
 static int enable_logical_clock()
 {
-	int64_t clock_diff; 
 #if USE_TIMING
 	unsigned start, dur; 
 	start = get_usecs(); 
@@ -428,10 +431,10 @@ static int open_pfm_counter( struct worker_args *w )
 		if (w->fds[i].fd == -1)	
 			err(1, "cannot attach event %s", w->fds[i].name);
 		w->fds[i].buf = 
-			mmap(NULL, (buffer_pages + 1)* pgsz, PROT_READ|PROT_WRITE, MAP_SHARED, w->fds[i].fd, 0);
+			mmap(NULL, 2* pgsz, PROT_READ|PROT_WRITE, MAP_SHARED, w->fds[i].fd, 0);
 		if (w->fds[i].buf == MAP_FAILED) 
 			err(1, "cannot mmap buffer");
-		w->fds[i].pgmsk = (buffer_pages * pgsz) - 1;
+		w->fds[i].pgmsk = (pgsz) - 1;
 	}
 	return 0; 
 }
@@ -634,8 +637,6 @@ int det_init(int argc, char *argv[])
 	w->hw_clock  = 0; 
 	w->hw_clock_enabled = 0; 
 
-	ops.__pthread_mutex_init(&w->clock_lock, NULL); 
-
 	if ( debug_log_file ) {
 		char name[40]; 
 		sprintf(name, "%s.p%d", debug_log_file, myid); 
@@ -651,7 +652,7 @@ int det_init(int argc, char *argv[])
 	perf_logical.min = perf_wait_turn.min = INT_MAX;
 	perf_enable.min = perf_disable.min = INT_MAX; 
 
-	DBG(0, "INIT: debug_level=%d. event begin \n", debug_level); 
+	DBG(1, "INIT: debug_level=%d. event begin \n", debug_level); 
 
 
 	return 0; 
@@ -1070,10 +1071,8 @@ int det_create( pthread_t *thread, const pthread_attr_t *attr,
 
 	wa[id].nondet_count = 0; 
 
-	DBG(0, "lock %d is thread %d internal\n", g_lock_count, id); 
-	DBG(0, "cond %d is thread %d internal\n", g_cond_count, id); 
-
-	ops.__pthread_mutex_init(&wa[id].clock_lock, NULL); 
+	DBG(1, "lock %d is thread %d internal\n", g_lock_count, id); 
+	DBG(1, "cond %d is thread %d internal\n", g_cond_count, id); 
 
 	DBG(2, "Thread %d initial clock = %ld, hw = %d\n", 
 	    id, wa[id].sw_clock, wa[id].hw_clock); 
@@ -1118,7 +1117,7 @@ int det_join ( pthread_t threadid, void **thread_return )
 	}
 	assert( i < MAX_THR ); 
 
-	DBG(0, "JOIN(%d):enter \n", i); 
+	DBG(1, "JOIN(%d):enter \n", i); 
 
 	det_lock(&w->thread_lock); 
 	if ( !w->finished ) {
@@ -1128,7 +1127,7 @@ int det_join ( pthread_t threadid, void **thread_return )
 	
 	ret = ops.__pthread_join( threadid, thread_return); 
 
-	DBG(0, "JOIN(%d):exit \n", i);
+	DBG(1, "JOIN(%d):exit \n", i);
 
 	num_thr --; 
 
@@ -1161,7 +1160,7 @@ void det_exit(void *value_ptr)
 
 	free(w->fds); 
 
-	DBG(0, "EXIT: (hw_evt:%lld, sw_evt:%lld) ndet_evt:%d, %d locks and %d barriers.\n", 
+	DBG(1, "EXIT: (hw_evt:%lld, sw_evt:%lld) ndet_evt:%d, %d locks and %d barriers.\n", 
 	    wa[myid].hw_clock, wa[myid].sw_clock, wa[myid].nondet_count, 
 	    lock_count, 
 	    barrier_count); 	
@@ -1194,11 +1193,12 @@ int det_cancel(pthread_t threadid)
 	lret = disable_logical_clock(); 	
 
 	SET_CLOCK(i, MAX_LOGICAL_CLOCK * 2); 
-	DBG(0, "EXIT: Thread %d: (hw_evt:%lld, sw_evt:%lld) ndet_evt:%d\n", 
+	DBG(1, "EXIT: Thread %d: (hw_evt:%lld, sw_evt:%lld) ndet_evt:%d\n", 
 	    w->id, 
 	    w->hw_clock, w->sw_clock, w->nondet_count); 
 
 	if ( lret == 0 ) enable_logical_clock(); 
+	return 0; 
 }
 
 void  det_enable(void)
@@ -1320,17 +1320,6 @@ void det_print_stat()
 
 	if ( lret == 0 ) enable_logical_clock(); 
 }
-
-static void print_clocks()
-{
-	int i; 
-	int64_t clock;
-	for ( i = 0; i < max_thr; i++ ) { 
-		clock = get_logical_clock(i); 
-		DBG(0, "%2d : %lld\n", i, (clock > MAX_LOGICAL_CLOCK) ? 0 : clock ); 
-	}
-}
-
 
 #if SELF_TEST
 #define SELF_TEST_LOOP 10000000
