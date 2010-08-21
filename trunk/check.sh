@@ -1,5 +1,5 @@
 #!/bin/bash
-EMAIL="heechul.yun@gmail.com"
+# EMAIL="heechul.yun@gmail.com"
 NPROC=`cat src/config.h | grep CPU | awk '{ print $3 }'`
 NPROC=2
 
@@ -39,4 +39,8 @@ for i in 0 1 2 5; do
     (./verify.sh ${DIRS[i]} "${EXES[i]}" $NPROC ) 2>> log.check || fail "${DIRS[i]}"
 done 
 
-echo "success" | mail -s "PASS:dpthread-check-`date`" $EMAIL
+if [ ! -z "$EMAIL" ]; then 
+	echo "success" | mail -s "PASS:dpthread-check-`date`" $EMAIL
+else
+	echo success 
+fi 

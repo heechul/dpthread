@@ -14,10 +14,9 @@ DPTHREAD = 1
 ifeq ($(DPTHREAD),1) 
 CFLAGS 	+= -DUSE_DPTHREAD=1 \
 	   -I. \
-	   -I$(HOME)/Papers/cs523/dpthread/include \
+	   -I../../../include \
 
-LDFLAGS	+= -L$(HOME)/Papers/cs523/libpfm4/lib \
-	   -L$(HOME)/Papers/cs523/dpthread/lib
+LDFLAGS	+= -L../../../lib 
 
 LIBS	+= -ldl -ldpthread -lpfm 
 endif 
