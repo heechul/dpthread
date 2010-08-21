@@ -32,4 +32,4 @@ install: aget
 	cp -f aget /usr/local/bin/aget
 
 clean:
-	rm -f *.o aget log*.p*
+	rm -f *.o aget log*.p* log*.interrupts_*
