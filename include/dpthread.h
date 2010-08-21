@@ -18,7 +18,7 @@
 #define USE_DPTHREAD 1 
 #define MAX_THR  128
 
-#define unlikely(x)     __builtin_expect((x),0)
+// #define unlikely(x)     __builtin_expect((x),0)
 
 typedef struct {
 	int id;

@@ -90,7 +90,7 @@
 // stdlib.h 
 #define valloc(s) detio_valloc(s)
 #define malloc(s) detio_valloc(s)
-#define calloc(n,s) detio_valloc((n*s))
+// #define calloc(n,s) detio_valloc((n*s))
 #define free(x) detio_free(x)
 
 // sys/time.h 

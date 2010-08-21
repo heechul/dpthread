@@ -21,18 +21,16 @@
 ** This file is NOT part of the standard SQLite library.  It is used for
 ** testing only.
 */
+
 #include "sqlite3.h"
 #include <pthread.h>
 #include <sched.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 
 #if USE_DPTHREAD
 #include <dpthread-wrapper.h>
 #endif 
-
 /*
 ** Enable for tracing
 */

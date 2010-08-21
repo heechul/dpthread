@@ -491,14 +491,14 @@ static void *worker_thread(void *v)
 
 int det_increase_logical_clock(int incr)
 {
-	if ( unlikely(!det_is_enabled()) ) return -1; 
+	if ( !det_is_enabled() ) return -1; 
 	wa[myid].sw_clock +=incr; 
 	return 0; 
 }
 
 int det_enable_logical_clock(int incr)
 {
-	if ( unlikely(!det_is_enabled()) ) return -1; 
+	if (!det_is_enabled() ) return -1; 
 
 	wa[myid].sw_clock +=incr; 
 	return enable_logical_clock(); 
@@ -506,14 +506,14 @@ int det_enable_logical_clock(int incr)
 
 int det_disable_logical_clock()
 {
-	if ( unlikely(!det_is_enabled()) ) return -1; 
+	if ( !det_is_enabled() ) return -1; 
 
 	return disable_logical_clock(); 
 }
 
 int det_exit_logical_clock()
 {
-	if ( unlikely(!det_is_enabled()) ) return -1; 
+	if ( !det_is_enabled() ) return -1; 
 
 	wa[myid].last_exit_logical_time = GET_CLOCK(myid); 
 	SET_CLOCK(myid, MAX_LOGICAL_CLOCK); 
@@ -528,7 +528,7 @@ int det_exit_logical_clock()
  */ 
 int det_adjust_logical_clock()
 {
-	if ( unlikely(!det_is_enabled()) ) return -1; 
+	if ( !det_is_enabled() ) return -1; 
 
 	if ( last_sync_logical_time > wa[myid].last_exit_logical_time ) {
 		int lret = disable_logical_clock();
@@ -930,10 +930,6 @@ int  det_cond_wait(det_cond_t *cond, det_mutex_t *mutex)
 
 	return 0;
 }
-
-/**
-   Algorithm: cond_singal 
- */ 
 
 int  det_cond_signal(det_cond_t *cond)
 { 
