@@ -23,7 +23,7 @@ SOL_LDOPTS=
 SOL_LIBS= -lpthread -lnsl -lsocket
 
 ## Linux 2.4 with Gcc 2.96
-DPTHREAD_DIR=$(HOME)/Papers/cs523/dpthread
+DPTHREAD_DIR=../..
 LNX_CC=gcc -Wall -g -O -I$(DPTHREAD_DIR)/include -L$(DPTHREAD_DIR)/lib -DHEECHUL 
 #LNX_LDOPTS=-Wl,-s 
 LNX_LIBS=-lpthread -lnsl -ldpthread
