@@ -46,12 +46,7 @@ worker1(void *v)
 {
 	int input = (int)v; 
 
-	if ( input < 5 ) 
-		compute(0); 
-	else if ( input < 16) 
-		compute(10); 
-	else 
-		compute(20); 
+	compute(input); 
 
 	// DBG(fprintf(stderr, "[%d] acquire  l1\n", gettid())); 
 	pthread_mutex_lock(&l1);
@@ -79,12 +74,7 @@ worker2(void *v)
 {
 	int input = (int)v; 
 
-	if ( input < 5 ) 
-		compute(0); 
-	else if ( input < 16) 
-		compute(10); 
-	else 
-		compute(20); 
+	compute(input); 
 
 	// DBG(fprintf(stderr, "[%d] acquire  l2\n", gettid())); 
 	pthread_mutex_lock(&l2);
