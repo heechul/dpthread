@@ -31,7 +31,7 @@ The output of this example is as follows:
  Clean up
  Main completed
 */
-#define _GNU_SOURCE        /* or _BSD_SOURCE or _SVID_SOURCE */
+// #define _GNU_SOURCE        /* or _BSD_SOURCE or _SVID_SOURCE */
 #define _MULTI_THREADED
 #include <unistd.h>
 #include <sys/syscall.h>   /* For SYS_xxx definitions */

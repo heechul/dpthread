@@ -14,7 +14,6 @@ ENV_SRCS=det-posix.c det-libc.c
 DET_SRCS=dpthread.c queue.c perf_util.c 
 
 CFLAGS += -D_REENTRANT -g -D__USE_GNU -I/usr/local/include -I../include 
-CFLAGS += -I$(PFMLIBDIR)/include 
 
 ifeq ($(VALGRIND),1)
 CFLAGS += -DUSE_VALGRIND=1 -DUSE_RECURSIVE_MUTEX=1
@@ -24,7 +23,7 @@ TARGETS=libdpthread.a # libdpthread.so.1  # shared library make app behave non-d
 
 OBJS=$(DET_SRCS:.c=.o) $(ENV_SRCS:.c=.o) 
 
-INCDEP=$(DPTHREADDIR)/include/dpthread.h
+INCDEP=$(DPTHREAD_ROOT)/include/dpthread.h
 
 all: config.h $(TARGETS)
 
@@ -34,7 +33,7 @@ config.h:
 	sh -c ./detect_cpus.sh 
 
 libdpthread.so.1: $(OBJS)
-	gcc -fPIC -shared -Wl,-soname,libdpthread.so.1 -ldl -lpthread -L$(PFMLIBDIR) -lpfm -o libdpthread.so.1  $(OBJS) $(CFLAGS)
+	gcc -fPIC -shared -Wl,-soname,libdpthread.so.1 -ldl -lpthread -lpfm -o libdpthread.so.1  $(OBJS) $(CFLAGS)
 	[ ! -f "libdpthread.so" ] && ln -s libdpthread.so.1 libdpthread.so || echo "exist" 
 	cp -a libdpthread.so* ../lib
 

@@ -10,7 +10,7 @@ endif
 
 # CFLAGS += -I../../crest-mt/include  # mini-libc 
 
-CFLAGS += -I. -D_GNU_SOURCE -I$(DPTHREADDIR)/include 
+CFLAGS += -I. -D_GNU_SOURCE -I$(DPTHREAD_ROOT)/include 
 LIBS += -lm -ldpthread -lpthread -lpfm -ldl #-lbz2
 LDFLAGS += $(LIBS) 
 
@@ -25,4 +25,4 @@ $(TARGETS):  %:%.o # $(DPTHREADLIB)
 	$(CC) $(CFLAGS) -o $@ $(LDFLAGS) $^ $(LIBS) 
 
 clean:
-	$(RM) -f *.o $(TARGETS) *~ log*.p* a.out
+	$(RM) -f *.o $(TARGETS) *~ log*.p* a.out 

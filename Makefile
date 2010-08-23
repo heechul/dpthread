@@ -1,18 +1,17 @@
 TOPDIR  := $(shell if [ "$$PWD" != "" ]; then echo $$PWD; else pwd; fi)
 
-include config.mk
+DIRS=src test papps/splash2/codes
 
-DIRS=src 
+export $(TOPDIR) 
 
-all: 
+include config.mk 
+
+all: config.mk 
 	@echo Compiling for \'$(ARCH)\' target
 	@set -e ; for d in $(DIRS) ; do $(MAKE) -C $$d $@ ; done
 
-src:
-	$(MAKE) -C src
-
-app:
-	$(MAKE) -C test 
+config.mk: config.mk.in 
+	sed "s|@DPTHREAD_ROOT@|$(TOPDIR)|g" $< > $@ 	
 
 check:
 	./check.sh 
@@ -20,13 +19,12 @@ check:
 bench:
 	./bench.sh 
 
-
 etags:
 	etags `find src include -name "*.[ch]"` 
 
 clean: 
 	@set -e ; for d in $(DIRS) ; do $(MAKE) -C $$d $@ ; done
-	rm *~
+	rm -f *~ config.mk 
 
 distclean:  clean
 
@@ -42,5 +40,3 @@ install:
 	@set -e ; for d in $(DIRS) ; do $(MAKE) -C $$d $@ ; done
 
 .PHONY: all clean distclean depend tar tarcvs install lib
-
-# DO NOT DELETE
