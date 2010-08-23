@@ -1,5 +1,5 @@
 /**
- * multi-variable atomicity violation example. 
+ * Deadlock example by acquiring locks in reverse order
  *
  * Author: Heechul Yun <heechul@illinois.edu> 
  *
@@ -108,11 +108,11 @@ worker2(void *v)
 }
 
 static void
-usage(void)
+usage(char *argv[])
 {
 	printf("deadlock -x <x> -y <y>\n"
 	       "-x : input for thread 1\n" 
-	       "-y : input for thread 2\n"); 
+	       "-y : input for thread 2\n", argv[0]); 
 }
 
 int main(int argc, char *argv[])
@@ -129,7 +129,7 @@ int main(int argc, char *argv[])
 	while((i=getopt(argc, argv, "x:y:h")) != EOF) {
 		switch(i) {
 		case 'h':
-			usage();
+			usage(argv);
 			return 0;
 		case 'x':
 			x = strtol(optarg, NULL, 0); 
