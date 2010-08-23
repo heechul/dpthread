@@ -34,7 +34,7 @@ fail()
 }
 
 echo "Verification" > log.check
-for i in 5; do 
+for i in 0 1 2 5; do 
     echo ${DIRS[i]} ${EXES[i]} >> log.check 
     (cd "${DIRS[i]}"; make clean ) 
     (cd "${DIRS[i]}"; make ) >& log.build

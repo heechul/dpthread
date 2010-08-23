@@ -24,7 +24,7 @@ etags:
 
 clean: 
 	@set -e ; for d in $(DIRS) ; do $(MAKE) -C $$d $@ ; done
-	rm -f *~ config.mk 
+	rm -f *~ config.mk log.*
 
 distclean:  clean
 
