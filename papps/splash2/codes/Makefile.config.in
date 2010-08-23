@@ -3,16 +3,16 @@ CFLAGS := -O2 -pthread -D_POSIX_C_SOURCE=200112
 #CFLAGS := -g3 -pthread -D_POSIX_C_SOURCE=200112
 CFLAGS := $(CFLAGS) -Wall -W -Wmissing-prototypes -Wmissing-declarations -Wredundant-decls -Wdisabled-optimization
 CFLAGS := $(CFLAGS) -Wpadded -Winline -Wpointer-arith -Wsign-compare -Wendif-labels 
-LDFLAGS := -lm
+LDFLAGS := -lm -ldpthread -ldl -lpfm
 
-BASEDIR := $(HOME)/Papers/cs523/dpthread/papps/splash2/codes
-DPTHREADDIR := $(HOME)/Papers/cs523/dpthread
-PFMLIBDIR := $(HOME)/Papers/cs523/libpfm4
+BASEDIR=@SPLASH2_ROOT@
+
+DPTHREAD_ROOT=$(BASEDIR)/../../..
+CFLAGS += -I$(DPTHREAD_ROOT)/include 
+LDFLAGS += -L$(DPTHREAD_ROOT)/lib
+
 # MACROS := $(BASEDIR)/null_macros/c.m4.null.POSIX_BARRIER
 MACROS := $(BASEDIR)/null_macros/c.m4.null.det
-
-CFLAGS += -I$(DPTHREADDIR)/include -g 
-LDFLAGS += -L$(DPTHREADDIR)/lib -ldpthread -L$(PFMLIBDIR)/lib -lpfm -ldl 
 
 M4 := m4 -s -Ulen -Uindex
 
