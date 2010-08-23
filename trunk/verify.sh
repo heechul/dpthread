@@ -1,4 +1,4 @@
-#!/bin/sh 
+#!/bin/bash 
 DIR="$1"
 CMD="$2"
 NPROC="$3"

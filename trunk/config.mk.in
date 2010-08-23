@@ -1,7 +1,7 @@
 SYS  := $(shell uname -s)
 ARCH := $(shell uname -m)
 
-DPTHREAD_ROOT=/home/heechul/Projects/dpthread
+DPTHREAD_ROOT=@DPTHREAD_ROOT@
 
 CC=gcc
 INSTALL=install

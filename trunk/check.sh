@@ -1,7 +1,7 @@
 #!/bin/bash
 # EMAIL="heechul.yun@gmail.com"
 NPROC=`cat src/config.h | grep CPU | awk '{ print $3 }'`
-NPROC=2
+# NPROC=4
 
 # this prevent counting lazy binding of ld.so 
 LD_BIND_NOW=on  
@@ -26,13 +26,15 @@ EXES[7]="./WATER-NSQUARED < input.p$NPROC"
 fail()
 {
 	echo "FAILED: $*"
-	cat log.check | \
-		mail -s "FAIL:dpthread-check-`date`" $EMAIL
+	if [ ! -z "$EMAIL" ]; then 
+		cat log.check | \
+			mail -s "FAIL:dpthread-check-`date`" $EMAIL
+	fi 
 	exit  # real problem 
 }
 
 echo "Verification" > log.check
-for i in 0 1 2 5; do 
+for i in 5; do 
     echo ${DIRS[i]} ${EXES[i]} >> log.check 
     (cd "${DIRS[i]}"; make clean ) 
     (cd "${DIRS[i]}"; make ) >& log.build
@@ -41,6 +43,4 @@ done
 
 if [ ! -z "$EMAIL" ]; then 
 	echo "success" | mail -s "PASS:dpthread-check-`date`" $EMAIL
-else
-	echo success 
 fi 
