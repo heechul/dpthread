@@ -1,8 +1,9 @@
 /**
- * Multi-variable atomicity violation example. 
+ * Order violation example 
  *
- * This example is taken from Figure 1 of "Finiding Concurrency Bugs with 
- * Context-Aware Communication Graphs", MICRO'09.  
+ * This example is taken from Figure 2 of "Learning from Mistakes -- A 
+ * Comprehensive Study on Real World Concurrency Bug Characteristics", 
+ * ASPLOS'08.  
  *
  * Author: Heechul Yun <heechul@illinois.edu> 
  *
@@ -28,8 +29,12 @@
 // glocal variables 
 static pthread_mutex_t lock; 
 
-static char *g_str = ""; 
-static int g_length = 0; 
+typedef struct { 
+	int tid; 
+	int state; 
+} my_thread_t; 
+
+static my_thread_t *my_thread_ptr; 
 
 // local functions 
 unsigned long fib(unsigned long n)
@@ -47,18 +52,18 @@ worker1(void *v)
 {
 	int input = (int)v; 
 	
+	fib(input);
+
+	DBG(fprintf(stderr, "[1] acquire  lock\n"));
 	pthread_mutex_lock(&lock);
 	DBG(fprintf(stderr, "[1] acquired lock\n"));
-	g_str = strdup("test string"); 
-	DBG(fprintf(stderr, "[1] release  lock\n"));
-	pthread_mutex_unlock(&lock); 
 
-	fib(input); 
+	my_thread_ptr = (my_thread_t *)malloc(sizeof(my_thread_t)); 
 
-	pthread_mutex_lock(&lock);
-	DBG(fprintf(stderr, "[1] acquired lock\n"));
-	g_length = strlen(g_str); 
-	DBG(fprintf(stderr, "[1] release  lock\n"));
+	my_thread_ptr->tid = 1; 
+	my_thread_ptr->state = 1; 
+
+	DBG(fprintf(stderr, "[1] release lock\n"));
 	pthread_mutex_unlock(&lock); 
 
 	return NULL; 
@@ -67,26 +72,25 @@ worker1(void *v)
 void *
 worker2(void *v)
 {
-	char *tptr; 
-	int tlen; 
+	int input = (int)v; 
+	
+	int m_tid = 0; 
+	int m_state = 0; 
 
+	fib(input);
+
+	DBG(fprintf(stderr, "[2] acquire  lock\n"));
 	pthread_mutex_lock(&lock);
 	DBG(fprintf(stderr, "[2] acquired lock\n"));
-	tptr = g_str; 
-	DBG(fprintf(stderr, "[2] release  lock\n"));
+
+	m_tid = my_thread_ptr->tid; 
+	m_state = my_thread_ptr->state; 
+
+	DBG(fprintf(stderr, "[2] release lock\n"));
 	pthread_mutex_unlock(&lock); 
 
+	printf("m_tid = %d, m_state = %d\n", m_tid, m_state); 
 
-	pthread_mutex_lock(&lock);
-	DBG(fprintf(stderr, "[2] acquired lock\n"));
-	tlen = g_length; 
-	DBG(fprintf(stderr, "[2] release  lock\n"));
-	pthread_mutex_unlock(&lock); 
-
-	printf("tptr = %s, tlen = %d\n", tptr, tlen); 
-	if ( strlen(tptr) != tlen ) { 
-		printf("ERROR: mismatch\n"); 
-	}
 	return NULL; 
 }
 
