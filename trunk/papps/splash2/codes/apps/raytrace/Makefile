@@ -26,3 +26,5 @@ trace.c: trace.C rt.h
 tri.c:	tri.C rt.h
 workpool.c: workpool.C rt.h
 
+test:
+	echo "top=$(TOPDIR)"
