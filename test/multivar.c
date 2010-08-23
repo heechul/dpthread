@@ -15,7 +15,6 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <unistd.h>
-#include <sys/syscall.h>   /* For SYS_xxx definitions */
 
 // NOTE: uncomment the following line to make app deterministic 
 #include <dpthread-wrapper.h>
@@ -25,14 +24,11 @@
 
 // glocal variables 
 static pthread_mutex_t l1, l2; 
-static int val1, val2; 
 
-static int pPid = 0; 
-pid_t gettid(void)
-{
-	return ((pid_t)syscall(__NR_gettid) - pPid);
-}
+static char *g_str = ""; 
+static int g_length = 0; 
 
+// local functions 
 unsigned long fib(unsigned long n)
 {
 	if (n == 0)
@@ -42,39 +38,25 @@ unsigned long fib(unsigned long n)
 	return fib(n-1)+fib(n-2);
 }
 
-
-void compute(int input)
-{
-	int i; 
-	for ( i = 0; i < input; i++ ) { 
-		fib(2); 
-	}
-}
-
+// worker definitions 
 void *
 worker1(void *v)
 {
 	int input = (int)v; 
-
-	compute(input); 
-
-	// DBG(fprintf(stderr, "[%d] acquire  l1\n", gettid())); 
+	
 	pthread_mutex_lock(&l1);
-	DBG(fprintf(stderr, "[%d] acquired l1\n", gettid())); 
-	val1 = 1; 
-	
-	// DBG(fprintf(stderr, "[%d] acquire  l2\n", gettid())); 
-	pthread_mutex_lock(&l2); 
-	DBG(fprintf(stderr, "[%d] acquired l2\n", gettid())); 
-	val2 = 1; 
-
-	DBG(fprintf(stderr, "[%d] release  l2\n", gettid())); 
-	pthread_mutex_unlock(&l2); 
-	// DBG(fprintf(stderr, "[%d] released l2\n", gettid())); 
-	
-	DBG(fprintf(stderr, "[%d] release  l1\n", gettid())); 
+	DBG(fprintf(stderr, "[1] acquired l1\n"));
+	g_str = strdup("test string"); 
+	DBG(fprintf(stderr, "[1] release  l1\n"));
 	pthread_mutex_unlock(&l1); 
-	// DBG(fprintf(stderr, "[%d] released l1\n", gettid())); 
+
+	fib(input); 
+
+	pthread_mutex_lock(&l1);
+	DBG(fprintf(stderr, "[1] acquired l1\n"));
+	g_length = strlen(g_str); 
+	DBG(fprintf(stderr, "[1] release  l1\n"));
+	pthread_mutex_unlock(&l1); 
 
 	return NULL; 
 }
@@ -84,29 +66,29 @@ worker2(void *v)
 {
 	int input = (int)v; 
 
-	compute(input); 
+	char *tptr; 
+	int tlen; 
 
-	// DBG(fprintf(stderr, "[%d] acquire  l2\n", gettid())); 
-	pthread_mutex_lock(&l2);
-	DBG(fprintf(stderr, "[%d] acquired l2\n", gettid())); 
-	val2 = 2; 
-
-	// DBG(fprintf(stderr, "[%d] acquire  l1\n", gettid())); 
-	pthread_mutex_lock(&l1); 
-	DBG(fprintf(stderr, "[%d] acquired l1\n", gettid())); 
-	val1 = 2; 
-	
-	DBG(fprintf(stderr, "[%d] release  l1\n", gettid())); 
+	pthread_mutex_lock(&l1);
+	DBG(fprintf(stderr, "[2] acquired l1\n"));
+	tptr = g_str; 
+	DBG(fprintf(stderr, "[2] release  l1\n"));
 	pthread_mutex_unlock(&l1); 
-	// DBG(fprintf(stderr, "[%d] released l1\n", gettid())); 
-	
-	DBG(fprintf(stderr, "[%d] release  l2\n", gettid())); 
-	pthread_mutex_unlock(&l2); 
-	// DBG(fprintf(stderr, "[%d] released l2\n", gettid())); 
+
+
+	pthread_mutex_lock(&l1);
+	DBG(fprintf(stderr, "[2] acquired l1\n"));
+	tlen = g_length; 
+	DBG(fprintf(stderr, "[2] release  l1\n"));
+	pthread_mutex_unlock(&l1); 
+
+	printf("tptr = %s, tlen = %d\n", tptr, tlen); 
 
 	return NULL; 
 }
 
+
+// main 
 static void
 usage(void)
 {
@@ -122,7 +104,6 @@ int main(int argc, char *argv[])
 	int x, y; 
 
 	// initialize 
-	val1 = val2 = 0; 
 	x = y = 0; 
 
 	// parameters 
@@ -147,7 +128,6 @@ int main(int argc, char *argv[])
 	pthread_mutex_init(&l2, NULL);
 
 	// thread create 
-	pPid = gettid(); 
 	ret = pthread_create(&allthr[0], NULL, worker1, (void *)(unsigned long)x);
 	if (ret) err(1, "pthread_create failed");
 	ret = pthread_create(&allthr[1], NULL, worker2, (void *)(unsigned long)y);
@@ -156,10 +136,6 @@ int main(int argc, char *argv[])
 	// wait for workers to finish. 
 	pthread_join(allthr[0], NULL);
 	pthread_join(allthr[1], NULL);
-
-	// print the who's got the lock. 
-	printf("val1 : %d\n", val1); 
-	printf("val2 : %d\n", val2); 
 
 	return 0; 
 }
