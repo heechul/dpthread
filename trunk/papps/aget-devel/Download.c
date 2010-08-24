@@ -112,7 +112,7 @@ void *http_get(void *arg) {
 
 	pthread_testcancel();	/* Check for pending cancel requests */
 
-	fprintf(stderr, "Now begin\n"); 
+	det_dbg("Now begin\n"); 
 
 	while (td->offset < foffset) {
 		fd_set set;
@@ -133,7 +133,7 @@ void *http_get(void *arg) {
 		dr = recv(sd, rbuf, MAXBUFSIZ, 0);
 
 #if USE_DPTHREAD
-		if ( dr != MAXBUFSIZ) fprintf(stderr, "recv: %d\n", dr); 
+		if ( dr != MAXBUFSIZ) det_dbg("recv: %d\n", dr); 
 #endif 
 		/* Set Cancellation Type back to Deferred */
 		pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED, NULL);
