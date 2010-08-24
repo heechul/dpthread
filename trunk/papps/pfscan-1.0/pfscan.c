@@ -543,7 +543,9 @@ main(int argc,
     pthread_mutex_init(&print_lock, NULL);
     pthread_mutex_init(&aworker_lock, NULL);
     pthread_mutex_init(&matches_lock, NULL);
-
+#if HEECHUL
+    pthread_cond_init(&aworker_cv, NULL);  // heechul 
+#endif 
     for (i = 1; i < argc && argv[i][0] == '-'; i++)
 	for (j = 1; j > 0 && argv[i][j]; ++j)
 	    switch (argv[i][j])
@@ -614,6 +616,11 @@ main(int argc,
 	    }
 
   EndOptions:
+
+    if ( !argv[i] ) {
+	usage(stdout);
+	exit(0);
+    }
 
     rstr = (unsigned char *) strdup(argv[i++]);
     rlen = deslash(rstr);
