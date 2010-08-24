@@ -12,8 +12,8 @@ CMD="./aget -n $NPROC http://heechul.cs.uiuc.edu/$FILE"
 echo $CMD
 NPROC=`expr $NPROC + 2` # 2 more threads are running
 
-MATCH_MODE="INST_COUNT" # must match exact instruction count 
-#MATCH_MODE="SYNC_ORDER" # only sync order should be matched 
+# MATCH_MODE="INST_COUNT" # must match exact instruction count 
+MATCH_MODE="SYNC_ORDER" # only sync order should be matched 
 
 #CMD='./BARNES < input.p$NPROC'
 export DPTHREAD_DEBUG=1

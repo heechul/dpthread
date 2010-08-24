@@ -108,8 +108,6 @@ static int64_t __thread my_det_clock; // clock is paused at this
 
 static int __thread my_det_enabled = 0;   // enabled/disabled 
 
-static struct dpthread_dep_ops ops;  // pthread api function pointers 
-
 // TLS for statistics 
 static int __thread hw_read;
 static int __thread cache_read; 
@@ -145,7 +143,7 @@ static void DBG(int level, char *format, ...)
 	if ( wa[myid].log_file ) out = wa[myid].log_file;
 	if ( level <= debug_level ) {
 		va_list ap;
-		ops.__pthread_mutex_lock(&dbg_mutex); 
+		pthread_mutex_lock(&dbg_mutex); 
 #if USE_TIMING
 		fprintf(out, "[RT:%08u]", get_usecs()); 
 		fprintf(out, "[LT:%08lld](%08lld,%08lld)", 
@@ -159,7 +157,7 @@ static void DBG(int level, char *format, ...)
 		vfprintf(out, format, ap);
 		va_end(ap);
 		fflush(out);
-		ops.__pthread_mutex_unlock(&dbg_mutex); 
+		pthread_mutex_unlock(&dbg_mutex); 
 	}
 }
 
@@ -543,43 +541,6 @@ int det_adjust_logical_clock()
 	return 0; 
 }
 
-int det_init_ops_preload()
-{
-	ops.__pthread_create = dlsym(RTLD_NEXT, "pthread_create"); 
-	ops.__pthread_join = dlsym(RTLD_NEXT, "pthread_join"); 
-	ops.__pthread_exit = dlsym(RTLD_NEXT, "pthread_exit"); 
-	ops.__pthread_mutex_init = dlsym(RTLD_NEXT, "pthread_mutex_init"); 
-	ops.__pthread_mutex_lock = dlsym(RTLD_NEXT, "pthread_mutex_lock"); 
-	ops.__pthread_mutex_trylock = dlsym(RTLD_NEXT, "pthread_mutex_trylock"); 
-	ops.__pthread_mutex_unlock = dlsym(RTLD_NEXT, "pthread_mutex_unlock"); 
-#if 0 // now condition and barrier are using det_lock
-	ops.__pthread_barrier_init = dlsym(RTLD_NEXT, "pthread_barrier_init"); 
-	ops.__pthread_barrier_wait = dlsym(RTLD_NEXT, "pthread_barrier_wait"); 
-	ops.__pthread_cond_wait = dlsym(RTLD_NEXT, "pthread_cond_wait");
-	ops.__pthread_cond_signal = dlsym(RTLD_NEXT, "pthread_cond_signal"); 
-	ops.__pthread_cond_broadcast = dlsym(RTLD_NEXT, "pthread_cond_broadcast"); 
-#endif 
-	ops.__pthread_cancel = dlsym(RTLD_NEXT, "pthread_cancel"); 
-
-	assert(	ops.__pthread_create &&
-		ops.__pthread_join &&
-		ops.__pthread_exit &&
-		ops.__pthread_mutex_init &&
-		ops.__pthread_mutex_lock &&
-		ops.__pthread_mutex_trylock &&
-		ops.__pthread_mutex_unlock && 
-#if 0 
-		ops.__pthread_barrier_init &&
-		ops.__pthread_barrier_wait && 
-		ops.__pthread_cond_wait &&
-		ops.__pthread_cond_signal &&
-		ops.__pthread_cond_broadcast && 
-#endif 
-		ops.__pthread_cancel );
-		
-	return 0; 
-}
-
 void det_set_debug(int level)
 {
 	debug_level = level; 
@@ -613,7 +574,6 @@ int det_init(int argc, char *argv[])
 	}
 
 	// if ( (ptr = getenv("LD_PRELOAD")) && strstr(ptr, "libdetio.so") )
-	det_init_ops_preload(); 
 
 	if (pfm_initialize() != PFM_SUCCESS)
 		errx(1, "pfm_initialize failed");
@@ -669,14 +629,14 @@ int det_lock_init(det_mutex_t *mutex)
 
 	InitQ(&mutex->queue, MAX_THR); 
 
-	ops.__pthread_mutex_lock(&count_mutex); 
+	pthread_mutex_lock(&count_mutex); 
 	mutex->id = ++g_lock_count; 
-	ops.__pthread_mutex_unlock(&count_mutex); 
+	pthread_mutex_unlock(&count_mutex); 
 	mutex->released_logical_time = 0; 
 
 	DBG(1, "mutex_init(%d)\n", mutex->id); 
 
-	ret = ops.__pthread_mutex_init(&mutex->mutex, NULL); 
+	ret = pthread_mutex_init(&mutex->mutex, NULL); 
 	if ( lret == 0 ) enable_logical_clock(); 
 
 	return 0; 
@@ -692,7 +652,7 @@ int det_trylock(det_mutex_t *mutex)
 
 	// if det is disabled simply same as pthread. 
 	if ( !det_is_enabled() ) 
-		return ops.__pthread_mutex_lock(&mutex->mutex);
+		return pthread_mutex_lock(&mutex->mutex);
 	// disable count       
 	lret = disable_logical_clock(); 
 
@@ -702,7 +662,7 @@ int det_trylock(det_mutex_t *mutex)
 	AddQ(&mutex->queue, (void *)myid);
 
 	if ( (int)GetHeadQ(&mutex->queue) == myid && 
-	     (ret = ops.__pthread_mutex_trylock(&mutex->mutex)) == 0 ) 
+	     (ret = pthread_mutex_trylock(&mutex->mutex)) == 0 ) 
 	{ // success. 
 		DBG(3, "--trylock");
 		if ( mutex->released_logical_time >= clock ) 
@@ -711,7 +671,7 @@ int det_trylock(det_mutex_t *mutex)
 			    mutex->released_logical_time); 
 			
 			incr = mutex->released_logical_time - clock; 
-			ops.__pthread_mutex_unlock(&mutex->mutex); 
+			pthread_mutex_unlock(&mutex->mutex); 
 
 			// deterministic fast forward. 
 			wa[myid].sw_clock += incr; 
@@ -763,7 +723,7 @@ int det_lock(det_mutex_t *mutex)
 
 	// if det is disabled simply same as pthread. 
 	if ( !det_is_enabled() ) 
-		return ops.__pthread_mutex_lock(&mutex->mutex);
+		return pthread_mutex_lock(&mutex->mutex);
 
 	// disable count       
 	lret = disable_logical_clock(); 
@@ -774,7 +734,7 @@ int det_lock(det_mutex_t *mutex)
 	// wait for turn 
 	clock = wait_for_turn();
 
-	ret = ops.__pthread_mutex_lock(&mutex->mutex);
+	ret = pthread_mutex_lock(&mutex->mutex);
 	DBG(1, "acq(%d)\n", mutex->id); 
 
 #else // USE_NESTED_LOCK
@@ -786,7 +746,7 @@ int det_lock(det_mutex_t *mutex)
 
 	while ( 1 ) {
 		if ( (int)GetHeadQ(&mutex->queue) == myid && 
-			 ops.__pthread_mutex_trylock(&mutex->mutex) == 0 ) 
+			 pthread_mutex_trylock(&mutex->mutex) == 0 ) 
 		{ // success. 
 			DBG(3, "--trylock");
 			if ( mutex->released_logical_time >= clock ) 
@@ -795,7 +755,7 @@ int det_lock(det_mutex_t *mutex)
 				    mutex->released_logical_time); 
 				
 				incr = mutex->released_logical_time - clock; 
-				ops.__pthread_mutex_unlock(&mutex->mutex); 
+				pthread_mutex_unlock(&mutex->mutex); 
 				// deterministic fast forward. 
 				wa[myid].sw_clock += incr; 
 			}
@@ -845,7 +805,7 @@ int det_unlock(det_mutex_t *mutex)
 
 	// if det is disabled simply same as pthread. 
 	if ( !det_is_enabled() ) 
-		return ops.__pthread_mutex_unlock(&mutex->mutex);
+		return pthread_mutex_unlock(&mutex->mutex);
 
 	// must be initialized first. 
 	assert( max_thr > 0 ); 
@@ -859,7 +819,7 @@ int det_unlock(det_mutex_t *mutex)
 	// update last sync logical time 
 	last_sync_logical_time = GET_CLOCK(myid); 
 
-	ret = ops.__pthread_mutex_unlock(&mutex->mutex); 
+	ret = pthread_mutex_unlock(&mutex->mutex); 
 
 	// increase logical clock 
 	wa[myid].sw_clock ++; 
@@ -883,13 +843,13 @@ int  det_cond_init(det_cond_t *cond)
 
 	for ( i = 0; i < MAX_THR; i++ ) { 
 		cond->waiter[i].id = i; 
-		ops.__pthread_mutex_init(&cond->waiter[i].mutex, NULL); 
-		ops.__pthread_mutex_lock(&cond->waiter[i].mutex); 
+		pthread_mutex_init(&cond->waiter[i].mutex, NULL); 
+		pthread_mutex_lock(&cond->waiter[i].mutex); 
 	}
 
-	ops.__pthread_mutex_lock(&count_mutex); 
+	pthread_mutex_lock(&count_mutex); 
 	cond->id = ++g_cond_count; 
-	ops.__pthread_mutex_unlock(&count_mutex); 
+	pthread_mutex_unlock(&count_mutex); 
 
 	DBG(1, "cond_init(%d)\n", cond->id); 
 	if ( lret == 0 ) enable_logical_clock(); 
@@ -915,7 +875,7 @@ int  det_cond_wait(det_cond_t *cond, det_mutex_t *mutex)
 	SET_CLOCK(myid, MAX_LOGICAL_CLOCK); 
 
 	// waiter->P()
-	ops.__pthread_mutex_lock(&lock->mutex);  
+	pthread_mutex_lock(&lock->mutex);  
 
 	// signaler must set this already. 
 	__sync_synchronize();
@@ -946,7 +906,7 @@ int  det_cond_signal(det_cond_t *cond)
 	if ( !IsEmptyQ(&cond->queue) ) { 
 		lock = (det_mutex_t*)DelQ(&cond->queue); 
 		SET_CLOCK(lock->id, clock + 1); 
-		ops.__pthread_mutex_unlock(&lock->mutex); 
+		pthread_mutex_unlock(&lock->mutex); 
 		DBG(1, "cond(%d) signal\n", cond->id); 
 	}
 
@@ -977,9 +937,9 @@ int det_barrier_init(det_barrier_t *barrier, int count)
 	barrier->target_count = count; 
 	barrier->wait_count   = 0; 
 
-	ops.__pthread_mutex_lock(&count_mutex); 
+	pthread_mutex_lock(&count_mutex); 
 	barrier->id = ++g_barr_count; 
-	ops.__pthread_mutex_unlock(&count_mutex); 
+	pthread_mutex_unlock(&count_mutex); 
 
 	det_lock_init(&barrier->wait_mutex); 
 	det_cond_init(&barrier->wait_cond); 
@@ -1081,7 +1041,7 @@ int det_create( pthread_t *thread, const pthread_attr_t *attr,
 		wa[id].log_file = stderr; 
 	}
 
-	ret = ops.__pthread_create(thread, attr, worker_thread, &wa[id]); 
+	ret = pthread_create(thread, attr, worker_thread, &wa[id]); 
 
 	// pthread_t 
 	wa[id].tid = *thread; 
@@ -1121,7 +1081,7 @@ int det_join ( pthread_t threadid, void **thread_return )
 	}
 	det_unlock(&w->thread_lock); 
 	
-	ret = ops.__pthread_join( threadid, thread_return); 
+	ret = pthread_join( threadid, thread_return); 
 
 	DBG(1, "JOIN(%d):exit \n", i);
 
@@ -1163,7 +1123,7 @@ void det_exit(void *value_ptr)
 
 	SET_CLOCK(myid, MAX_LOGICAL_CLOCK * 2 ); 
 
-	ops.__pthread_exit(value_ptr);
+	pthread_exit(value_ptr);
 }
 
 int det_cancel(pthread_t threadid)
@@ -1184,7 +1144,7 @@ int det_cancel(pthread_t threadid)
 	det_cond_signal(&w->thread_cond); 
 	det_unlock(&w->thread_lock); 
 
-	ops.__pthread_cancel(threadid); 
+	pthread_cancel(threadid); 
 
 	lret = disable_logical_clock(); 	
 
@@ -1268,14 +1228,14 @@ int det_dbg(const char *format, ...)
 
 	if ( wa[myid].log_file ) out = wa[myid].log_file;
 
-	ops.__pthread_mutex_lock(&dbg_mutex); 
+	pthread_mutex_lock(&dbg_mutex); 
 	fprintf(out, "[%2d] %lld:", myid, get_logical_clock(myid)); 
 	va_start(ap, format); 
 	ret = vfprintf(out, format, ap); 
 	va_end(ap); 
 	fflush(out);
 
-	ops.__pthread_mutex_unlock(&dbg_mutex); 
+	pthread_mutex_unlock(&dbg_mutex); 
 
 	// increase logical clock 
 	wa[myid].sw_clock ++; 

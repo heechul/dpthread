@@ -48,7 +48,6 @@ extern uint64_t det_get_clock();
 #include <sys/socket.h>
 
 #define USE_DET_TIME_OPT 0
-
 #define EVENTS_PER_USEC 122 // average store events per 1 usec. 
 
 #if USE_DET_TIME_OPT
@@ -94,18 +93,11 @@ extern uint64_t det_get_clock();
 // deterministic library calls 
 ////////////////////////////////////////////////////////////////////////////
 
-// unistd.h 
-static int (*__usleep)(useconds_t usec) = NULL; 
-static unsigned int (*__sleep)(unsigned int seconds) = NULL; 
-static long (*__sysconf)(int name) = NULL;
-static int (*__getopt)(int argc, char * const argv[], const char *optstring) = NULL; 
-
 int detio_usleep(unsigned int usecs)
 {
 	int ret; 
 	int lret = det_disable_logical_clock(); 
-	if ( !__usleep ) __usleep = dlsym(RTLD_NEXT, "usleep"); 
-	ret = __usleep(usecs); 
+	ret = usleep(usecs); 
 	if ( lret == 0 ) det_enable_logical_clock((uint64_t)usecs * EVENTS_PER_USEC);
 	return ret; 
 }
@@ -115,9 +107,8 @@ unsigned int  detio_sleep(unsigned int seconds)
 	unsigned int ret; 
 	// disable count       
 	int lret = det_disable_logical_clock();
-	if ( !__sleep ) __sleep = dlsym(RTLD_NEXT, "sleep"); 
 	// actual sleep 
-	ret = __sleep(seconds); 
+	ret = sleep(seconds); 
 	// resume logical clock 
 	if ( lret == 0 ) det_enable_logical_clock((uint64_t)seconds * 1000000 * EVENTS_PER_USEC);
 	return ret; 
@@ -127,8 +118,7 @@ long detio_sysconf(int name)
 {
 	long ret; 
 	int  lret = det_disable_logical_clock();
-	if ( !__sysconf ) __sysconf = dlsym(RTLD_NEXT, "sysconf"); 
-	ret = __sysconf(name); 
+	ret = sysconf(name); 
 	if ( lret == 0 ) det_enable_logical_clock(0); 
 	return ret; 
 }
@@ -137,37 +127,31 @@ int detio_getopt(int argc, char * const argv[], const char *optstring)
 {
 	int ret; 
 	int lret = det_disable_logical_clock(); 
-	if ( !__getopt ) __getopt = dlsym(RTLD_NEXT, "getopt"); 
-	ret = __getopt(argc, argv, optstring); 
+	ret = getopt(argc, argv, optstring); 
 	if ( lret == 0 ) det_enable_logical_clock(0);
 	return ret; 
 }
 
 // signal.h 
 /* non-deterministic I/O, external signal from user or other program */ 
-static int (*__sigwait)(const sigset_t *set, int *sig) = NULL; 
 
 int detio_sigwait(const sigset_t *set, int *sig)
 {
 	int ret;
 
 	det_exit_logical_clock(); 
-	if ( !__sigwait ) __sigwait = dlsym(RTLD_NEXT, "sigwait"); 
-	ret = __sigwait(set, sig); 
+	ret = sigwait(set, sig); 
 	det_adjust_logical_clock(); // minimize non-determinism. 
 	return ret; 
 }
 
 // malloc.h 
-static void *(*__valloc)(size_t size) = NULL; 
-static void (*__free)(void *ptr) = NULL;
 
 void *detio_valloc(size_t size) 
 {
 	void *ptr;
 	int lret = det_disable_logical_clock(); 
-	if ( !__valloc ) __valloc = dlsym(RTLD_NEXT, "valloc"); 
-	ptr = __valloc(size); 
+	ptr = valloc(size); 
 	if ( lret == 0 ) det_enable_logical_clock(0); 
 	return ptr; 
 }
@@ -175,26 +159,17 @@ void *detio_valloc(size_t size)
 void detio_free(void *ptr) 
 {
 	int lret = det_disable_logical_clock(); 
-	if ( !__free ) __free = dlsym(RTLD_NEXT, "free"); 
-	__free(ptr); 
+	free(ptr); 
 	if ( lret == 0 ) det_enable_logical_clock(EVENTS_free);
 }
 
 
 // stdio.h 
-static int (*__putchar)(int c) = NULL; 
-static char* (*__fgets)(char *s, int size, FILE *stream) = NULL;
-static int (*__fgetc)(FILE *stream) = NULL; 
-static int (*__fflush)(FILE *stream) = NULL; 
-static int (*__fclose)(FILE *fp) = NULL; 
-static FILE* (*__fopen)(const char *path, const char *mode) = NULL;
-
 int detio_putchar(int c)
 {
 	int ret; 
 	int lret = det_disable_logical_clock(); 
-	if ( !__putchar ) __putchar = dlsym(RTLD_NEXT, "putchar"); 
-	ret = __putchar(c); 
+	ret = putchar(c); 
 	if ( lret == 0 ) det_enable_logical_clock(0); 
 	return ret; 
 }
@@ -215,8 +190,7 @@ int detio_fflush(FILE *stream)
 {
 	int ret; 
 	int lret = det_disable_logical_clock(); 
-	if ( !__fflush ) __fflush = dlsym(RTLD_NEXT, "fflush"); 	
-	ret = __fflush(stream); 
+	ret = fflush(stream); 
 	if ( lret == 0 ) det_enable_logical_clock(0); 
 	return ret; 
 }
@@ -227,11 +201,10 @@ int detio_fprintf(FILE *fp, const char *format, ...)
 	va_list ap; 
 	int lret = det_disable_logical_clock(); 
 
-	if ( !__fflush ) __fflush = dlsym(RTLD_NEXT, "fflush"); 	
 	va_start(ap, format); 
 	ret = vfprintf(fp, format, ap); 
 	va_end(ap); 
-	__fflush(fp);
+	fflush(fp);
 
 	if ( lret == 0 ) det_enable_logical_clock(EVENTS_printf); 
 	return ret; 
@@ -242,8 +215,7 @@ char *detio_fgets(char *s, int size, FILE *stream)
 {
 	char *ret; 
 	int lret = det_disable_logical_clock(); 
-	if ( !__fgets ) __fgets = dlsym(RTLD_NEXT, "fgets"); 
-	ret = __fgets(s, size, stream); 
+	ret = fgets(s, size, stream); 
 	if ( lret == 0 ) det_enable_logical_clock(EVENTS_fgets);
 	return ret; 
 }
@@ -252,8 +224,7 @@ int detio_fgetc(FILE *stream)
 {
 	int ret; 
 	int lret = det_disable_logical_clock(); 
-	if ( !__fgetc ) __fgetc = dlsym(RTLD_NEXT, "fgetc"); 
-	ret = __fgetc(stream); 
+	ret = fgetc(stream); 
 	if ( lret == 0 ) det_enable_logical_clock(EVENTS_fgetc);
 	return ret; 
 }
@@ -288,8 +259,7 @@ int detio_fclose(FILE *fp)
 {
 	int ret; 
 	int lret = det_disable_logical_clock(); 
-	if ( !__fclose ) __fclose = dlsym(RTLD_NEXT, "fclose"); 
-	ret = __fclose(fp); 
+	ret = fclose(fp); 
 	if ( lret == 0 ) det_enable_logical_clock(EVENTS_fclose);
 	return ret; 
 }
@@ -298,8 +268,7 @@ FILE *detio_fopen(const char *path, const char *mode)
 {
 	FILE *fp; 
 	int lret = det_disable_logical_clock();
-	if ( !__fopen ) __fopen = dlsym(RTLD_NEXT, "fopen"); 
-	fp = __fopen(path, mode); 
+	fp = fopen(path, mode); 
 	if ( lret == 0 ) det_enable_logical_clock(EVENTS_fopen);
 	return fp; 
 }

@@ -61,6 +61,10 @@
 #define pthread_cond_destroy(c) 0 
 #define pthread_cond_timedwait(c,m,t) det_cond_wait(c,m)
 
+#define pthread_testcancel() 0
+#define pthread_setcancelstate(s,os) 0
+#define pthread_setcanceltype(t,ot) 0 
+
 ///////////////////////////////////////////////////////////////////
 // external libraries 
 ///////////////////////////////////////////////////////////////////
