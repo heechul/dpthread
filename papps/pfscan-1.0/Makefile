@@ -24,9 +24,9 @@ SOL_LIBS= -lpthread -lnsl -lsocket
 
 ## Linux 2.4 with Gcc 2.96
 DPTHREAD_DIR=../..
-LNX_CC=gcc -Wall -g -O -I$(DPTHREAD_DIR)/include -L$(DPTHREAD_DIR)/lib -DHEECHUL 
+LNX_CC=gcc -Wall -g -O -I$(DPTHREAD_DIR)/include -L$(DPTHREAD_DIR)/lib -DHEECHUL -include dpthread-wrapper.h 
 #LNX_LDOPTS=-Wl,-s 
-LNX_LIBS=-lpthread -lnsl -ldpthread
+LNX_LIBS=-lpthread -lnsl -ldpthread -lpfm
 
 
 OBJS = pfscan.o bm.o version.o pqueue.o
