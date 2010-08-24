@@ -1,7 +1,7 @@
 #!/bin/bash
-# EMAIL="heechul.yun@gmail.com"
+EMAIL="heechul.yun@gmail.com"
 NPROC=`cat src/config.h | grep CPU | awk '{ print $3 }'`
-# NPROC=4
+NPROC=2
 
 # this prevent counting lazy binding of ld.so 
 LD_BIND_NOW=on  

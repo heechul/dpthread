@@ -33,7 +33,7 @@ config.h:
 	sh -c ./detect_cpus.sh 
 
 libdpthread.so.1: $(OBJS)
-	gcc -fPIC -shared -Wl,-soname,libdpthread.so.1 -ldl -lpthread -lpfm -o libdpthread.so.1  $(OBJS) $(CFLAGS)
+	gcc -fPIC -shared -Wl,-soname,libdpthread.so.1 -lpthread -lpfm -o libdpthread.so.1  $(OBJS) $(CFLAGS)
 	[ ! -f "libdpthread.so" ] && ln -s libdpthread.so.1 libdpthread.so || echo "exist" 
 	cp -a libdpthread.so* ../lib
 

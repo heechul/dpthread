@@ -92,11 +92,6 @@ extern uint64_t det_get_clock();
 // deterministic system calls 
 ////////////////////////////////////////////////////////////////////////////
 
-static ssize_t (*__read)(int fd, void *buf, size_t count) = NULL; 
-static ssize_t (*__write)(int fd, const void *buf, size_t count) = NULL; 
-static int (*__stat)(const char *path, struct stat *buf) = NULL; 
-static int (*__fstat)(int fd, struct stat *buf) = NULL; 
-
 ssize_t detio_read(int fd, void *buf, size_t count)
 {
 	det_increase_logical_clock(EVENTS_read);
@@ -134,10 +129,6 @@ int detio_gettimeofday(struct timeval *tv, struct timezone *tz)
 }
 
 // socket.h 
-static ssize_t (*__recv)(int sockfd, void *buf, size_t len, int flags) = NULL; 
-static ssize_t (*__send)(int sockfd, const void *buf, size_t len, int flags) = NULL; 
-static int (*__select)(int nfds, fd_set *readfds, fd_set *writefds,
-		       fd_set *exceptfds, struct timeval *timeout) = NULL; 
 
 /* non-deterministic network packet reception. */ 
 ssize_t detio_recv(int sockfd, void *buf, size_t len, int flags)
@@ -191,14 +182,5 @@ int detio_select(int nfds, fd_set *readfds, fd_set *writefds,
 
 void  det_posix_init()
 {
-	int lret = det_disable_logical_clock(); 
-	if ( !__read ) __read = dlsym(RTLD_NEXT, "read"); 	
-	if ( !__write ) __write = dlsym(RTLD_NEXT, "write"); 	
-	if ( !__stat ) __stat = dlsym(RTLD_NEXT, "stat"); 	
-	if ( !__fstat ) __fstat = dlsym(RTLD_NEXT, "fstat"); 	
-	if ( !__recv) __recv = dlsym(RTLD_NEXT, "recv"); 	
-	if ( !__send) __send = dlsym(RTLD_NEXT, "send"); 	
-	if ( !__select) __select = dlsym(RTLD_NEXT, "select"); 	
-
-	if ( lret == 0 ) det_enable_logical_clock(0); 
+	// nothing 
 }
