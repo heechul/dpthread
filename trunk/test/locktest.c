@@ -1,5 +1,5 @@
 /* 
- * microbench 
+ * microbench for lock operation 
  * 
  * REV-309. configuration 
  *   USE_NESTED_LOCK 1
@@ -69,14 +69,6 @@ my_compa(void *v)
 
 	int compTime = (int)v; 
 
-#if USE_DPTHREAD
-	fprintf(stdout, "[%d] compTime is %d\n", det_get_pid(), compTime); 
-	// det_disable(); 
-
-#else 
-	fprintf(stdout, "[%d] compTime is %d\n", getpid(), compTime); 
-#endif 
-
 	for ( i = 0; i < iteration; i++) { 
 		int val; 
 
@@ -86,9 +78,6 @@ my_compa(void *v)
 		val = sum ++; 
 		pthread_mutex_unlock(&mutexsum); 
 	}
-#if USE_DPTHREAD
-	// det_enable(); 
-#endif 
 
 	finished = 1; 
 	return NULL; 
@@ -99,13 +88,6 @@ my_compb(void *v)
 {
 	int compTime = (int)v; 
 
-#if USE_DPTHREAD
-	fprintf(stdout, "[%d] compTime is %d\n", det_get_pid(), compTime); 
-	// det_disable(); 
-#else 
-	fprintf(stdout, "[%d] compTime is %d\n", getpid(), compTime); 
-#endif 
-
 	while ( !finished ) { 
 		int val; 
 
@@ -115,9 +97,6 @@ my_compb(void *v)
 		val = sum ++; 
 		pthread_mutex_unlock(&mutexsum); 
 	}
-#if USE_DPTHREAD
-//	det_enable(); 
-#endif 
 	return NULL; 
 }
 
@@ -179,9 +158,6 @@ int main(int argc, char *argv[])
 	pthread_mutex_init(&mutexsum, NULL); 		
 	pthread_barrier_init(&barrier, NULL, max_thr); 
 
-#if USE_DPTHREAD
-//	det_set_debug(1); 
-#endif 
 	for(i=0; i < max_thr - 1; i++) {
 		pthread_create(allthr+i, NULL, my_compb, (void *)comp_B);
 	}
