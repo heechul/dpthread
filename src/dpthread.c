@@ -48,17 +48,21 @@
 
 #define PROFILE_KERNEL_EVENTS 0 
 
-static const int64_t MAX_LOGICAL_CLOCK=20000000000000LL;
+#define min(a,b)  (((a) < (b)) ? (a) : (b))
+#define max(a,b)  (((a) > (b)) ? (a) : (b))
+#define abs(a)    (((a) > 0) ? (a) : (-(a)))
 
 #define SET_CLOCK(id, clock) {\
 	__sync_synchronize(); \
 	wa[id].sw_clock = (clock) - wa[id].hw_clock; \
 	__sync_synchronize(); }
 #define GET_CLOCK(id) (wa[id].sw_clock + wa[id].hw_clock)
+#define MAX_LOGICAL_CLOCK 20000000000000LL
 
 ////////////////////////////////////////////////////////////////////////////////
 // global shared data 
 ////////////////////////////////////////////////////////////////////////////////
+
 static int __thread myid = 0;
 
 static int num_processors = 0; // set in det_init() 
@@ -129,9 +133,33 @@ static struct perf_mon __thread perf_logical;
 static struct perf_mon __thread perf_enable; 
 static struct perf_mon __thread perf_disable; 
 
+
 ///////////////////////////////////////////////////////////////////////////////////
-// utility functions 
-///////////////////////////////////////////////////////////////////////////////////
+// dpthread internal function 
+//////////////////////////////////////////////////////////////////////////////////
+
+static pid_t gettid(void)
+{
+	return (pid_t)syscall(__NR_gettid);
+}
+
+static unsigned int get_usecs()
+{
+#if USE_TIMING 
+	static struct timeval  base;
+	struct timeval         time;
+	
+	gettimeofday(&time, NULL);
+	if (!base.tv_usec) {
+		base = time;
+	}
+	return ((time.tv_sec - base.tv_sec) * 1000000 +
+		(time.tv_usec - base.tv_usec));
+#else 
+	return 0; 
+#endif 
+}
+
 static pthread_mutex_t dbg_mutex = PTHREAD_MUTEX_INITIALIZER; 
 
 static void DBG(int level, char *format, ...)
@@ -161,31 +189,6 @@ static void DBG(int level, char *format, ...)
 	}
 }
 
-static pid_t gettid(void)
-{
-	return (pid_t)syscall(__NR_gettid);
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-// dpthread internal function 
-//////////////////////////////////////////////////////////////////////////////////
-
-static unsigned int get_usecs()
-{
-#if USE_TIMING 
-	static struct timeval  base;
-	struct timeval         time;
-	
-	gettimeofday(&time, NULL);
-	if (!base.tv_usec) {
-		base = time;
-	}
-	return ((time.tv_sec - base.tv_sec) * 1000000 +
-		(time.tv_usec - base.tv_usec));
-#else 
-	return 0; 
-#endif 
-}
 
 /**
  * read performance counter data 
@@ -370,8 +373,10 @@ retry:
 		other_clock = get_logical_clock(id);
 
 		if ( other_clock < my_clock ||  // i'm not the minimum  
-		     ( other_clock == my_clock && myid > id) ) 
+		     ( other_clock == my_clock && myid > id) ) {
+			pthread_yield(); 
 			goto retry; 
+		}
 	}
 	
 	__sync_synchronize(); 
@@ -442,6 +447,7 @@ static void *worker_thread(void *v)
 	struct worker_args *w = (struct worker_args *)v; 
 	int ret; 
 	unsigned start, elapsed; 
+	char *ptr; 
 	
 	/* assign myid (TLS) */ 
 	myid = w->id; 
@@ -455,6 +461,14 @@ static void *worker_thread(void *v)
 	CPU_ZERO(&cmask);
 	CPU_SET(myid % num_processors, &cmask);
 	sched_setaffinity(0, num_processors, &cmask); 
+
+	if ( (ptr = getenv("DPTHREAD_RT") ) ) { 
+		struct sched_param param;
+		param.sched_priority = 1; 
+		if(sched_setscheduler(0, SCHED_FIFO, &param) == -1) {
+			perror("sched_setscheduler failed");
+		}
+	}
 
 	/* open counter */ 
 	open_pfm_counter(w); 
@@ -571,6 +585,14 @@ int det_init(int argc, char *argv[])
 	}
 	if ( (ptr = getenv("DPTHREAD_LOG_FILE")) ) { 
 		debug_log_file = ptr; 
+	}
+
+	if ( (ptr = getenv("DPTHREAD_RT") ) ) { 
+		struct sched_param param;
+		param.sched_priority = 1; 
+		if(sched_setscheduler(0, SCHED_FIFO, &param) == -1) {
+			perror("sched_setscheduler failed");
+		}
 	}
 
 	// if ( (ptr = getenv("LD_PRELOAD")) && strstr(ptr, "libdetio.so") )
@@ -944,8 +966,8 @@ int det_barrier_init(det_barrier_t *barrier, int count)
 	det_lock_init(&barrier->wait_mutex); 
 	det_cond_init(&barrier->wait_cond); 
 
-	DBG(0, "lock %d is for barrier\n", g_lock_count); 
-	DBG(0, "cond %d is for barrier\n", g_cond_count); 
+	DBG(1, "lock %d is for barrier\n", g_lock_count); 
+	DBG(1, "cond %d is for barrier\n", g_cond_count); 
 	return 0; 
 }
 
@@ -1350,4 +1372,8 @@ static void self_test()
 	    dur, dur / SELF_TEST_LOOP ); 
 }
 #endif 
+
+///////////////////////////////////////////////////////////////////////////////////
+// utility functions 
+///////////////////////////////////////////////////////////////////////////////////
 
