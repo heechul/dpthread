@@ -92,6 +92,24 @@ extern uint64_t det_get_clock();
 // deterministic system calls 
 ////////////////////////////////////////////////////////////////////////////
 
+ssize_t detio_pread(int fd, void *buf, size_t count, off_t offset)
+{
+	ssize_t ret; 
+	int lret = det_disable_logical_clock(); 
+	ret = pread(fd, buf, count, offset); 
+	if ( lret == 0 ) det_enable_logical_clock(0); 
+	return ret; 
+}
+
+ssize_t detio_pwrite(int fd, const void *buf, size_t count, off_t offset)
+{
+	ssize_t ret; 
+	int lret = det_disable_logical_clock(); 
+	ret = pwrite(fd, buf, count, offset); 
+	if ( lret == 0 ) det_enable_logical_clock(0); 
+	return ret; 
+}
+
 ssize_t detio_read(int fd, void *buf, size_t count)
 {
 	det_increase_logical_clock(EVENTS_read);

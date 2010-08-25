@@ -710,17 +710,16 @@ int det_trylock(det_mutex_t *mutex)
 	// update last sync logical time 
 	last_sync_logical_time = GET_CLOCK(myid); 
 	
-
 	if ( ret == 0 ) {
 		DBG(1, "trylock acq(%d)\n", mutex->id);
 		// statistic 
 		lock_count ++; 
+
+		// remove from the queue. 
+		DelQ(&mutex->queue); 
 	} else {
 		DBG(1, "trylock fail(%d)\n", mutex->id); 
 	}
-
-	// remove from the queue. 
-	DelQ(&mutex->queue); 
 
 	// increase logical clock 
 	wa[myid].sw_clock++; 
