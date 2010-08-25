@@ -17,7 +17,7 @@ LDFLAGS += $(LIBS)
 # LDFLAGS += -L../../crest-mt/mini-libc
 # LIBS += -lminiClibc 
 
-TARGETS=deadlock multivar order locktest cond_wait 
+TARGETS=deadlock multivar order bankacct locktest cond_wait 
 
 all: $(TARGETS)
 

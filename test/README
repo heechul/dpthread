@@ -1,8 +1,32 @@
-locktest - for lock performance comparison with/without deterministic execution 
+deadlock.c
+	Thread 1 and Thread 2 try to acquire locks in reverse order. 
+	In standard pthread environment, this mean deadlock is possible 
+	depending on timing. However, in dpthread the behavior is determined 
+	by the input; in other words, if it worked without a deadlock for a 
+	input, it will be the same all the time for that input. 
 
-deadlock - thread1 and thread2 try to acquire locks in reverse order. 
-	   In standard pthread environment, this mean deadlock is possible depending on timing.
-	   However, in dpthread the behavior is determined by the input; in other words, if it worked without 
-	   a deadlock for a input, it will be the same all the time for that input. 
-	    
+bankacct.c
+	Thread 1 deposit while Thread 2 withdraw from the same bank account.
+	Each thread first read current balance and the perform either deposit
+	or withdraw. The read and update must be atomic while the code only 
+	use lock for each indivisual read and update separately.
+
+order.c 
+	Programmer asssumed that Thread 1 execute first and Thread 2 excute
+	after that. If Thread 2 execute first, which is possible in pthread, 
+	it result in segfault. 
+	This example is taken from Figure 2 of "Learning from Mistakes -- A 
+	Comprehensive Study on Real World Concurrency Bug Characteristics", 
+	ASPLOS'08.  
+
+multivar.c 
+	Two variables, g_str and g_length, must be updated/accessed atomically 
+	to prevent inconsistency while the code only protect each variable at 
+	a time which does not provide the needed multi-variable atomicity. 
+	This example is taken from Figure 1 of "Finiding Concurrency Bugs with 
+	Context-Aware Communication Graphs", MICRO'09.  
+	   
+locktest.c
+	 for lock performance comparison with/without deterministic execution 
+
 
