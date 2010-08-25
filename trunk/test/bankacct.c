@@ -28,18 +28,7 @@ static volatile int g_account;  // account
 
 static pthread_mutex_t lock; 
 
-// local functions 
-unsigned long fib(unsigned long n)
-{
-	if (n == 0)
-		return 0;
-	if (n == 1)
-		return 2;
-	return fib(n-1)+fib(n-2);
-}
-
 // worker definitions 
-
 void *
 Deposit(void *v)
 {
