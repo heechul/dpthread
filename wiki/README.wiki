@@ -2,13 +2,10 @@
 
 = Introduction =
 
-# motivation
 The most notorious type of bugs are thread interleaving dependent bugs; they are very hard to diagnose and reproduce. 
 
-# problems 
 Many bug detection tools have been developed to detect those interleaving bugs for the last few years. While they are generally useful, they can not guarantee all interleaving bugs are identified simply because there are too many possible interleaving. 
 
-# contribution 
 dpthread is a deterministic alternative of standard pthread. We call a program execution is deterministic, iff its correctness only depends on the input (does not depend on the thread interleaving order). 
 
 The key idea of dpthread is the same as Kendo (ASPLOS09): determine the global order of all synchronization accesses based on instruction count. The goal is, however, different in a sense that we target to more general purpose multi-threaded application while Kendo primarily focus on parallel applications. Also, dpthread is very easy to use because it is built on top of standard pthread runtime and perf_event (linux kernel interface to access performance counter h/w. 
