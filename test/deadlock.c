@@ -21,7 +21,7 @@
 #include <dpthread-wrapper.h>
 
 // defines 
-#define DBG(x) x 
+#define DBG(x) x
 
 // glocal variables 
 static pthread_mutex_t l1, l2; 
@@ -46,9 +46,11 @@ unsigned long fib(unsigned long n)
 void compute(int input)
 {
 	int i; 
+	DBG(printf("[%d] compute - begin %d\n", gettid(), input)); 
 	for ( i = 0; i < input; i++ ) { 
 		fib(2); 
 	}
+	DBG(printf("[%d] compute - end %d\n", gettid(), input)); 
 }
 
 void *
@@ -123,7 +125,7 @@ int main(int argc, char *argv[])
 
 	// initialize 
 	val1 = val2 = 0; 
-	x = y = 0; 
+	x = 10; y = 0; 
 
 	// parameters 
 	while((i=getopt(argc, argv, "x:y:h")) != EOF) {

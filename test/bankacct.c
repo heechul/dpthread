@@ -18,7 +18,7 @@
 #include <assert.h>
 
 // NOTE: uncomment the following line to make app deterministic 
-//#include <dpthread-wrapper.h>
+#include <dpthread-wrapper.h>
 
 // defines 
 #define DBG(x) x 
@@ -39,9 +39,6 @@ unsigned long fib(unsigned long n)
 }
 
 // worker definitions 
-int Read()
-{
-}
 
 void *
 Deposit(void *v)

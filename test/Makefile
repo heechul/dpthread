@@ -3,7 +3,6 @@ TOPDIR  := $(shell if [ "$$PWD" != "" ]; then echo $$PWD; else pwd; fi)/..
 include $(TOPDIR)/config.mk
 include $(TOPDIR)/rules.mk
 
-
 ifeq ($(TEST),1)
 	CFLAGS += -O0 
 endif
