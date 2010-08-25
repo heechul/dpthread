@@ -29,7 +29,7 @@
 
 #define MY_PRIORITY (49) 
 #define MAX_SAFE_STACK (8*1024)
-#define MAX_ITER 100000
+#define MAX_ITER 1000
 
 #include <dpthread-wrapper.h>
 
@@ -170,6 +170,9 @@ int main(int argc, char *argv[])
 
 	printf("sum : %d\n", sum); 
 
+#if USE_DPTHREAD
+	det_print_stat(); 
+#endif 
 	return 0; 
 }
 
