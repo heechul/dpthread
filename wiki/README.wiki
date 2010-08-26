@@ -4,7 +4,7 @@
 
 The most notorious type of bugs are thread interleaving dependent bugs; they are very hard to diagnose and reproduce. 
 
-Many bug detection tools have been developed to detect those interleaving bugs for the last few years. While they are generally useful, they can not guarantee all interleaving bugs are identified simply because there are too many possible interleaving -- it is called state-space explosion. 
+Many bug detection tools have been developed to detect those interleaving bugs for the last few years. While they are generally useful, they can not guarantee all interleaving bugs are identified simply because there are too many possible interleavings -- for example, a program with 10 threads each with 1 instruction have 10! interleavings.  
 
 dpthread is a deterministic alternative of standard pthread. We call a program execution is deterministic, iff its correctness only depends on the input (does not depend on the thread interleaving order). 
 
