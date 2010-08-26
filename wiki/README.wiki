@@ -51,7 +51,7 @@ But if you run it with dpthread, the behavior is deterministic with respect to i
 {{{
 $ cd test/
 $ make deadlock 
-$ DPTHREAD_DEBUG=-1 ./deadlock -x 0 -y 0
+$ DPTHREAD_DEBUG=0 ./deadlock -x 0 -y 0
 [1] acquired l1
 [1] acquired l2
 [1] release  l2
