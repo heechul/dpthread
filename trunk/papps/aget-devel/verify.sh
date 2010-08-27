@@ -17,7 +17,7 @@ MATCH_MODE="INST_COUNT" # must match exact instruction count
 
 #CMD='./BARNES < input.p$NPROC'
 export DPTHREAD_DEBUG=1
-ITER=100
+ITER=10
 i=0
 
 error()
