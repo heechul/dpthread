@@ -15480,6 +15480,10 @@ struct sqlite3_mutex {
   int trace;                 /* True to trace changes */
 #endif
 };
+#ifdef HEECHUL 
+static pthread_mutex_t g_race_lock; 
+#endif 
+
 #ifdef SQLITE_DEBUG
 #define SQLITE3_MUTEX_INITIALIZER { PTHREAD_MUTEX_INITIALIZER, 0, 0, (pthread_t)0, 0 }
 #else
@@ -15616,10 +15620,10 @@ static sqlite3_mutex *pthreadMutexAlloc(int iType){
       assert( iType-2 < ArraySize(staticMutexes) );
       p = &staticMutexes[iType-2];
 #if HEECHUL
+      pthread_mutex_lock(&g_race_lock); 
       if ( p->id == 0 ) 
 	      p->id = iType;
-      else 
-	      assert(p->id == iType);
+      pthread_mutex_unlock(&g_race_lock); 
 #else 
       p->id = iType;
 #endif 
@@ -15669,6 +15673,21 @@ static void pthreadMutexEnter(sqlite3_mutex *p){
   ** are not met, then the mutexes will fail and problems will result.
   */
   {
+#if HEECHUL
+    pthread_t self;
+    pthread_mutex_lock(&g_race_lock); 	  
+    self = pthread_self();
+    if( p->nRef>0 && pthread_equal(p->owner, self) ){
+      p->nRef++;
+      pthread_mutex_unlock(&g_race_lock);       
+    }else{
+      pthread_mutex_unlock(&g_race_lock); 
+      pthread_mutex_lock(&p->mutex);
+      assert( p->nRef==0 );
+      p->owner = self;
+      p->nRef = 1;
+    }
+#else 
     pthread_t self = pthread_self();
     if( p->nRef>0 && pthread_equal(p->owner, self) ){
       p->nRef++;
@@ -15678,6 +15697,8 @@ static void pthreadMutexEnter(sqlite3_mutex *p){
       p->owner = self;
       p->nRef = 1;
     }
+#endif 
+
   }
 #else
   /* Use the built-in recursive mutexes if they are available.
@@ -96580,6 +96601,10 @@ SQLITE_API char *sqlite3_temp_directory = 0;
 SQLITE_API int sqlite3_initialize(void){
   sqlite3_mutex *pMaster;                      /* The main static mutex */
   int rc;                                      /* Result code */
+
+#if HEECHUL 
+  pthread_mutex_init(&g_race_lock, NULL); 
+#endif 
 
 #ifdef SQLITE_OMIT_WSD
   rc = sqlite3_wsd_init(4096, 24);
