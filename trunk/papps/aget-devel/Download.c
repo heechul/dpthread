@@ -34,6 +34,8 @@
 
 extern sigset_t signal_set;
 
+#define DBG(x) 0
+
 unsigned int bwritten = 0;
 pthread_mutex_t bwritten_mutex;
 
@@ -110,9 +112,11 @@ void *http_get(void *arg) {
 	bwritten += dw;
 	pthread_mutex_unlock(&bwritten_mutex);
 
+	DBG(det_dbg("call testcancel\n")); 
+
 	pthread_testcancel();	/* Check for pending cancel requests */
 
-	det_dbg("Now begin\n"); 
+	DBG(det_dbg("Now begin\n")); 
 
 	while (td->offset < foffset) {
 		fd_set set;
@@ -133,7 +137,7 @@ void *http_get(void *arg) {
 		dr = recv(sd, rbuf, MAXBUFSIZ, 0);
 
 #if USE_DPTHREAD
-		if ( dr != MAXBUFSIZ) det_dbg("recv: %d\n", dr); 
+		if ( dr != MAXBUFSIZ) printf("recv: %d\n", dr); 
 #endif 
 		/* Set Cancellation Type back to Deferred */
 		pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED, NULL);
@@ -141,12 +145,12 @@ void *http_get(void *arg) {
 		if ((td->offset + dr) > foffset) {
 			dw = pwrite(td->fd, rbuf, foffset - td->offset, td->offset);
 #if USE_DPTHREAD
-			if ( dw != foffset - td->offset ) det_dbg("write: %d\n", dw); 
+			if ( dw != foffset - td->offset ) DBG(det_dbg("write: %d\n", dw)); 
 #endif 
 		} else {
 			dw = pwrite(td->fd, rbuf, dr, td->offset);
 #if USE_DPTHREAD
-			if ( dw != dr ) det_dbg("write: %d\n", dw); 
+			if ( dw != dr ) DBG(det_dbg("write: %d\n", dw)); 
 #endif 
 		}
 
