@@ -40,7 +40,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // definition 
 ////////////////////////////////////////////////////////////////////////////////
-#define USE_NESTED_LOCK  1  // 
+#define USE_NESTED_LOCK  1  // allow nested lock
+#define USE_RECURSIVE_LOCK 0  // allow recursive lock 
 #define USE_PERF_COUNTER 1  // 0 - read_count() always return 0. 
 #define USE_TIMING       0  // measure timing 
 #define USE_FAKE_DISABLE 0  // not using ioc_enable/disable, but read_count
@@ -199,7 +200,11 @@ static uint64_t __read_count(perf_event_desc_t *fds)
 	int ret; 
 	uint64_t values[3]; /* [0] - raw, [1] - time_enabled, [2] - time_running */ 
 	ret = read(fds->fd, values, sizeof(values));
-	assert(values[1] == values[2]); // owise. incorrect 
+	// assert(values[1] == values[2]); // owise. incorrect 
+	if ( values[1] != values[2] ) { 
+		DBG(0, "%s: values[]=%lld,%lld,%lld\n", 
+			__FUNCTION__, values[0], values[1], values[2]); 
+	}
 	return values[0]; 
 #else 
 	return 0; 
@@ -644,7 +649,7 @@ int det_lock_init(det_mutex_t *mutex)
 {
 	int ret; 
 	int lret;
-
+	pthread_mutexattr_t attr; 
 	// if not initialized, initialize. 
 	if ( max_thr == 0 ) det_init(0, NULL);
 	lret = disable_logical_clock(); 
@@ -658,7 +663,13 @@ int det_lock_init(det_mutex_t *mutex)
 
 	DBG(1, "mutex_init(%d)\n", mutex->id); 
 
-	ret = pthread_mutex_init(&mutex->mutex, NULL); 
+	pthread_mutexattr_init(&attr); 
+#if USE_MUTEX_RECURSIVE 
+	pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE); 
+#else 
+	pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_NORMAL); 
+#endif 
+	ret = pthread_mutex_init(&mutex->mutex, &attr); 
 	if ( lret == 0 ) enable_logical_clock(); 
 
 	return 0; 
@@ -1137,7 +1148,7 @@ void det_exit(void *value_ptr)
 
 	free(w->fds); 
 
-	DBG(1, "EXIT: (hw_evt:%lld, sw_evt:%lld) ndet_evt:%d, %d locks and %d barriers.\n", 
+	DBG(0, "EXIT: (hw_evt:%lld, sw_evt:%lld) ndet_evt:%d, %d locks and %d barriers.\n", 
 	    wa[myid].hw_clock, wa[myid].sw_clock, wa[myid].nondet_count, 
 	    lock_count, 
 	    barrier_count); 	
