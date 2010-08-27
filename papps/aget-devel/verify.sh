@@ -17,12 +17,25 @@ MATCH_MODE="INST_COUNT" # must match exact instruction count
 
 #CMD='./BARNES < input.p$NPROC'
 export DPTHREAD_DEBUG=1
-ITER=10
+ITER=100
 i=0
 
 error()
 {
     echo $* | mail -s "FAIL:aget-verify-`date`" $EMAIL
+    exit 1
+}
+
+error_diff()
+{
+    i=$2
+    previ=`expr $i - 1`
+    j=$3 
+
+    echo $* > err_report.mail
+    diff log$previ.p$j.sync log$i.p$j.sync >> err_report.mail 
+    cat err_report.mail | mail -s "FAIL:aget-verify-`date`" $EMAIL
+    cat err_report.mail 
     exit 1
 }
 
@@ -63,7 +76,7 @@ while true; do
 	j=0
 	while true; do 
 	    echo ">> compare log$previ.p$j vs log$i.p$j" 
-	    diff log$previ.p$j.sync log$i.p$j.sync > /dev/null || error "FAIL at $i th iteration. at proc $j" 
+	    diff log$previ.p$j.sync log$i.p$j.sync > /dev/null || error_diff "FAIL at $i th iteration. at proc $j" $i $j 
 	    j=`expr $j + 1`
 	    [ "$j" = "$NPROC" ] && break
 	done 
