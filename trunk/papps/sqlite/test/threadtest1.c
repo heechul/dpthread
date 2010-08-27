@@ -257,12 +257,17 @@ int main(int argc, char **argv){
   char *zFile;
   int i, n;
   pthread_t id[128];
+
+#if SQLITE_OMIT_AUTOINIT
+  sqlite3_initialize();
+#endif 
+
   if( argc>2 && strcmp(argv[1], "-v")==0 ){
     verbose = 1;
     argc--;
     argv++;
   }
-  if( argc<2 || (n=atoi(argv[1]))<1 ) n = 10;
+  if( argc<2 || (n=atoi(argv[1]))<1 ) n = 2;
   for(i=0; i<n; i++){
     char zBuf[200];
     sprintf(zBuf, "testdb-%d", (i+1)/2);
@@ -279,8 +284,6 @@ int main(int argc, char **argv){
 #if USE_DPTHREAD
   det_dbg("init lock and sig - end\n"); 
 #endif 
-
-  sqlite3_initialize(); // heechul 
 
   for(i=0; i<n; i++){
     zFile = sqlite3_mprintf("%d.testdb-%d", i%2+1, (i+2)/2);

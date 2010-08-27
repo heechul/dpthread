@@ -102,6 +102,10 @@ int main(int argc, char **argv){
   int i, rc;
   pthread_t aThread[2];
 
+#if SQLITE_OMIT_AUTOINIT
+  sqlite3_initialize();
+#endif 
+
   memset(aThread, 0, sizeof(aThread)); 
 
   if( strcmp(DB_FILE,":memory:") ){
