@@ -15673,21 +15673,6 @@ static void pthreadMutexEnter(sqlite3_mutex *p){
   ** are not met, then the mutexes will fail and problems will result.
   */
   {
-#if HEECHUL
-    pthread_t self;
-    pthread_mutex_lock(&g_race_lock); 	  
-    self = pthread_self();
-    if( p->nRef>0 && pthread_equal(p->owner, self) ){
-      p->nRef++;
-      pthread_mutex_unlock(&g_race_lock);       
-    }else{
-      pthread_mutex_unlock(&g_race_lock); 
-      pthread_mutex_lock(&p->mutex);
-      assert( p->nRef==0 );
-      p->owner = self;
-      p->nRef = 1;
-    }
-#else 
     pthread_t self = pthread_self();
     if( p->nRef>0 && pthread_equal(p->owner, self) ){
       p->nRef++;
@@ -15697,8 +15682,6 @@ static void pthreadMutexEnter(sqlite3_mutex *p){
       p->owner = self;
       p->nRef = 1;
     }
-#endif 
-
   }
 #else
   /* Use the built-in recursive mutexes if they are available.
@@ -16020,6 +16003,9 @@ static sqlite3_mutex *winMutexAlloc(int iType){
       break;
     }
   }
+#if USE_VALGRIND
+  DRD_IGNORE_VAR(*p); 
+#endif 
   return p;
 }
 
