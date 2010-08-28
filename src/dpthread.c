@@ -41,7 +41,7 @@
 // definition 
 ////////////////////////////////////////////////////////////////////////////////
 #define USE_NESTED_LOCK  1  // allow nested lock
-#define USE_RECURSIVE_LOCK 0  // allow recursive lock 
+#define USE_MUTEX_RECURSIVE 1  // allow recursive lock 
 #define USE_PERF_COUNTER 1  // 0 - read_count() always return 0. 
 #define USE_TIMING       0  // measure timing 
 #define USE_FAKE_DISABLE 0  // not using ioc_enable/disable, but read_count
@@ -649,7 +649,7 @@ int det_lock_init(det_mutex_t *mutex)
 {
 	int ret; 
 	int lret;
-	pthread_mutexattr_t attr; 
+
 	// if not initialized, initialize. 
 	if ( max_thr == 0 ) det_init(0, NULL);
 	lret = disable_logical_clock(); 
@@ -663,13 +663,8 @@ int det_lock_init(det_mutex_t *mutex)
 
 	DBG(1, "mutex_init(%d)\n", mutex->id); 
 
-	pthread_mutexattr_init(&attr); 
-#if USE_MUTEX_RECURSIVE 
-	pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE); 
-#else 
-	pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_NORMAL); 
-#endif 
-	ret = pthread_mutex_init(&mutex->mutex, &attr); 
+	ret = pthread_mutex_init(&mutex->mutex, NULL); 
+
 	if ( lret == 0 ) enable_logical_clock(); 
 
 	return 0; 
@@ -690,6 +685,10 @@ int det_trylock(det_mutex_t *mutex)
 	lret = disable_logical_clock(); 
 
 	DBG(1, "trylock(%d)\n", mutex->id);
+
+#if USE_MUTEX_RECURSIVE 
+	if ( mutex->last_owner == myid ) goto out; 
+#endif 
 
 	clock = wait_for_turn(); 
 	AddQ(&mutex->queue, (void *)myid);
@@ -732,6 +731,7 @@ int det_trylock(det_mutex_t *mutex)
 		DBG(1, "trylock fail(%d)\n", mutex->id); 
 	}
 
+out:
 	// increase logical clock 
 	wa[myid].sw_clock++; 
 
@@ -760,14 +760,17 @@ int det_lock(det_mutex_t *mutex)
 	// disable count       
 	lret = disable_logical_clock(); 
 
+#if USE_MUTEX_RECURSIVE 
+	if ( mutex->last_owner == myid ) goto out; 
+#endif 
+
 #if !USE_NESTED_LOCK
-	DBG(1, "acq(%d) enter\n", mutex->id);
+	DBG(2, "acq(%d) enter\n", mutex->id);
 
 	// wait for turn 
 	clock = wait_for_turn();
 
 	ret = pthread_mutex_lock(&mutex->mutex);
-	DBG(1, "acq(%d)\n", mutex->id); 
 
 #else // USE_NESTED_LOCK
 
@@ -817,6 +820,7 @@ int det_lock(det_mutex_t *mutex)
 	// remove from the queue. 
 	DelQ(&mutex->queue); 
 
+out: 
 	// increase logical clock 
 	wa[myid].sw_clock++; 
 
@@ -834,6 +838,9 @@ int det_unlock(det_mutex_t *mutex)
 	int lret; 
 
 	assert(mutex->id > 0 ); 
+
+	// clean up 
+	mutex->last_owner = -1; 
 
 	// if det is disabled simply same as pthread. 
 	if ( !det_is_enabled() ) 
@@ -855,6 +862,7 @@ int det_unlock(det_mutex_t *mutex)
 
 	// increase logical clock 
 	wa[myid].sw_clock ++; 
+
 	// resume logical clock 
 	if ( lret == 0 ) enable_logical_clock(); 
 
