@@ -41,7 +41,7 @@
 // definition 
 ////////////////////////////////////////////////////////////////////////////////
 #define USE_NESTED_LOCK  1  // allow nested lock
-#define USE_MUTEX_RECURSIVE 1  // allow recursive lock 
+#define USE_MUTEX_RECURSIVE 0  // allow recursive lock 
 #define USE_PERF_COUNTER 1  // 0 - read_count() always return 0. 
 #define USE_TIMING       0  // measure timing 
 #define USE_FAKE_DISABLE 0  // not using ioc_enable/disable, but read_count
