@@ -31,7 +31,6 @@
 #include "perf_util.h"
 
 #include <dpthread.h>
-#include <dpthread_deps.h> 
 #include <dlfcn.h>
 #include <atomic.h>
 
@@ -660,6 +659,8 @@ int det_lock_init(det_mutex_t *mutex)
 	mutex->id = ++g_lock_count; 
 	pthread_mutex_unlock(&count_mutex); 
 	mutex->released_logical_time = 0; 
+	mutex->owner = -1; 
+	mutex->ref = 0; 
 
 	DBG(1, "mutex_init(%d)\n", mutex->id); 
 
@@ -687,7 +688,10 @@ int det_trylock(det_mutex_t *mutex)
 	DBG(1, "trylock(%d)\n", mutex->id);
 
 #if USE_MUTEX_RECURSIVE 
-	if ( mutex->last_owner == myid ) goto out; 
+	if ( mutex->ref > 0 && mutex->owner == myid ) { 
+		mutex->ref++; 
+		goto out; 
+	} 
 #endif 
 
 	clock = wait_for_turn(); 
@@ -712,7 +716,7 @@ int det_trylock(det_mutex_t *mutex)
 		}
 		else 
 		{ // logically and physically ok. 
-			mutex->last_owner = myid; 
+			mutex->owner = myid; 
 		}
 	} 
 	assert(GET_CLOCK(myid) < MAX_LOGICAL_CLOCK); 
@@ -761,7 +765,10 @@ int det_lock(det_mutex_t *mutex)
 	lret = disable_logical_clock(); 
 
 #if USE_MUTEX_RECURSIVE 
-	if ( mutex->last_owner == myid ) goto out; 
+	if ( mutex->ref > 0 && mutex->owner == myid ) { 
+		mutex->ref++; 
+		goto out; 
+	} 
 #endif 
 
 #if !USE_NESTED_LOCK
@@ -796,7 +803,8 @@ int det_lock(det_mutex_t *mutex)
 			}
 			else 
 			{ // logically and physically ok. 
-				mutex->last_owner = myid; 
+				mutex->owner = myid; 
+				mutex->ref = 1; 
 				break; // quit the loop. 
 			}
 		} 
@@ -839,9 +847,6 @@ int det_unlock(det_mutex_t *mutex)
 
 	assert(mutex->id > 0 ); 
 
-	// clean up 
-	mutex->last_owner = -1; 
-
 	// if det is disabled simply same as pthread. 
 	if ( !det_is_enabled() ) 
 		return pthread_mutex_unlock(&mutex->mutex);
@@ -852,6 +857,13 @@ int det_unlock(det_mutex_t *mutex)
 	// disable count 	
 	lret = disable_logical_clock(); 
 
+#if USE_MUTEX_RECURSIVE 
+	// clean up 
+	mutex->ref--; 
+	if ( mutex->ref > 0 ) goto out; 
+#endif 
+
+
 	mutex->released_logical_time = get_logical_clock(myid) ;  
 	DBG(1, "rel(%d)\n", mutex->id); 
 
@@ -860,6 +872,7 @@ int det_unlock(det_mutex_t *mutex)
 
 	ret = pthread_mutex_unlock(&mutex->mutex); 
 
+out: 
 	// increase logical clock 
 	wa[myid].sw_clock ++; 
 

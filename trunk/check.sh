@@ -1,10 +1,12 @@
 #!/bin/bash
 EMAIL="heechul.yun@gmail.com"
 NPROC=`cat src/config.h | grep CPU | awk '{ print $3 }'`
-NPROC=2
+NPROC=4
 
 # this prevent counting lazy binding of ld.so 
 LD_BIND_NOW=on  
+
+export EMAIL 
 
 DIRS[0]="papps/splash2/codes/kernels/fft"
 EXES[0]="./FFT -m22 -p$NPROC"
@@ -34,7 +36,8 @@ fail()
 }
 
 echo "Verification" > log.check
-for i in 0 1 2 5; do 
+# for i in 0 1 2 5; do 
+for i in 5; do 
     echo ${DIRS[i]} ${EXES[i]} >> log.check 
     (cd "${DIRS[i]}"; make clean ) 
     (cd "${DIRS[i]}"; make ) >& log.build
