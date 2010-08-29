@@ -62,6 +62,8 @@ int  det_join ( pthread_t threadid, void **thread_return );
 void det_exit(void *value_ptr);
 int  det_get_pid(void); 
 
+int det_cancel(pthread_t threadid); 
+
 // synchronizations: lock, condition variable, barrier 
 int  det_lock_init(det_mutex_t *mutex); 
 int  det_lock(det_mutex_t *mutex);

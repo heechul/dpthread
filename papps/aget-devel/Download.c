@@ -34,7 +34,7 @@
 
 extern sigset_t signal_set;
 
-#define DBG(x) 0
+#define DBG(x) x 
 
 unsigned int bwritten = 0;
 pthread_mutex_t bwritten_mutex;
@@ -123,21 +123,31 @@ void *http_get(void *arg) {
 		/* Set Cancellation Type to Asynchronous
 		 * so that a blocking recv() doesn't cause problems
 		 */
-		pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
 
+		pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
+		
 		/* patch by Gurer Ozen	
 		 * in slow downloads, avoids excessive CPU consuming...
 		 */
+
+		/* 
+		 * FD_ZERO is defined in usr/include/bits/select.h as 
+		 * inline assembly. for some reason it's non-determinsitic 
+		 * maybe because of stosl ??? 
+		 * 
+		 * 08/29/2010 now it's handled by det-libc.c <heechul@illinois.edu> 
+		 */ 
+
 		FD_ZERO(&set);
 		FD_SET(sd,&set);
+
 		select(FD_SETSIZE,&set,NULL,NULL,NULL);
 		/* --end of patch	*/
-
 		memset(rbuf, 0, MAXBUFSIZ);
 		dr = recv(sd, rbuf, MAXBUFSIZ, 0);
 
 #if USE_DPTHREAD
-		if ( dr != MAXBUFSIZ) printf("recv: %d\n", dr); 
+		if ( dr != MAXBUFSIZ) det_dbg("recv: %d\n", dr); 
 #endif 
 		/* Set Cancellation Type back to Deferred */
 		pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED, NULL);
@@ -155,7 +165,6 @@ void *http_get(void *arg) {
 		}
 
 		td->offset += dw;
-
 		pthread_mutex_lock(&bwritten_mutex);
 		bwritten += dw;
 		pthread_mutex_unlock(&bwritten_mutex);
