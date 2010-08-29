@@ -15,6 +15,7 @@
 // internal use 
 #include <sys/syscall.h>
 #include <sys/types.h>
+#include <sys/select.h> 
 #include <sys/stat.h>
 #include <unistd.h>
 #include <stdio.h>
@@ -92,6 +93,14 @@ extern uint64_t det_get_clock();
 // deterministic system calls 
 ////////////////////////////////////////////////////////////////////////////
 
+// <sys/select.h> -- POSIX.1-2001 
+void det_FD_ZERO(fd_set *set)
+{
+	int lret = det_disable_logical_clock(); 	
+	FD_ZERO(set); 
+	if ( lret == 0 ) det_enable_logical_clock(0); 
+}
+
 ssize_t detio_pread(int fd, void *buf, size_t count, off_t offset)
 {
 	ssize_t ret; 
@@ -137,7 +146,7 @@ int detio_fstat(int fd, struct stat *buf)
 
 
 // based on program count. estimation. deterministic function. 
-int detio_gettimeofday(struct timeval *tv, struct timezone *tz)
+int detio_gettimeofday(struct timeval *tv, void *tz)
 {
 	uint64_t clock = det_get_clock(); 
         uint64_t usecs = (clock / EVENTS_PER_USEC); 
@@ -153,16 +162,23 @@ ssize_t detio_recv(int sockfd, void *buf, size_t len, int flags)
 {
 	int ret; 
 	size_t requested = len; 
-        int lret = det_disable_logical_clock();
+	size_t remain = len; 
+	int lret = det_disable_logical_clock();
+	int retry_cnt = 0; 
 
-	while ( len > 0 ) { 
-		ret = recv(sockfd, buf, len, flags); 
-		if ( ret == 0 ) {
-			requested -= len; 
+	while ( remain > 0 ) { 
+	retry:
+		ret = recv(sockfd, buf, remain, flags); 
+		if ( ret == 0 ) { // orderly shutdown 
+			requested -= remain; 
 			break; 
+		} else if ( ret < 0 && retry_cnt < 3) { 
+			retry_cnt++; 
+			goto retry; 
 		}
-		len -= ret; 
-	}
+		remain -= ret; 
+	} 
+
 	// det_adjust_logical_clock(); // minimize non-determinism. 
 	if ( lret == 0 ) det_enable_logical_clock(0); 
 	return requested; 
@@ -171,20 +187,10 @@ ssize_t detio_recv(int sockfd, void *buf, size_t len, int flags)
 ssize_t detio_send(int sockfd, const void *buf, size_t len, int flags)
 {
 	int ret; 
-	size_t requested = len; 
-        int lret = det_disable_logical_clock();
-
-	while ( len > 0 ) { 
-		ret = send(sockfd, buf, len, flags); 
-		if ( ret == 0 ) { 
-			requested -= len; 
-			break; 
-		}
-		len -= ret; 
-	}
-	// det_adjust_logical_clock(); // minimize non-determinism. 
+	int lret = det_disable_logical_clock();
+	ret = send(sockfd, buf, len, flags); 
 	if ( lret == 0 ) det_enable_logical_clock(0); 
-	return requested; 
+	return ret; 
 }
 
 // #include <sys/select.h>
@@ -192,7 +198,9 @@ int detio_select(int nfds, fd_set *readfds, fd_set *writefds,
 		 fd_set *exceptfds, struct timeval *timeout)
 {
 	int ret; 
+	int lret = det_disable_logical_clock();
 	ret = select(nfds, readfds, writefds, exceptfds, timeout); 
+	if ( lret == 0 ) det_enable_logical_clock(0); 
 	// det_adjust_logical_clock(); // minimize non-determinism. 
 	return ret; 
 }

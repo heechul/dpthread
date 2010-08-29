@@ -107,6 +107,10 @@
 // #define open(path, flags) detio_open(path, flags)
 // #define open(path, flags, mode) detio_open(path, flags)
 
+#ifdef FD_ZERO
+  #undef FD_ZERO 
+  #define FD_ZERO(fdsp) det_FD_ZERO(fdsp)
+#endif 
 #define pwrite(fd, buf, count, off) detio_pwrite(fd, buf, count, off)
 #define pread(fd, buf, count, off) detio_pread(fd, buf, count, off)
 #define write(fd, buf, count) detio_write(fd, buf, count)

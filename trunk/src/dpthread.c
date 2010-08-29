@@ -1156,8 +1156,7 @@ int det_join ( pthread_t threadid, void **thread_return )
 void det_exit(void *value_ptr)
 {
 	struct worker_args *w = &wa[myid]; 
-
-	enable_logical_clock(); 
+	
 	det_lock(&w->thread_lock); 
 	w->finished = 1; 
 	det_cond_signal(&w->thread_cond); 

@@ -4,14 +4,14 @@
 #include <stdint.h> 
 #include <sys/types.h>
 #include <sys/stat.h>
-
+#include <sys/time.h>
 #include <unistd.h>
 #include <signal.h>
 #include <stdio.h>
 #include <malloc.h>
 #include <string.h>
 #include <time.h>
-#include <sys/time.h>
+
 
 ///////////////////////////////////////////////////////////////////////////////////
 // Extennal library APIs  
@@ -37,17 +37,23 @@ int detio_fclose(FILE *fp);
 FILE *detio_fopen(const char *path, const char *mode);
 int detio_fflush(FILE *stream);
 int detio_snprintf(char *str, size_t size, const char *format, ...); 
+int detio_putchar(int c); 
 
 // malloc.h
 void *detio_valloc(size_t size); 
 void detio_free(void *ptr); 
 
 // sys/time.h 
-int detio_gettimeofday(struct timeval *tv, struct timezone *tz); 
+int detio_gettimeofday(struct timeval *tv, void *tz); 
 
 ///////////////////////////////////////////////////////////////////////////////////
 // System call APIs  
 ///////////////////////////////////////////////////////////////////////////////////
+void det_FD_ZERO(fd_set *set); 
+
+ssize_t detio_pread(int fd, void *buf, size_t count, off_t offset);
+ssize_t detio_pwrite(int fd, const void *buf, size_t count, off_t offset);
+
 ssize_t detio_read(int fd, void *buf, size_t count);
 ssize_t detio_write(int fd, const void *buf, size_t count);
 
