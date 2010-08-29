@@ -24,7 +24,8 @@ typedef struct {
 	int id;
 	pthread_mutex_t mutex;
         int64_t released_logical_time; 
-	int last_owner; 
+	int owner; 
+	int ref;
 	TQueue queue; 
 	// TODO: queue 
 } det_mutex_t; 

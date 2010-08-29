@@ -34,7 +34,7 @@
 #    error "not tested on 64 bit machine" 
 #else 
 #    define PTHREAD_MUTEX_INITIALIZER				\
-  {-1, { { 0, 0, 0, 0, 0, { 0 } } }, 0, 0, { 0, 0, 0, 0} }
+  {-1, { { 0, 0, 0, 0, 0, { 0 } } }, 0, 0, 0, { 0, 0, 0, 0} }
 #endif 
 
 // not support recursive lock and so force. 
@@ -94,7 +94,7 @@
 // stdlib.h 
 #define valloc(s) detio_valloc(s)
 #define malloc(s) detio_valloc(s)
-// #define calloc(n,s) detio_valloc((n*s))
+#define calloc(n,s) detio_valloc((n)*(s))
 #define free(x) detio_free(x)
 
 // sys/time.h 
