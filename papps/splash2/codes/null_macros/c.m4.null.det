@@ -143,7 +143,7 @@ define(CREATE, `{
 
 define(MAIN_INITENV, `{;}')
 define(MAIN_END, `{
-	extern void det_print_stat(); 
+//	extern void det_print_stat(); 
 	det_print_stat(); 	
 	exit(0);}')
 
