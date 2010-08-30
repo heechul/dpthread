@@ -40,7 +40,7 @@
 // definition 
 ////////////////////////////////////////////////////////////////////////////////
 #define USE_NESTED_LOCK  1  // allow nested lock
-#define USE_MUTEX_RECURSIVE 0  // allow recursive lock 
+#define USE_MUTEX_RECURSIVE 1  // allow recursive lock 
 #define USE_PERF_COUNTER 1  // 0 - read_count() always return 0. 
 #define USE_TIMING       0  // measure timing 
 #define USE_FAKE_DISABLE 0  // not using ioc_enable/disable, but read_count
@@ -716,7 +716,8 @@ int det_trylock(det_mutex_t *mutex)
 		}
 		else 
 		{ // logically and physically ok. 
-			mutex->owner = myid; 
+			mutex->owner = myid;
+			mutex->ref = 1; 
 		}
 	} 
 	assert(GET_CLOCK(myid) < MAX_LOGICAL_CLOCK); 
@@ -840,7 +841,7 @@ out:
 	return ret; 
 }
 
-int det_unlock(det_mutex_t *mutex)
+int det_unlock_and_set_clock(det_mutex_t *mutex, int64_t clock)
 {
 	int ret = 0; 
 	int lret; 
@@ -861,14 +862,17 @@ int det_unlock(det_mutex_t *mutex)
 	// clean up 
 	mutex->ref--; 
 	if ( mutex->ref > 0 ) goto out; 
-#endif 
 
+	mutex->owner = -1; 
+#endif 
 
 	mutex->released_logical_time = get_logical_clock(myid) ;  
 	DBG(1, "rel(%d)\n", mutex->id); 
 
 	// update last sync logical time 
 	last_sync_logical_time = GET_CLOCK(myid); 
+
+	if ( clock >= 0 ) SET_CLOCK(myid, clock); 
 
 	ret = pthread_mutex_unlock(&mutex->mutex); 
 
@@ -881,6 +885,12 @@ out:
 
 	return ret; 
 }
+
+int det_unlock(det_mutex_t *mutex)
+{
+	return det_unlock_and_set_clock(mutex, -1); 
+}
+
 
 int  det_cond_init(det_cond_t *cond)
 {
@@ -921,11 +931,8 @@ int  det_cond_wait(det_cond_t *cond, det_mutex_t *mutex)
 	lock = &cond->waiter[myid]; 
 	AddQ(&cond->queue, (void *)lock);
 
-	// release condition lock
-	det_unlock(mutex); 
-
-	// equal to exit()
-	SET_CLOCK(myid, MAX_LOGICAL_CLOCK); 
+	// release condition lock & quit 
+	det_unlock_and_set_clock(mutex, MAX_LOGICAL_CLOCK); 
 
 	// waiter->P()
 	pthread_mutex_lock(&lock->mutex);  
@@ -958,7 +965,8 @@ int  det_cond_signal(det_cond_t *cond)
 
 	if ( !IsEmptyQ(&cond->queue) ) { 
 		lock = (det_mutex_t*)DelQ(&cond->queue); 
-		SET_CLOCK(lock->id, clock + 1); 
+		SET_CLOCK(lock->id, clock); 
+		__sync_synchronize();
 		pthread_mutex_unlock(&lock->mutex); 
 		DBG(1, "cond(%d) signal\n", cond->id); 
 	}
@@ -1296,6 +1304,16 @@ int det_dbg(const char *format, ...)
 	if ( lret == 0 ) enable_logical_clock();
 
 	return ret; 
+}
+
+void det_print_lock(det_mutex_t *mutex, char *msg)
+{
+	int ret; 
+	int lret;
+
+	// if not initialized, initialize. 
+	det_dbg("%s: mutex id=%d, owner=%d, ref=%d, qEmpty?=%d\n", 
+		msg, mutex->id, mutex->owner, mutex->ref, IsEmptyQ(&mutex->queue)); 
 }
 
 void det_print_stat()
