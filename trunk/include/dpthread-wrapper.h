@@ -14,6 +14,13 @@
 #include <dpthread.h>
 #include <dpthread-io.h>
 
+#include <stdlib.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <signal.h>
+#include <stdio.h>
+#include <sys/time.h>
+#include <sys/select.h>
 
 ///////////////////////////////////////////////////////////////////
 // pthread apis 
@@ -119,6 +126,9 @@
 #define recv(fd, buf, len, flag) detio_recv(fd, buf, len, flag)
 #define send(fd, buf, len, flag) detio_send(fd, buf, len, flag)
 #define select(nfd, rfds, wfds, efds, to) detio_select(nfd, rfds, wfds, efds, to)
+// #define fcntl(fd, cmd, args... ) detio_fcntl(fd, cmd, ## args) 
+#define fdatasync(fd) detio_fsync(fd)
+#define fsync(fd) detio_fsync(fd)
 
 #endif /* DPTHREAD_WRAPPER_H */ 
 

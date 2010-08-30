@@ -224,6 +224,11 @@ REAL	HuniformShadowIntersect(RAY *r, REAL lightlength, ELEMENT *pe, INT pid)
  *	TRUE if the ray hit something, FALSE otherwise.
  *
  */
+#if 0 // USE_DPTHREAD 
+  #define DBG(x) x 
+#else 
+  #define DBG(x) 
+#endif 
 
 BOOL	TraverseHierarchyUniform(RAY *r, IRECORD *hit, INT pid)
 	{
@@ -232,6 +237,7 @@ BOOL	TraverseHierarchyUniform(RAY *r, IRECORD *hit, INT pid)
 	VOXEL	*v;
 
 	r->ri = NULL;
+	DBG(det_dbg("%s:init_ray\n", __FUNCTION__));
 	v = init_ray(r, gm->world_level_grid);
 
 	if (v == NULL)
@@ -248,10 +254,16 @@ BOOL	TraverseHierarchyUniform(RAY *r, IRECORD *hit, INT pid)
 		{
 		IntersectHuniformPrimlist(&intersectPrim, hit, v, r, pid);
 
-		if (!intersectPrim)
+
+		if (!intersectPrim) {
+		  DBG(det_dbg("%s:next_nonempty_leaf\n", __FUNCTION__));
+		  det_disable_logical_clock(); 
 			v = next_nonempty_leaf(r, STEP, &status);
+			det_enable_logical_clock(0); 
+		} 
 		}
 
+	DBG(det_dbg("%s:reset_ray\n", __FUNCTION__));
 	reset_rayinfo(r);
 	return (intersectPrim);
 	}

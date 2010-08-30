@@ -273,3 +273,20 @@ FILE *detio_fopen(const char *path, const char *mode)
 	return fp; 
 }
 
+int detio_fcntl(int fd, int cmd, ... /* arg */ )
+{
+	int ret; 
+	va_list ap; 
+	int lret = det_disable_logical_clock();
+	if ( lret == 0 ) det_enable_logical_clock(EVENTS_fopen);
+}
+
+int detio_fsync(int fd)
+{
+	int ret; 
+	int lret = det_disable_logical_clock();
+	ret = fsync(fd); 
+	if ( lret == 0 ) det_enable_logical_clock(EVENTS_fopen);	
+	return ret; 
+}
+

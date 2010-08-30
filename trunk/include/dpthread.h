@@ -23,9 +23,9 @@
 typedef struct {
 	int id;
 	pthread_mutex_t mutex;
-        int64_t released_logical_time; 
-	int owner; 
-	int ref;
+        volatile int64_t released_logical_time; 
+	volatile int owner; 
+	volatile int ref;
 	TQueue queue; 
 	// TODO: queue 
 } det_mutex_t; 
@@ -39,7 +39,7 @@ typedef struct {
 typedef struct {
 	int id; 
 	int target_count;
-	int wait_count; 
+	volatile int wait_count; 
 	det_cond_t wait_cond; 
 	det_mutex_t wait_mutex; 
 } det_barrier_t; 
@@ -97,7 +97,7 @@ int det_adjust_logical_clock();
 void det_set_debug(int level);
 int  det_dbg(const char *format, ...);
 void det_print_stat();
-
+void det_print_lock(det_mutex_t *mutex, char *msg); 
 
 #ifdef __cplusplus
 }
