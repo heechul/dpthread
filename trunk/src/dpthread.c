@@ -32,19 +32,20 @@
 
 #include <dpthread.h>
 #include <dlfcn.h>
-#include <atomic.h>
+// #include <atomic.h>
 
 #include "config.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // definition 
 ////////////////////////////////////////////////////////////////////////////////
-#define USE_NESTED_LOCK  1  // allow nested lock
-#define USE_MUTEX_RECURSIVE 1  // allow recursive lock 
-#define USE_PERF_COUNTER 1  // 0 - read_count() always return 0. 
-#define USE_TIMING       0  // measure timing 
-#define USE_FAKE_DISABLE 0  // not using ioc_enable/disable, but read_count
-#define USE_INST_COUNT   0  // use 'inst_retired-intr-pagefault' - not working 
+#define USE_NESTED_LOCK     1 // allow nested lock
+#define USE_MUTEX_RECURSIVE 1 // allow recursive lock 
+#define USE_PERF_COUNTER    1 // 0 - read_count() always return 0. 
+#define USE_TIMING          0 // measure timing 
+#define USE_FAKE_DISABLE    0 // not using ioc_enable/disable, but read_count
+#define USE_INST_COUNT      0 // use 'inst_retired-intr-pagefault' - not working 
+#define USE_DET_FASTFORWARD 0 // use deterministic fast forward 
 
 #define PROFILE_KERNEL_EVENTS 0 
 
@@ -227,18 +228,22 @@ static uint64_t read_count(perf_event_desc_t *fds)
 static int64_t get_logical_clock(int id)
 {
 	int64_t ret, hw_clock; 
-	if ( myid != id )  __sync_synchronize(); 
+
+	__sync_synchronize(); 
 	if ( !wa[id].hw_clock_enabled ) {
-		hw_clock = wa[id].hw_clock; 
+		// hw counter of remote processor is currently disabled. 
+		ret = GET_CLOCK(id); 
 		DBG(4, "clock %d is disabled. cached = %lld\n", id, hw_clock); 
 		cache_read ++; 
 	} else {
-		hw_clock = read_count(wa[id].fds);
+		// hw counter of remote processor is currently enabled 
+		// read counter value of remote processor directly from the hw counter. 
+		hw_clock = read_count(wa[id].fds); 
+		ret = hw_clock + wa[id].sw_clock; 
 		hw_read ++; 
 		// DBG(4, "clock %d is enabled. so read from hw = %lld\n", id, hw_clock); 
 	}
- 
-	ret = hw_clock + wa[id].sw_clock; 
+	__sync_synchronize(); 
 
 	return ret; 
 }
@@ -367,13 +372,12 @@ static int64_t wait_for_turn()
 	assert( !wa[myid].hw_clock_enabled); 
 
 	my_clock = get_logical_clock(myid); 
-
 retry:
 	nthreads = max_thr; 
 	for ( i = 1; i < nthreads; i++ ) { 
 		int id = (myid + i) % nthreads; 
 		// try with phyiscal clock value
-		__sync_synchronize(); 
+
 		other_clock = get_logical_clock(id);
 
 		if ( other_clock < my_clock ||  // i'm not the minimum  
@@ -675,7 +679,7 @@ int det_trylock(det_mutex_t *mutex)
 {
 	int ret = 0; 
 	int lret; 
-	int64_t clock, incr; 
+	int64_t clock; 
 
 	assert(mutex->id > 0 ); 
 
@@ -700,18 +704,16 @@ int det_trylock(det_mutex_t *mutex)
 	if ( (int)GetHeadQ(&mutex->queue) == myid && 
 	     (ret = pthread_mutex_trylock(&mutex->mutex)) == 0 ) 
 	{ // success. 
+		int64_t last_release = mutex->released_logical_time; 
 		DBG(3, "--trylock");
-		if ( mutex->released_logical_time >= clock ) 
+		if ( last_release >= clock ) 
 		{ // physically ok but logically not. 
-			DBG(3, "--case2: released at %lld\n",
-			    mutex->released_logical_time); 
-			
-			incr = mutex->released_logical_time - clock; 
+			DBG(3, "--case2: released at %lld\n", last_release); 
 			pthread_mutex_unlock(&mutex->mutex); 
-
+#if USE_DET_FASTFORWARD
 			// deterministic fast forward. 
-			wa[myid].sw_clock += incr; 
-
+			wa[myid].sw_clock += (last_release - clock); 
+#endif 
 			ret = EBUSY; 
 		}
 		else 
@@ -750,7 +752,7 @@ int det_lock(det_mutex_t *mutex)
 {
 	int ret = 0; 
 	int lret; 
-	int64_t clock, incr; 
+	int64_t clock; 
 
 	if ( mutex->id < 0 ) { 
 		det_lock_init(mutex); 
@@ -782,35 +784,36 @@ int det_lock(det_mutex_t *mutex)
 
 #else // USE_NESTED_LOCK
 
-	DBG(2, "acq(%d) - enter\n", mutex->id);
+	DBG(1, "acq(%d) - enter\n", mutex->id);
 
 	clock = wait_for_turn(); 
 	AddQ(&mutex->queue, (void *)myid);
 
 	while ( 1 ) {
 		if ( (int)GetHeadQ(&mutex->queue) == myid && 
-			 pthread_mutex_trylock(&mutex->mutex) == 0 ) 
+		     pthread_mutex_trylock(&mutex->mutex) == 0 ) 
 		{ // success. 
+			int64_t last_release = mutex->released_logical_time; 
 			DBG(3, "--trylock");
-			if ( mutex->released_logical_time >= clock ) 
+			if ( last_release >= clock ) 
 			{ // physically ok but logically not. 
-				DBG(3, "--case2: released at %lld\n",
-				    mutex->released_logical_time); 
-				
-				incr = mutex->released_logical_time - clock; 
+				DBG(3, "--case2: released at %lld\n", last_release ); 
 				pthread_mutex_unlock(&mutex->mutex); 
+#if USE_DET_FASTFORWARD
 				// deterministic fast forward. 
-				wa[myid].sw_clock += incr; 
+				wa[myid].sw_clock += (last_release - clock); 
+#endif 
 			}
 			else 
 			{ // logically and physically ok. 
+				DBG(3, "got it. sw_clock = %lld\n", wa[myid].sw_clock); 
 				mutex->owner = myid; 
 				mutex->ref = 1; 
 				break; // quit the loop. 
 			}
 		} 
 		assert(GET_CLOCK(myid) < MAX_LOGICAL_CLOCK); 
-		DBG(2, "--spinning");
+		DBG(1, "--spinning\n");
 
 		// increase clock 
 		wa[myid].sw_clock ++; 
@@ -841,7 +844,7 @@ out:
 	return ret; 
 }
 
-int det_unlock_and_set_clock(det_mutex_t *mutex, int64_t clock)
+int det_unlock_and_incr_clock(det_mutex_t *mutex, int64_t incr)
 {
 	int ret = 0; 
 	int lret; 
@@ -861,8 +864,9 @@ int det_unlock_and_set_clock(det_mutex_t *mutex, int64_t clock)
 #if USE_MUTEX_RECURSIVE 
 	// clean up 
 	mutex->ref--; 
-	if ( mutex->ref > 0 ) goto out; 
-
+	if ( mutex->ref > 0 ) { 
+		goto out; 
+	}
 	mutex->owner = -1; 
 #endif 
 
@@ -872,13 +876,11 @@ int det_unlock_and_set_clock(det_mutex_t *mutex, int64_t clock)
 	// update last sync logical time 
 	last_sync_logical_time = GET_CLOCK(myid); 
 
-	if ( clock >= 0 ) SET_CLOCK(myid, clock); 
-
 	ret = pthread_mutex_unlock(&mutex->mutex); 
-
 out: 
-	// increase logical clock 
-	wa[myid].sw_clock ++; 
+	// other thread's wait_for_turn immediately progress. 
+	// So I have to be sure I don't hold this lock anymore before increment this. 
+	wa[myid].sw_clock += incr;
 
 	// resume logical clock 
 	if ( lret == 0 ) enable_logical_clock(); 
@@ -888,7 +890,7 @@ out:
 
 int det_unlock(det_mutex_t *mutex)
 {
-	return det_unlock_and_set_clock(mutex, -1); 
+	return det_unlock_and_incr_clock(mutex, 1); 
 }
 
 
@@ -932,13 +934,12 @@ int  det_cond_wait(det_cond_t *cond, det_mutex_t *mutex)
 	AddQ(&cond->queue, (void *)lock);
 
 	// release condition lock & quit 
-	det_unlock_and_set_clock(mutex, MAX_LOGICAL_CLOCK); 
+	det_unlock_and_incr_clock(mutex, MAX_LOGICAL_CLOCK); 
 
 	// waiter->P()
 	pthread_mutex_lock(&lock->mutex);  
 
 	// signaler must set this already. 
-	__sync_synchronize();
 	assert(GET_CLOCK(myid) < MAX_LOGICAL_CLOCK); 
 
 	DBG(1, "cond(%d) wait leave\n", cond->id); 
@@ -966,9 +967,8 @@ int  det_cond_signal(det_cond_t *cond)
 	if ( !IsEmptyQ(&cond->queue) ) { 
 		lock = (det_mutex_t*)DelQ(&cond->queue); 
 		SET_CLOCK(lock->id, clock); 
-		__sync_synchronize();
 		pthread_mutex_unlock(&lock->mutex); 
-		DBG(1, "cond(%d) signal\n", cond->id); 
+		DBG(1, "cond(%d) signal to %d\n", cond->id, lock - &cond->waiter[0]); 
 	}
 
 	// increase logical clock 
@@ -1165,10 +1165,16 @@ void det_exit(void *value_ptr)
 {
 	struct worker_args *w = &wa[myid]; 
 	
+	int64_t hw_clock, sw_clock; 
+
 	det_lock(&w->thread_lock); 
 	w->finished = 1; 
 	det_cond_signal(&w->thread_cond); 
-	det_unlock(&w->thread_lock); 
+
+	hw_clock = wa[myid].hw_clock; 
+	sw_clock = wa[myid].sw_clock; 
+
+	det_unlock_and_incr_clock(&w->thread_lock, MAX_LOGICAL_CLOCK); 
 
 	/* disable event */ 
 	disable_logical_clock(); 
@@ -1177,11 +1183,9 @@ void det_exit(void *value_ptr)
 	free(w->fds); 
 
 	DBG(0, "EXIT: (hw_evt:%lld, sw_evt:%lld) ndet_evt:%d, %d locks and %d barriers.\n", 
-	    wa[myid].hw_clock, wa[myid].sw_clock, wa[myid].nondet_count, 
+	    hw_clock, sw_clock, wa[myid].nondet_count, 
 	    lock_count, 
 	    barrier_count); 	
-
-	SET_CLOCK(myid, MAX_LOGICAL_CLOCK * 2 ); 
 
 	pthread_exit(value_ptr);
 }
