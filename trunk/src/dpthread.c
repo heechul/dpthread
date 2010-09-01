@@ -1273,6 +1273,24 @@ int64_t det_get_clock()
 	if ( lret == 0 ) enable_logical_clock(); 
 	return ret; 
 }
+
+int det_sigmask(int how, const sigset_t * set,
+              sigset_t * oset)
+{
+	int64_t ret; 
+	int lret; 
+
+	// if not initialized, initialize. 
+	if ( max_thr == 0 ) det_init(0, NULL);
+
+	lret = disable_logical_clock(); 
+
+	ret = pthread_sigmask(how, set, oset); 
+
+	if ( lret == 0 ) enable_logical_clock(); 
+	return ret; 
+}
+
 ///////////////////////////////////////////////////////////////////////////////////
 // dpthread I/O   
 ///////////////////////////////////////////////////////////////////////////////////

@@ -93,6 +93,33 @@ extern uint64_t det_get_clock();
 // deterministic system calls 
 ////////////////////////////////////////////////////////////////////////////
 
+int detio_open(const char *pathname, int flags, mode_t mode)
+{
+	int ret; 
+	int lret = det_disable_logical_clock(); 	
+	ret = open(pathname, flags, mode); 
+	if ( lret == 0 ) det_enable_logical_clock(0); 
+	return ret; 
+}
+
+off_t detio_lseek(int fd, off_t offset, int whence)
+{
+	off_t ret; 
+	int lret = det_disable_logical_clock(); 	
+	ret = lseek(fd, offset, whence);
+	if ( lret == 0 ) det_enable_logical_clock(0); 
+	return ret; 
+}
+
+int detio_ftruncate(int fd, off_t length)
+{
+	int ret; 
+	int lret = det_disable_logical_clock(); 	
+	ret = ftruncate(fd, length); 
+	if ( lret == 0 ) det_enable_logical_clock(0); 
+	return ret; 
+}
+
 // <sys/select.h> -- POSIX.1-2001 
 void det_FD_ZERO(fd_set *set)
 {
@@ -121,27 +148,39 @@ ssize_t detio_pwrite(int fd, const void *buf, size_t count, off_t offset)
 
 ssize_t detio_read(int fd, void *buf, size_t count)
 {
-	det_increase_logical_clock(EVENTS_read);
-	return read(fd, buf, count); 
+	ssize_t ret; 
+	int lret = det_disable_logical_clock(); 
+	ret = read(fd, buf, count); 
+	if ( lret == 0 ) det_enable_logical_clock(0); 
+	return ret; 
 }
 
 ssize_t detio_write(int fd, const void *buf, size_t count)
 {
-	det_increase_logical_clock(EVENTS_write);
-	return write(fd, buf, count); 
+	ssize_t ret; 
+	int lret = det_disable_logical_clock(); 
+	ret = write(fd, buf, count); 
+	if ( lret == 0 ) det_enable_logical_clock(0); 
+	return ret; 
 }
 
 
 int detio_stat(const char *path, struct stat *buf)
 {
-	det_increase_logical_clock(EVENTS_stat);
-	return stat(path, buf); 
+	int ret; 
+	int lret = det_disable_logical_clock(); 
+	ret = stat(path, buf); 
+	if ( lret == 0 ) det_enable_logical_clock(0); 
+	return ret; 
 }
 
 int detio_fstat(int fd, struct stat *buf)
 {
-	det_increase_logical_clock(EVENTS_fstat);	
-	return fstat(fd, buf); 
+	int ret; 
+	int lret = det_disable_logical_clock(); 
+	ret = fstat(fd, buf); 
+	if ( lret == 0 ) det_enable_logical_clock(0); 
+	return ret; 
 }
 
 
@@ -210,3 +249,4 @@ void  det_posix_init()
 {
 	// nothing 
 }
+
