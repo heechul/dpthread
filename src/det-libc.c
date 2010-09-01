@@ -92,6 +92,23 @@ extern uint64_t det_get_clock();
 // deterministic library calls 
 ////////////////////////////////////////////////////////////////////////////
 
+char *detio_strncpy(char *dst, const char *src, size_t n)
+{
+	if (n != 0) {
+		char *d = dst;
+		const char *s = src;
+
+		do {
+			if ((*d++ = *s++) == 0) {
+				/* NUL pad the remaining n-1 bytes */
+				while (--n != 0)
+					*d++ = 0;
+				break;
+			}
+		} while (--n != 0);
+	}
+	return (dst);
+}
 
 void *detio_memset(void * dst, int s, size_t count) 
 {
@@ -101,7 +118,8 @@ void *detio_memset(void * dst, int s, size_t count)
     return dst;
 }
 
-void *detio_memmove(void *dst, const void *src, size_t count) {
+void *detio_memmove(void *dst, const void *src, size_t count) 
+{
   char *a = dst;
   const char *b = src;
 
@@ -119,7 +137,8 @@ void *detio_memmove(void *dst, const void *src, size_t count) {
   return dst;
 }
 
-void *detio_memcpy(void *destaddr, void const *srcaddr, size_t len) {
+void *detio_memcpy(void *destaddr, void const *srcaddr, size_t len) 
+{
   char *dest = destaddr;
   char const *src = srcaddr;
 
