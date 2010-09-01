@@ -138,9 +138,11 @@
 #define fstat(fd, buf) detio_fstat(fd, buf)
 #define ftruncate(fd, length) detio_ftruncate(fd, length)
 
-// ugly 
+// absolutely necessary -_-. 
 #define memmove(dst, src, count) detio_memmove(dst, src, count)
 #define memcpy(dst, src, len) detio_memcpy(dst, src, len)
+
+// ugly 
 #define lseek(fd, offset, whence) detio_lseek(fd, offset, whence)
 // #define open(path, flags) detio_open(path, flags)
 #define open(path, flags, mode) detio_open(path, flags, mode)
