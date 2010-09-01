@@ -233,7 +233,7 @@ static int64_t get_logical_clock(int id)
 	if ( !wa[id].hw_clock_enabled ) {
 		// hw counter of remote processor is currently disabled. 
 		ret = GET_CLOCK(id); 
-		DBG(4, "clock %d is disabled. cached = %lld\n", id, hw_clock); 
+		DBG(4, "clock %d is disabled.\n", id); 
 		cache_read ++; 
 	} else {
 		// hw counter of remote processor is currently enabled 
