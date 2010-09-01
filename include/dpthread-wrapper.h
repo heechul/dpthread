@@ -71,19 +71,25 @@
 #define pthread_testcancel() 0
 #define pthread_setcancelstate(s,os) 0
 #define pthread_setcanceltype(t,ot) 0 
+#define pthread_sigmask(h, s, os) det_sigmask(h, s, os)
 
 ///////////////////////////////////////////////////////////////////
 // external libraries 
 ///////////////////////////////////////////////////////////////////
+
+// string.h 
+#define memset(s, c, n) detio_memset(s, c, n) 
 
 // unistd.h 
 #define sleep(sec) detio_sleep(sec)
 #define usleep(usec) detio_usleep(usec)
 #define sysconf(name) detio_sysconf(name)
 #define getopt(argc, argv, optstr) detio_getopt(argc, argv, optstr)
+#define getcwd(buf, size) detio_getcwd(buf, size)	
 
 // signal.h 
 #define sigwait(set,sig) detio_sigwait(set,sig)
+#define sigfillset(s) detio_sigfillset(s)
 
 // stdio.h 
 #define putchar(c) detio_putchar(c)
@@ -102,7 +108,9 @@
 #define valloc(s) detio_valloc(s)
 #define malloc(s) detio_valloc(s)
 #define calloc(n,s) detio_valloc((n)*(s))
+#define realloc(p, s) detio_realloc(p, s)
 #define free(x) detio_free(x)
+#define getenv(n) detio_getenv(n)
 
 // sys/time.h 
 #define gettimeofday(tv, tz) detio_gettimeofday(tv, tz)
@@ -110,9 +118,6 @@
 ///////////////////////////////////////////////////////////////////
 // system calls
 ///////////////////////////////////////////////////////////////////
-
-// #define open(path, flags) detio_open(path, flags)
-// #define open(path, flags, mode) detio_open(path, flags)
 
 #ifdef FD_ZERO
   #undef FD_ZERO 
@@ -126,9 +131,20 @@
 #define recv(fd, buf, len, flag) detio_recv(fd, buf, len, flag)
 #define send(fd, buf, len, flag) detio_send(fd, buf, len, flag)
 #define select(nfd, rfds, wfds, efds, to) detio_select(nfd, rfds, wfds, efds, to)
-// #define fcntl(fd, cmd, args... ) detio_fcntl(fd, cmd, ## args) 
+#define fcntl(fd, cmd, args... ) detio_fcntl(fd, cmd, ## args) 
 #define fdatasync(fd) detio_fsync(fd)
 #define fsync(fd) detio_fsync(fd)
+#define stat(path, buf) detio_stat(path, buf)
+#define fstat(fd, buf) detio_fstat(fd, buf)
+#define ftruncate(fd, length) detio_ftruncate(fd, length)
+
+// ugly 
+#define memmove(dst, src, count) detio_memmove(dst, src, count)
+#define memcpy(dst, src, len) detio_memcpy(dst, src, len)
+#define lseek(fd, offset, whence) detio_lseek(fd, offset, whence)
+// #define open(path, flags) detio_open(path, flags)
+#define open(path, flags, mode) detio_open(path, flags, mode)
+#define utimes(x,y) 0 
 
 #endif /* DPTHREAD_WRAPPER_H */ 
 
