@@ -35,7 +35,6 @@ extern uint64_t det_get_clock();
 #include <stdio.h>
 #include <malloc.h>
 #include <stdlib.h>
-#include <stdlib.h>
 #include <unistd.h>
 #include <sys/time.h>
 #include <stdarg.h> // va_
@@ -93,6 +92,44 @@ extern uint64_t det_get_clock();
 // deterministic library calls 
 ////////////////////////////////////////////////////////////////////////////
 
+
+void *detio_memset(void * dst, int s, size_t count) 
+{
+    char * a = dst;
+    while (count-- > 0)
+      *a++ = s;
+    return dst;
+}
+
+void *detio_memmove(void *dst, const void *src, size_t count) {
+  char *a = dst;
+  const char *b = src;
+
+  if (src == dst)
+    return dst;
+
+  if (src>dst) {
+    while (count--) *a++ = *b++;
+  } else {
+    a+=count-1;
+    b+=count-1;
+    while (count--) *a-- = *b--;
+  }
+
+  return dst;
+}
+
+void *detio_memcpy(void *destaddr, void const *srcaddr, size_t len) {
+  char *dest = destaddr;
+  char const *src = srcaddr;
+
+  while (len-- > 0)
+    *dest++ = *src++;
+  return destaddr;
+}
+
+////////////////////////////////////////////////////////////////////////////
+
 int detio_usleep(unsigned int usecs)
 {
 	int ret; 
@@ -142,7 +179,16 @@ int detio_sigwait(const sigset_t *set, int *sig)
 	det_exit_logical_clock(); 
 	ret = sigwait(set, sig); 
 	det_adjust_logical_clock(); // minimize non-determinism. 
+
 	return ret; 
+}
+
+int detio_sigfillset(sigset_t *set)
+{
+	int ret; 
+	int lret = det_disable_logical_clock(); 
+	ret = sigfillset(set); 
+	if ( lret == 0 ) det_enable_logical_clock(0); 
 }
 
 // malloc.h 
@@ -161,6 +207,25 @@ void detio_free(void *ptr)
 	int lret = det_disable_logical_clock(); 
 	free(ptr); 
 	if ( lret == 0 ) det_enable_logical_clock(EVENTS_free);
+}
+
+void *detio_realloc(void *ptr, size_t size)
+{
+	void *ret; 
+	int lret = det_disable_logical_clock(); 
+	ret = realloc(ptr, size); 
+	if ( lret == 0 ) det_enable_logical_clock(0); 
+	return ret; 
+}
+
+// stdlib.h 
+char *detio_getenv(const char *name)
+{
+	char *ret; 
+	int lret = det_disable_logical_clock(); 
+	ret = getenv(name); 
+	if ( lret == 0 ) det_enable_logical_clock(0); 
+	return ret; 
 }
 
 
@@ -276,17 +341,37 @@ FILE *detio_fopen(const char *path, const char *mode)
 int detio_fcntl(int fd, int cmd, ... /* arg */ )
 {
 	int ret; 
+
+	long arg; 
 	va_list ap; 
-	int lret = det_disable_logical_clock();
-	if ( lret == 0 ) det_enable_logical_clock(EVENTS_fopen);
+
+	int lret = det_disable_logical_clock(); 
+
+	va_start(ap, cmd); 
+	arg = va_arg(ap, long); 
+	va_end(ap); 
+
+	ret = fcntl(fd, cmd, arg); 
+
+	if ( lret == 0 ) det_enable_logical_clock(0); 
+	return ret; 
 }
 
-int detio_fsync(int fd)
+int detio_fsync(int fd) // may not need. 
 {
 	int ret; 
 	int lret = det_disable_logical_clock();
 	ret = fsync(fd); 
-	if ( lret == 0 ) det_enable_logical_clock(EVENTS_fopen);	
+	if ( lret == 0 ) det_enable_logical_clock(0);	
+	return ret; 
+}
+
+char *detio_getcwd(char *buf, size_t size) // may not need. 
+{
+	char *ret; 
+	int lret = det_disable_logical_clock();
+	ret = getcwd(buf, size); 
+	if ( lret == 0 ) det_enable_logical_clock(0);	
 	return ret; 
 }
 
