@@ -2,13 +2,62 @@
 
 = Introduction =
 
-The most notorious type of bugs are thread interleaving dependent bugs; they are very hard to diagnose and reproduce. 
 
-Many bug detection tools have been developed to detect those interleaving bugs for the last few years. While they are generally useful, they can not guarantee all interleaving bugs are identified simply because there are too many possible interleavings -- for example, a program with 10 threads each with 1 instruction have 10! interleavings.  
+Writing a correct multithreaded program is hard because non-deterministic interleaving of threads can introduce hard to reproduce bugs. DPTRHEAD is a deterministic thread library, which you can use it instead of pthread library,  aim to solve (or reduce) the difficulty.  
 
-dpthread is a deterministic alternative of standard pthread. We call a program execution is deterministic, iff its correctness only depends on the input (does not depend on the thread interleaving order). 
+DPTHREAD eliminates non-deterministic thread interleaving. Therefore, a program behavior depends only on its input but not on thread interleaving; we call this program is deterministic.  In comparison, typical pthread programs are non-deterministic in a sense that their outcome not only depends on its input but also depend on the order of thread interleavings. 
 
-The key idea of dpthread is the same as Kendo (ASPLOS09): determine the global order of all synchronization accesses based on instruction count. The goal is, however, different in a sense that we target to more general purpose multi-threaded application while Kendo primarily focus on parallel applications. Also, dpthread is very easy to use because it is built on top of standard pthread runtime and perf_event (linux kernel interface to access performance counter h/w. 
+For example, let’s see the following bank account example ( you can see a full source code in test/bankacct.c) . 
+
+{{{
+int g_account;  // global variable 
+
+void Deposit(int amount)
+{
+	int balance; // ERROR: balance can be stale
+	pthread_mutex_lock(&lock); 
+	balance = g_account;  
+	pthread_mutex_unlock(&lock); 
+
+	pthread_mutex_lock(&lock);
+	g_account = balance + amount; 
+	pthread_mutex_unlock(&lock); 
+
+	return NULL; 
+}
+
+void Withdraw(int amount)
+{
+	int balance; // ERROR: balance can be stale
+	pthread_mutex_lock(&lock);
+	balance = g_account; 
+	pthread_mutex_unlock(&lock); 
+
+	pthread_mutex_lock(&lock);
+	g_account = balance - amount; 
+	pthread_mutex_unlock(&lock); 
+	return NULL; 
+}
+
+main()
+{
+	g_account = 10; 
+	ret = pthread_create(..., Deposit, 1); // Deposit(1) 
+	ret = pthread_create(..., Withdraw, 2); //Withdraw(2) 
+	... 
+	assert( g_account == 9 ); 
+}
+}}}
+
+This program have a bug because ‘balance’ can be stale. Therefore, the final value of g_account is non-deterministic as it can be 8 or 11, depending on the order of thread interleavings. However, the most of the time, it will result in correct value -- 9. When I ran this program on my desktop, I got the first assertion violation at 25390th execution; which means that it is very difficult to reproduce the problem when it depends on thread interleaving.  DHPTHREAD make this program deterministic; if it is correct at first run, it will always be correct; if it get assertion violation, it always will be the same no matter how many times you run the program.  This makes programmer’s life much easier. 
+
+DPTHREAD use performance counters (ins_retired:stores event counter) to determine the order of shared memory accesses between multiple threads. The idea of using performance counter for deterministic thread scheduling is first explored in Kendo (ASPLOS’09), primarily for scientific parallel applications. In fact, DPTHREAD use the same deterministic locking algorithm which is described in the Kendo paper. Also, it only provides deterministic guarantee if the program is data race free (all shared variables are protected by at least one lock) because DPTHREAD interpose synchronization operations just like Kendo did. The difference between the two is more on implementation side.   
+
+DPTHREAD uses libpfm4 and perf_event based kernel to access performance counter while Kendo used custom kernel patch (based on the paper description). Largely thanks to the power and flexibility of perf_event kernel interface and libpfm4, DPTHREAD is less intrusive (no custom kernel patch) yet more powerful: you can run  arbitrary number of threads in arbitrary number of cores ( do not need to be 1 thread per core); you can multiple DPTHREAD enabled programs (just like you can run multiple pthread programs in a computer). 
+
+DPTHREAD is currently tested for aget (mutithread file downloader), and sqlite (multithreaded test program included in the distribution)[*] and SPLASH2 benchmark suites (representing scientific parallel applications).  Please check the examples in test/ directory ( deadlock, bankacct, order, and multivar. see test/README.txt for more details) as well to see different type of multithreaded bugs which are difficult to reproduce in pthread but easy to diagnose in DPTHREAD. 
+
+[*] not yet 100%. 
 
 = Installation =
 
@@ -69,3 +118,13 @@ If you want to disable deterministic execution, you can just comment out the fol
 {{{
 // #include <dpthread-wrapper.h>
 }}}
+
+
+
+= Limitation =
+
+Supported processors.  Currently, It only deterministically works on Intel Core2 based processors (Core2Duo, Core2Quad). It will run on other processors (i.e., i3, i5 and  i7) but it does not guarantee determinism because I can not find any deterministic counter (like inst_retired:stores counter in Core2) in those processors. 
+ 
+Data race. It provides deterministic guarantee only when the program is data race free. Identifying and removing data race is, however, relatively easy because there are many tools, such as valgrind, are available; first run the interested program with “valgrind --tool=drd <your pgm>” command and remove reported data race; then recompile the program with DPTHREAD. 
+
+Non-determinism in external library functions and system calls. Library functions or system calls can be non-deterministic (internal data race, dependency to OS internal state, and so on). In such case we provide wrappers or deterministic alternative implementation (see include/dpthread-wrapper.h). While it was good enough for the tested programs, if you use unsupported functions or other external libraries which are non-deterministic, DPTHREAD may not guarantee deterministic execution.
