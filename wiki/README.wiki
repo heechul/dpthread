@@ -123,7 +123,9 @@ If you want to disable deterministic execution, you can just comment out the fol
 = Limitation =
 
 *Supported processors.*  Currently, It only deterministically works on Intel Core2 based processors (Core2Duo, Core2Quad). It will run on other processors (i.e., i3, i5 and  i7) but it does not guarantee determinism because I can not find any deterministic counter (like inst_retired:stores counter in Core2) in those processors. 
- 
+
+
 *Data race.* It provides deterministic guarantee only when the program is data race free. Identifying and removing data race is, however, relatively easy because there are many tools, such as valgrind, are available; first run the interested program with “valgrind --tool=drd <your pgm>” command and remove reported data race; then recompile the program with DPTHREAD. 
+
 
 *Non-determinism in external library functions and system calls.* Library functions or system calls can be non-deterministic (internal data race, dependency to OS internal state, and so on). In such case we provide wrappers or deterministic alternative implementation (see include/dpthread-wrapper.h). While it was good enough for the tested programs, if you use unsupported functions or other external libraries which are non-deterministic, DPTHREAD may not guarantee deterministic execution.
