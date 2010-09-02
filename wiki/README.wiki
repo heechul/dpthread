@@ -91,35 +91,35 @@ PASS
 
 = Run =
 
-Let's look at a simple example to illustrate the benefits of using dpthread. 
-In deadlock.c, two threads acquire locks (l1, l2) in reverse order. Therefore, it will be deadlock depending on timing -- nondeterministic.
-
-But if you run it with dpthread, the behavior is deterministic with respect to input. For example, the following will always execute as shown in the following. 
+Running the bankacct example with DPTHREAD will show the following output. No matter how many times you run, the result always will be the same. 
  
 {{{
 $ cd test/
-$ make deadlock 
-$ DPTHREAD_DEBUG=0 ./deadlock -x 0 -y 0
-[1] acquired l1
-[1] acquired l2
-[1] release  l2
-[1] release  l1
-[2] acquired l2
-[2] acquired l1
-[2] release  l1
-[2] release  l2
-val1 : 2
-val2 : 2
+$ make bankacct  
+$ DPTHREAD_DEBUG=0 ./bankacct 
+[LT:20000000000698][ 1]EXIT: (hw_evt:523, sw_evt:47) ndet_evt:0, 3 locks and 0 barriers.
+bankacct: bankacct.c:108: main: Assertion `g_account == 9' failed.
+Aborted
 }}}
 
-If you want to disable deterministic execution, you can just comment out the following line in the source code and run make deadlock. 
+If you want to disable deterministic execution, you can just comment out the following line in the source code and recompile it. 
 
 {{{
 // #include <dpthread-wrapper.h>
 }}}
 
+And try to run as many times by doing the following. 
 
-
+{{{
+cnt=0 
+while true; do 
+	cnt=`expr $cnt + 1` 
+	if ! ./bankacct; then 
+		echo "failed at $cnt th iteration"
+		exit 1 
+	fi 
+done 
+}}}
 = Limitation =
 
 *Supported processors.*  Currently, It only deterministically works on Intel Core2 based processors (Core2Duo, Core2Quad). It will run on other processors (i.e., i3, i5 and  i7) but it does not guarantee determinism because I can not find any deterministic counter (like inst_retired:stores counter in Core2) in those processors. 
