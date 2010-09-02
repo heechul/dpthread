@@ -26506,7 +26506,7 @@ static int unixRandomness(sqlite3_vfs *NotUsed, int nBuf, char *zBuf){
   ** tests repeatable.
   */
   memset(zBuf, 0, nBuf);
-#if !defined(SQLITE_TEST)
+#if !defined(SQLITE_TEST) && !defined(HEECHUL)
   {
     int pid, fd;
     fd = open("/dev/urandom", O_RDONLY);
