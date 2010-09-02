@@ -55,16 +55,14 @@ DPTHREAD use performance counters (ins_retired:stores event counter) to determin
 
 DPTHREAD uses libpfm4 and perf_event based kernel to access performance counter while Kendo used custom kernel patch (based on the paper description). Largely thanks to the power and flexibility of perf_event kernel interface and libpfm4, DPTHREAD is less intrusive (no custom kernel patch) yet more powerful: you can run  arbitrary number of threads in arbitrary number of cores ( do not need to be 1 thread per core); you can multiple DPTHREAD enabled programs (just like you can run multiple pthread programs in a computer). 
 
-DPTHREAD is currently tested for aget (mutithread file downloader), and sqlite (multithreaded test program included in the distribution)[*] and SPLASH2 benchmark suites (representing scientific parallel applications).  Please check the examples in test/ directory ( deadlock, bankacct, order, and multivar. see test/README.txt for more details) as well to see different type of multithreaded bugs which are difficult to reproduce in pthread but easy to diagnose in DPTHREAD. 
+DPTHREAD is currently tested for aget (mutithread file downloader), and sqlite (embedded database which supports concurrent accesses by multiple threads) and SPLASH2 benchmark suites (representing scientific parallel applications).  Please also check the examples in test/ directory ( deadlock, bankacct, order, and multivar. see test/README.txt for more details) as well to see different type of multithreaded bugs which are difficult to reproduce in pthread but easy to diagnose in DPTHREAD. 
 
 
 = Installation =
 
-Dpthread is currently only tested on Intel Core2 processors. We use inst_retired:stores event of Core2 processors and it is the only deterministic event on Core2 processor as far as we know. Supporting other processors is straight forward if the processor have a deterministic counter. 
+DPTHREAD use libpfm4 library to access performance counters. You can download it from http://perfmon2.sourceforge.net. 
 
-Dpthread use libpfm4 library to access performance counters. You can download it from http://perfmon2.sourceforge.net. 
-
-Once you install the libpfm4, type 'make' on the top directory of dpthread. If the build succeed, you will see lib/libdpthread.a in lib/ directory. 
+Once you install the libpfm4, type 'make' on the top directory of DPTHREAD. If the build succeed, you will see libdpthread.a in lib/ directory. 
 
 {{{
 $ make 
@@ -122,7 +120,7 @@ done
 }}}
 = Limitation =
 
-*Supported processors.*  Currently, It only deterministically works on Intel Core2 based processors (Core2Duo, Core2Quad). It will run on other processors (i.e., i3, i5 and  i7) but it does not guarantee determinism because I can not find any deterministic counter (like inst_retired:stores counter in Core2) in those processors. 
+*Supported processors.*  Currently, It only deterministically works on Intel Core2 based processors (Core2Duo and Core2Quad). It will run on other processors (i.e., i3, i5 and  i7) but it does not guarantee determinism because I can not find any deterministic counter (like inst_retired:stores counter in Core2) in those processors. 
 
 
 *Data race.* It provides deterministic guarantee only when the program is data race free. Identifying and removing data race is, however, relatively easy because there are many tools, such as valgrind, are available; first run the interested program with “valgrind --tool=drd <your pgm>” command and remove reported data race; then recompile the program with DPTHREAD. 
