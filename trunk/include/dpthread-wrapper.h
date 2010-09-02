@@ -82,7 +82,10 @@
 // Therefore, I instead use plain C implementation of string functions to make it 
 // deterministic. 
 #define memset(s, c, n) detio_memset(s, c, n) 
-#define strncpy(dst, src, n) detio_strncpy(dst, src, n)
+#ifdef strncpy
+#  undef strncpy 
+#  define strncpy(dst, src, n) detio_strncpy(dst, src, n)
+#endif 
 #define memmove(dst, src, count) detio_memmove(dst, src, count)
 #define memcpy(dst, src, len) detio_memcpy(dst, src, len)
 
