@@ -18,7 +18,7 @@
 #include <assert.h>
 
 // NOTE: uncomment the following line to make app deterministic 
-#include <dpthread-wrapper.h>
+// #include <dpthread-wrapper.h>
 
 // defines 
 #define DBG(x) x 
@@ -30,10 +30,13 @@ static pthread_mutex_t lock;
 
 // worker definitions 
 void *
-Deposit(void *v)
+Deposit(int amount)
 {
-	int balance = g_account; // ERROR: balance can be stale
-	int amount = (int)v; 
+	int balance; // ERROR: balance can be stale
+
+	pthread_mutex_lock(&lock); 
+	balance = g_account; 
+	pthread_mutex_unlock(&lock); 
 
 	pthread_mutex_lock(&lock);
 	g_account = balance + amount; 
@@ -43,10 +46,13 @@ Deposit(void *v)
 }
 
 void *
-Withdraw(void *v)
+Withdraw(int amount)
 {
-	int balance = g_account; // ERROR: balance can be stale
-	int amount = (int)v; 
+	int balance; // ERROR: balance can be stale
+
+	pthread_mutex_lock(&lock);
+	balance = g_account; 
+	pthread_mutex_unlock(&lock); 
 
 	pthread_mutex_lock(&lock);
 	g_account = balance - amount; 
@@ -97,10 +103,9 @@ int main(int argc, char *argv[])
 	g_account = 10; 
 
 	// thread create 
-	ret = pthread_create(&allthr[0], NULL, Deposit, (void *)1);
+	ret = pthread_create(&allthr[0], NULL, Deposit, 1);
 	if (ret) err(1, "pthread_create failed");
-	
-	Withdraw((void *)2); 
+	Withdraw(2); 
 
 	// wait for workers to finish. 
 	pthread_join(allthr[0], NULL);
