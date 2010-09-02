@@ -10,7 +10,7 @@ endif
 # CFLAGS += -I../../crest-mt/include  # mini-libc 
 
 CFLAGS += -I. -D_GNU_SOURCE -I$(DPTHREAD_ROOT)/include 
-LIBS += -lm -ldpthread -lpthread -lpfm -ldl #-lbz2
+LIBS += -lm -ldpthread -lpthread -lpfm 
 LDFLAGS += $(LIBS) 
 
 # LDFLAGS += -L../../crest-mt/mini-libc
