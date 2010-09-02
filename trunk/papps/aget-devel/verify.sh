@@ -1,13 +1,15 @@
 #!/bin/bash 
 FILE="llvm.tar.bz2"
-EMAIL="heechul.yun@gmail.com"
+# EMAIL="heechul.yun@gmail.com"
 
 LD_BIND_NOW=on
 
 # FILE="1mega"
 rm $FILE
 rm log*.p*
-NPROC=2
+
+# NPROC=4
+NPROC=`cat ../../src/config.h | grep CPU | awk '{ print $3 }'`
 CMD="./aget -n $NPROC http://heechul.cs.uiuc.edu/$FILE"
 echo $CMD
 NPROC=`expr $NPROC + 2` # 2 more threads are running
@@ -22,7 +24,9 @@ i=0
 
 error()
 {
-    echo $* | mail -s "FAIL:aget-verify-`date`" $EMAIL
+    if [ ! -z "$EMAIL" ]; then 
+        echo $* | mail -s "FAIL:aget-verify-`date`" $EMAIL
+    fi 
     exit 1
 }
 
@@ -34,7 +38,9 @@ error_diff()
 
     echo $* > err_report.mail
     diff log$previ.p$j.sync log$i.p$j.sync >> err_report.mail 
-    cat err_report.mail | mail -s "FAIL:aget-verify-`date`" $EMAIL
+    if [ ! -z "$EMAIL" ]; then 
+	cat err_report.mail | mail -s "FAIL:aget-verify-`date`" $EMAIL
+    fi 
     cat err_report.mail 
     exit 1
 }
@@ -54,18 +60,16 @@ check_vm_randomization
 
 # logging 
 while true; do 
-    cat /proc/interrupts > log$i.interrupts_begin
     DPTHREAD_LOG_FILE="log$i" $CMD || error "Failed to exec" 
-    cat /proc/interrupts > log$i.interrupts_end
 
     # process the log files 
     j=0
     rm $FILE
     while true; do 
 	if [ "$MATCH_MODE" = "INST_COUNT" ]; then 
-	    grep -v "Thread" log$i.p$j | grep -v "STAT" | grep -v "EXIT" | sed "s/\[RT:[0-9]*\]//g" | sed "s/\]([0-9]*,[-]*[0-9]*)/\]/g"> log$i.p$j.sync
+	    grep -v "Thread" log$i.p$j | grep -v __read_count | grep -v "STAT" | grep -v "EXIT" | sed "s/\[RT:[0-9]*\]//g" | sed "s/\]([0-9]*,[-]*[0-9]*)/\]/g"> log$i.p$j.sync
 	elif [ "$MATCH_MODE" = "SYNC_ORDER" ]; then 
-	    grep -v "Thread" log$i.p$j | grep -v "STAT" | grep -v "EXIT"|  sed "s/\[RT:[0-9]*\]//g" | sed "s/\]([0-9]*,[-]*[0-9]*)/\]/g" | sed "s/\[LT:[-]*[0-9]*\]//g" > log$i.p$j.sync
+	    grep -v "Thread" log$i.p$j | grep -v __read_count | grep -v "STAT" | grep -v "EXIT"|  sed "s/\[RT:[0-9]*\]//g" | sed "s/\]([0-9]*,[-]*[0-9]*)/\]/g" | sed "s/\[LT:[-]*[0-9]*\]//g" > log$i.p$j.sync
 	fi 
 	j=`expr $j + 1`
 	[ "$j" = "$NPROC" ] && break
@@ -92,5 +96,7 @@ done
 rm log*.sync 
 
 echo "PASS" 
-echo "success" | mail -s "PASS:aget-check-`date`" $EMAIL
+if [ ! -z "$EMAIL" ]; then 
+    echo "success" | mail -s "PASS:aget-check-`date`" $EMAIL
+fi 
 
