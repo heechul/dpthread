@@ -29,8 +29,13 @@
 #include <string.h>
 
 #if USE_DPTHREAD
-#include <dpthread-wrapper.h>
+  #include <dpthread-wrapper.h>
+  #define DPTHREAD(x) x
+#else 
+  #define DPTHREAD(x) 
 #endif 
+
+	
 /*
 ** Enable for tracing
 */
@@ -108,9 +113,12 @@ char **db_query(sqlite3 *db, const char *zFile, const char *zFormat, ...){
   char *zErrMsg = 0;
   va_list ap;
   struct QueryResult sResult;
+  int lret; 
+  DPTHREAD( lret = det_disable_logical_clock()); 
   va_start(ap, zFormat);
   zSql = sqlite3_vmprintf(zFormat, ap);
   va_end(ap);
+  DPTHREAD( if ( lret == 0 ) det_enable_logical_clock(0)); 
   memset(&sResult, 0, sizeof(sResult));
   sResult.zFile = zFile;
   if( verbose ) printf("QUERY %s: %s\n", zFile, zSql);
@@ -208,22 +216,33 @@ static void *worker_bee(void *pArg){
   int t = atoi(zFilename);
   char **az;
   sqlite3 *db;
+  int lret; 
 
   fflush(stdout);
-  for(cnt=0; cnt<2; cnt++){
+//  for(cnt=0; cnt<2; cnt++){
+
+    DPTHREAD( lret = det_disable_logical_clock()); 
     sqlite3_open(&zFilename[2], &db);
+    DPTHREAD( if ( lret == 0 ) det_enable_logical_clock(0)); 
+    
+    DPTHREAD(det_dbg("LOG:open db\n")); 
+
     if( db==0 ){
       fprintf(stderr,"%s: can't open\n", zFilename);
       Exit(1);
     }
     sqlite3_busy_handler(db, db_is_locked, (void *)zFilename);
     db_execute(db, zFilename, "CREATE TABLE t%d(a,b,c);", t);
+    DPTHREAD(det_dbg("create table\n")); 
     for(i=1; i<=100; i++){
       db_execute(db, zFilename, "INSERT INTO t%d VALUES(%d,%d,%d);",
          t, i, i*2, i*i);
     }
+    DPTHREAD(det_dbg("LOG:100 inserts\n")); 
     az = db_query(db, zFilename, "SELECT count(*) FROM t%d", t);
+    DPTHREAD(det_dbg("LOG:query\n")); 
     db_check(zFilename, "tX size", az, "100", 0);  
+    DPTHREAD(det_dbg("LOG:check count\n")); 
 #if 0
     az = db_query(db, zFilename, "SELECT avg(b) FROM t%d", t);
     db_check(zFilename, "tX avg", az, "101.0", 0);  
@@ -238,9 +257,12 @@ static void *worker_bee(void *pArg){
       sprintf(z2, "%d", i*i);
       db_check(zFilename, "readback", az, z1, z2, 0);
     }
+    DPTHREAD(det_dbg("LOG:50 removal\n")); 
     db_execute(db, zFilename, "DROP TABLE t%d;", t);
+    DPTHREAD(det_dbg("LOG:drop table\n"));     
     sqlite3_close(db);
-  }
+    DPTHREAD(det_dbg("LOG:close db\n")); 
+//  }
   printf("%s: END\n", zFilename);
   unlink(zFilename);
   fflush(stdout);
@@ -275,15 +297,11 @@ int main(int argc, char **argv){
   }
 
   printf("%d threads \n", n); 
-#if USE_DPTHREAD
-  det_dbg("init lock and sig\n"); 
-#endif 
+  DPTHREAD(det_dbg("LOG:init lock and sig\n")); 
   pthread_mutex_init(&lock, NULL); 
   pthread_cond_init(&sig, NULL);
 
-#if USE_DPTHREAD
-  det_dbg("init lock and sig - end\n"); 
-#endif 
+  DPTHREAD(det_dbg("LOG:init lock and sig - end\n")); 
 
   for(i=0; i<n; i++){
     zFile = sqlite3_mprintf("%d.testdb-%d", i%2+1, (i+2)/2);
