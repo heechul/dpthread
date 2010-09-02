@@ -78,7 +78,13 @@
 ///////////////////////////////////////////////////////////////////
 
 // string.h 
+// NOTE: "rep; stosb" seems to cause non-deterministic inst_retired:store count.
+// Therefore, I instead use plain C implementation of string functions to make it 
+// deterministic. 
 #define memset(s, c, n) detio_memset(s, c, n) 
+#define strncpy(dst, src, n) detio_strncpy(dst, src, n)
+#define memmove(dst, src, count) detio_memmove(dst, src, count)
+#define memcpy(dst, src, len) detio_memcpy(dst, src, len)
 
 // unistd.h 
 #define sleep(sec) detio_sleep(sec)
@@ -137,10 +143,6 @@
 #define stat(path, buf) detio_stat(path, buf)
 #define fstat(fd, buf) detio_fstat(fd, buf)
 #define ftruncate(fd, length) detio_ftruncate(fd, length)
-
-// absolutely necessary -_-. 
-#define memmove(dst, src, count) detio_memmove(dst, src, count)
-#define memcpy(dst, src, len) detio_memcpy(dst, src, len)
 
 // ugly 
 #define lseek(fd, offset, whence) detio_lseek(fd, offset, whence)

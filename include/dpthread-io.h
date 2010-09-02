@@ -18,7 +18,10 @@
 ///////////////////////////////////////////////////////////////////////////////////
 
 // string.h 
+char *detio_strncpy(char *dst, const char *src, size_t n);
 void *detio_memset(void * dst, int s, size_t count); 
+void *detio_memmove(void *dst, const void *src, size_t count);
+void *detio_memcpy(void *destaddr, void const *srcaddr, size_t len);
 
 // stdlib.h 
 char *detio_getenv(const char *name); 
