@@ -2,6 +2,7 @@
 DIR="$1"
 CMD="$2"
 NPROC="$3"
+# EMAIL=heechul@illinois.edu 
 # NPROC=`cat src/config.h | grep CPU | awk '{ print $3 }'`
 
 echo "DBG: $DIR $CMD $NPROC"
@@ -19,7 +20,10 @@ i=0
 
 error()
 {
-    echo $* | mail -s "FAIL:dpthread-verify-`date`" $EMAIL
+    if [ ! -z "$EMAIL" ]; then 
+        echo $* | mail -s "FAIL:dpthread-verify-`date`" $EMAIL
+    fi 
+    echo $*
     exit 1
 }
 
