@@ -31,7 +31,6 @@
 #include "perf_util.h"
 
 #include <dpthread.h>
-#include <dlfcn.h>
 // #include <atomic.h>
 
 #include "config.h"

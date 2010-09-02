@@ -1,5 +1,11 @@
 #!/bin/bash
 
+fail()
+{
+	echo "FAILED: $*"
+	exit  # real problem 
+}
+
 echo "Benchmark" > log.bench
 for NPROC in 4; do 
 
@@ -31,7 +37,7 @@ for i in 0 1 2 4 5 6 7; do
     echo "Compile"
     (cd "${DIRS[i]}"; make ) >& log.build
     echo "Run"
-    (cd "${DIRS[i]}"; time nice sh -c "${EXES[i]}") 2>> log.bench 
+    (cd "${DIRS[i]}"; time nice sh -c "${EXES[i]}") 2>> log.bench || fail "${DIRS[i]}"
     grep real log.bench | awk '{ print $2 }' | sed "s/0m//g" | sed "s/s//"
 done # i 
 done # NPROC
