@@ -7,7 +7,7 @@ Writing a correct multithreaded program is hard because non-deterministic interl
 
 DPTHREAD eliminates non-deterministic thread interleaving. Therefore, a program behavior depends only on its input but not on thread interleaving; we call this program is deterministic.  In comparison, typical pthread programs are non-deterministic in a sense that their outcome not only depends on its input but also depend on the order of thread interleavings. 
 
-For example, let’s see the following bank account example ( you can see a full source code in test/bankacct.c) . 
+For example, let’s see the following bank account example ( the full source code is in test/bankacct.c) . 
 
 {{{
 int g_account;  // global variable 
