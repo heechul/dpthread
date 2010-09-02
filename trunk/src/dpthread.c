@@ -1330,9 +1330,6 @@ int det_dbg(const char *format, ...)
 
 void det_print_lock(det_mutex_t *mutex, char *msg)
 {
-	int ret; 
-	int lret;
-
 	// if not initialized, initialize. 
 	det_dbg("%s: mutex id=%d, owner=%d, ref=%d, qEmpty?=%d\n", 
 		msg, mutex->id, mutex->owner, mutex->ref, IsEmptyQ(&mutex->queue)); 

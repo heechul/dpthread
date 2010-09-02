@@ -208,6 +208,7 @@ int detio_sigfillset(sigset_t *set)
 	int lret = det_disable_logical_clock(); 
 	ret = sigfillset(set); 
 	if ( lret == 0 ) det_enable_logical_clock(0); 
+	return ret; 
 }
 
 // malloc.h 
