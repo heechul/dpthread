@@ -1,7 +1,7 @@
 #!/bin/bash
-EMAIL="heechul.yun@gmail.com"
+# EMAIL="heechul@illinois.edu"
 NPROC=`cat src/config.h | grep CPU | awk '{ print $3 }'`
-NPROC=4
+# NPROC=4
 
 # this prevent counting lazy binding of ld.so 
 LD_BIND_NOW=on  
@@ -36,8 +36,8 @@ fail()
 }
 
 echo "Verification" > log.check
-# for i in 0 1 2 5; do 
-for i in 5; do 
+for i in 0 1 2 5; do 
+# for i in 5; do 
     echo ${DIRS[i]} ${EXES[i]} >> log.check 
     (cd "${DIRS[i]}"; make clean ) 
     (cd "${DIRS[i]}"; make ) >& log.build
