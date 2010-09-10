@@ -3,7 +3,7 @@
 = Introduction =
 
 
-Writing a correct multithreaded program is hard because non-deterministic interleaving of threads can introduce hard to reproduce bugs. DPTRHEAD is a deterministic thread library, which you can use it instead of pthread library,  aim to solve (or reduce) the difficulty.  
+Writing a correct multithreaded program is hard because non-deterministic interleaving of threads can introduce hard to reproduce bugs. DPTRHEAD is a deterministic thread library, which you can use instead of pthread library,  aim to solve (or reduce) the difficulty.  
 
 DPTHREAD eliminates non-deterministic thread interleaving. Therefore, a program behavior depends only on its input but not on thread interleaving; we call this program is deterministic.  In comparison, typical pthread programs are non-deterministic in a sense that their outcome not only depends on its input but also depend on the order of thread interleavings. 
 
