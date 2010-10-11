@@ -11,11 +11,9 @@ The following figure shows performance slowdown over native pthread on seven SPL
 [http://dl.dropbox.com/u/1882859/pthread-vs-dpthread.png]
 
 The result can be summarized as follows: 
-* fft, lu and ocean show very good performance -- less than 10%. 
-* raytrace and radiosity perform very bad due to excessive lock. 
-* radix perform bad on four cores only suggesting scalability may be an issue. 
+  * fft, lu and ocean show very good performance -- less than 10%. 
+  * raytrace and radiosity perform very bad due to excessive lock. 
+  * radix perform bad on four cores only suggesting scalability may be an issue. 
 
 Note that rather high overhead on lock intensive applications compared to 'optimal' Kendo is partly due to our implementation issue. While kendo use overflow interrupt to increment counters, the number of instructions to cause overflow must be adjusted to get optimal performance, our implementation poll the native counter value from the kernel every time it need to determine the execution order. The problem is that it require system call to kernel which becomes bottleneck when they are called frequently as in raytrace or radiosity. The overhead can be improved if we can access the counter via memory mapped region in the process address space. 
-
-
 
