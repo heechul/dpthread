@@ -1,5 +1,5 @@
+#summary Performance analysis
 #labels performance
-# performance.
 
 = Introduction =
 
