@@ -7,6 +7,6 @@ CC=gcc
 INSTALL=install
 LN?=ln -sf
 
-CFLAGS += -O2 -Wall -g -D_GNU_SOURCE -march=i686 
+CFLAGS += -O2 -Wall -g -D_GNU_SOURCE # -march=i686 
 CFLGAS += -I$(DPTHREAD_ROOT)/include 
 LDFLAGS += -L$(DPTHREAD_ROOT)/lib

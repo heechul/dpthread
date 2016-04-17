@@ -38,7 +38,9 @@
 // #undef PTHREAD_ADAPTIVE_MUTEX_INITIALIZER_NP
 
 #if __WORDSIZE == 64
-#    error "not tested on 64 bit machine" 
+// #    error "not tested on 64 bit machine" 
+#    define PTHREAD_MUTEX_INITIALIZER				\
+  {-1, { { 0, 0, 0, 0, 0, { 0 } } }, 0, 0, 0, { 0, 0, 0, 0} }
 #else 
 #    define PTHREAD_MUTEX_INITIALIZER				\
   {-1, { { 0, 0, 0, 0, 0, { 0 } } }, 0, 0, 0, { 0, 0, 0, 0} }
